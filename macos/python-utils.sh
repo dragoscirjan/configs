@@ -3,7 +3,7 @@
 
 sudo pip install virtualenvwrapper
 
-cat ~/.bash_profile | grep "virtualenvwrapper.sh" || {
+§cat ~/.bash_profile | grep "virtualenvwrapper.sh" || {
 	mkdir -p $HOME/.virtualenvs
 	cat >> ~/.bash_profile <<EXP
 export WORKON_HOME=$HOME/.virtualenvs
