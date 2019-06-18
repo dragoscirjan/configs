@@ -5,4 +5,4 @@ binary=$(curl -sSL https://github.com/stedolan/jq/releases | grep jq-win64.exe |
 
 mkdir -p ~/bin
 
-curl -sSL https://github.com$binary > jq.exe
+curl -sSL https://github.com$binary > ~/bin/jq.exe
