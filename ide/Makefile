@@ -84,9 +84,11 @@ VSCODE_URL=https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
 endif
 ifeq (OSX,$(OSFLAG))
 CURL=curl -sSL
-PKM=
-PKM_EXT=.dmg
-VSCODE_URL=https://update.code.visualstudio.com/latest/darwin/stable
+PKM3=brew cask install
+PKM2=brew install 
+# PKM=
+# PKM_EXT=.dmg
+# VSCODE_URL=https://update.code.visualstudio.com/latest/darwin/stable
 endif
 ifeq (WIN32,$(OSFLAG))
 PKM=https://www.powershellgallery.com/packages/Install-VSCode/1.2/Content/Install-VSCode.ps1
@@ -104,6 +106,6 @@ ifneq (OSX,$(OSFLAG))
 	$(PKM) $(HOME)/vscode.$(PKM_EXT)
 	rm -rf $(HOME)/vscode.$(PKM_EXT)
 else
-	@echo 'TODO:'
+	$(PKM3) visual-studio-code
 endif
 endif
