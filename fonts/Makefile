@@ -1,4 +1,3 @@
-
 #
 # Detect OS
 #
@@ -42,19 +41,6 @@ else ifeq ($(SHELL),/bin/sh)
 	SHELL_IS = bash
 else
     SHELL_IS = powershell
-endif
-
-#
-# Windows utils directive
-#
-ifeq ($(SHELL),powershell)
-	Add-Type -AssemblyName System.IO.Compression.FileSystem
-	function Unzip
-	{
-	    param([string]$zipfile, [string]$outpath)
-
-	    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
-	}
 endif
 
 #
