@@ -69,6 +69,8 @@ help:
 # Actual Action Definitions
 #
 
+# http://commandlinemac.blogspot.com/2008/12/installing-dmg-application-from-command.html
+
 ifeq (LINUX,$(OSFLAG))
 CURL=curl -sSL
 	ifeq (debian,$(shell test -f $(which dpkg 2> /dev/null) && echo 'debian'))
@@ -109,3 +111,17 @@ else
 	$(PKM3) visual-studio-code
 endif
 endif
+
+pycharm: ## Install Visual Studio Code
+# ifeq (WIN32,$(OSFLAG))
+# 	@echo 'TODO:'
+# else
+# # 	$(CURL) $(VSCODE_URL) > $(HOME)/vscode.$(PKM_EXT)
+# ifneq (OSX,$(OSFLAG))
+# 	$(PKM) $(HOME)/vscode.$(PKM_EXT)
+# 	rm -rf $(HOME)/vscode.$(PKM_EXT)
+# else
+	@echo 'Installation will require sudo rights'
+	hdiutil mount $(HOME)/Downloads/pycharm-professional-2019.1.2.dmg
+# endif
+# endif
