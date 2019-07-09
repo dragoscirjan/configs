@@ -93,7 +93,13 @@ ifeq (WIN32, $(OSFLAG))
 	$(PACKAGE)
 endif
 ifeq (OSX, $(OSFLAG))
-	@echo 'This is a TODO:'
+	# http://commandlinemac.blogspot.com/2008/12/installing-dmg-application-from-command.html
+	hdiutil mount $(PACKAGE) -mountpoint $$HOME/tmp/volume
+	find /Users/dragos.cirjan/tmp/volume -type d -iname "*.app" -mindepth 1 -maxdepth 1 \
+		| while read app; do sudo cp -R "$$app" /Applications; done
+	find /Users/dragos.cirjan/tmp/volume -type f -iname "*.pkg" -mindepth 1 -maxdepth 1 \
+		| while read app; do echo sudo installer -package $$app -target "/Volumes/Macintosh HD"; done
+	hdiutil unmount $$HOME/tmp/volume
 endif
 ifeq (LINUX,$(OSFLAG))
 	which dpkg > /dev/null && sudo dpkg -i $(PACKAGE) || apt-get install -f
@@ -107,6 +113,13 @@ dld: ## Download file from web for installing: make dld D_URL=http://... D_DST=.
 ifeq (WIN32,$(OSFLAG))
 	@echo 'To Be Implemented'
 else
-	curl -sSL $(DOWNLOAD_URL) > $(DOWNLOAD_DST)
+	curl -SL "$(D_URL)" --output "$(D_DST)"
 endif
 
+RM_FILE=
+rm: ## Remove file
+ifeq (WIN32,$(OSFLAG))
+	@echo 'To Be Implemented'
+else
+	rm -rf "$(RM_FILE)"
+endif
