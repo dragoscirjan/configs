@@ -69,8 +69,10 @@ help:
 #
 
 apt-utils:
+ifeq (LINUX,$(OSFLAG))
 	which apt > /dev/null && sudo apt install apt-transport-https
 	which apt-get > /dev/null && sudo apt-get install apt-transport-https
+endif
 
 i: apt-utils ## Install Package Depending on OS
 ifeq (WIN32, $(OSFLAG))

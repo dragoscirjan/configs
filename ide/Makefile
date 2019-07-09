@@ -1,4 +1,3 @@
-Makefile
 #
 # Detect OS
 #
@@ -71,45 +70,68 @@ help:
 
 # http://commandlinemac.blogspot.com/2008/12/installing-dmg-application-from-command.html
 
+# ifeq (LINUX,$(OSFLAG))
+# CURL=curl -sSL
+# 	ifeq (debian,$(shell test -f $(which dpkg 2> /dev/null) && echo 'debian'))
+# PKM=sudo dpkg -i
+# PKM_EXT=.deb
+# VSCODE_URL=https://update.code.visualstudio.com/latest/linux-deb-x64/stable
+# 	endif
+# 	ifeq (debian,$(shell test -f $(which rpm 2> /dev/null) && echo 'debian'))
+# PKM=sudo rpm -i
+# PKM_EXT=.rpm
+# VSCODE_URL=https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
+# 	endif
+# endif
+# ifeq (OSX,$(OSFLAG))
+# CURL=curl -sSL
+# PKM3=brew cask install
+# PKM2=brew install 
+# # PKM=
+# # PKM_EXT=.dmg
+# # VSCODE_URL=https://update.code.visualstudio.com/latest/darwin/stable
+# endif
+# ifeq (WIN32,$(OSFLAG))
+# PKM=https://www.powershellgallery.com/packages/Install-VSCode/1.2/Content/Install-VSCode.ps1
+# PKM_EXT=.exe
+# VSCODE_URL=https://update.code.visualstudio.com/latest/win32-x64-user/stable
+# endif
+
 ifeq (LINUX,$(OSFLAG))
-CURL=curl -sSL
-	ifeq (debian,$(shell test -f $(which dpkg 2> /dev/null) && echo 'debian'))
-PKM=sudo dpkg -i
-PKM_EXT=.deb
-VSCODE_URL=https://update.code.visualstudio.com/latest/linux-deb-x64/stable
-	endif
-	ifeq (debian,$(shell test -f $(which rpm 2> /dev/null) && echo 'debian'))
-PKM=sudo rpm -i
-PKM_EXT=.rpm
-VSCODE_URL=https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
-	endif
+ifeq (debian,$(shell test -f $(which dpkg 2> /dev/null) && echo 'debian'))
+	EXT=deb
+	VSCODE_URL=https://update.code.visualstudio.com/latest/linux-deb-x64/stable
+endif
+ifeq (debian,$(shell test -f $(which rpm 2> /dev/null) && echo 'debian'))
+	EXT=rpm
+	VSCODE_URL=https://update.code.visualstudio.com/latest/darwin/stable
+endif
 endif
 ifeq (OSX,$(OSFLAG))
-CURL=curl -sSL
-PKM3=brew cask install
-PKM2=brew install 
-# PKM=
-# PKM_EXT=.dmg
-# VSCODE_URL=https://update.code.visualstudio.com/latest/darwin/stable
+	EXT=dmg
+	VSCODE_URL=https://update.code.visualstudio.com/latest/win32-x64-user/stable
 endif
 ifeq (WIN32,$(OSFLAG))
-PKM=https://www.powershellgallery.com/packages/Install-VSCode/1.2/Content/Install-VSCode.ps1
-PKM_EXT=.exe
-VSCODE_URL=https://update.code.visualstudio.com/latest/win32-x64-user/stable
+	EXT=exe
+	VSCODE_URL=https://update.code.visualstudio.com/latest/win32-x64-user/stable
 endif
-
 
 vscode: ## Install Visual Studio Code
-ifeq (WIN32,$(OSFLAG))
-	@echo 'TODO:'
-else
-	$(CURL) $(VSCODE_URL) > $(HOME)/vscode.$(PKM_EXT)
 ifneq (OSX,$(OSFLAG))
-	$(PKM) $(HOME)/vscode.$(PKM_EXT)
-	rm -rf $(HOME)/vscode.$(PKM_EXT)
-else
-	$(PKM3) visual-studio-code
+	cd ../.install
+	make dld D_URL=$(VSCODE_URL) D_DST=vscode.$(EXT)
+	make li PACKAGE=vscode.$(EXT)
 endif
+ifeq (OSX,$(OSFLAG))
+	cd ../.install && make i PACKAGE=visual-studio-code
+endif
+
+vscode-insiders: ## Install Visual Studio Code Insiders
+ifneq (OSX,$(OSFLAG))
+	@echo 'TODO:'
+endif
+ifeq (OSX,$(OSFLAG))
+	cd ../.install && make i PACKAGE=visual-studio-code-insiders
 endif
 
 pycharm: ## Install Visual Studio Code
