@@ -71,10 +71,14 @@ help:
 ifeq (LINUX,$(OSFLAG))
 ifeq (debian,$(shell test -f $(which dpkg 2> /dev/null) && echo 'debian'))
 	EXT=deb
+
+	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
 	VSCODE_URL=https://update.code.visualstudio.com/latest/linux-deb-x64/stable
 endif
 ifeq (debian,$(shell test -f $(which rpm 2> /dev/null) && echo 'debian'))
 	EXT=rpm
+
+	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
 	VSCODE_URL=https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
 endif
 	RM=rm -rf
@@ -84,12 +88,13 @@ ifeq (OSX,$(OSFLAG))
 	TIMESTAMP_SECCONDS=$(shell date +%s)
 	EXT=dmg
 
-	RM=echo Must delete by hand
+	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
 	VSCODE_URL=https://update.code.visualstudio.com/latest/darwin/stable
 endif
 ifeq (WIN32,$(OSFLAG))
 	EXT=exe
-	RM=echo Must delete by hand
+
+	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
 	VSCODE_URL=https://update.code.visualstudio.com/latest/win32-x64-user/stable
 	TIMESTAMP_SECCONDS=$(shell date +%s)
 endif
@@ -124,6 +129,29 @@ intellij: mktmp
 			make li PACKAGE="$$HOME/tmp/$${link##*/}"; \
 			make rm RM_FILE="$$HOME/$${link##*/}"; \
 		done
+
+atom: ## Install Atom
+ifneq (OSX,$(OSFLAG))
+	@echo 'TODO:'
+# 	cd ../.install
+# 	make dld D_URL=$(VSCODE_URL) D_DST=vscode.$(EXT)
+# 	make li PACKAGE=vscode.$(EXT)
+endif
+ifeq (OSX,$(OSFLAG))
+	cd ../.install && make i PACKAGE=atom
+endif
+
+atom-beta: ## Install Atom Beta
+ifneq (OSX,$(OSFLAG))
+	@echo 'TODO:'
+# 	cd ../.install
+# 	make dld D_URL=$(VSCODE_URL) D_DST=vscode.$(EXT)
+# 	make li PACKAGE=vscode.$(EXT)
+endif
+ifeq (OSX,$(OSFLAG))
+	cd ../.install && make i PACKAGE=atom-beta
+endif
+
 
 idea: ## Install IntelliJ IDEA
 ifeq (LINUX,$(OSFLAG))
@@ -169,11 +197,27 @@ ifeq (WIN32,$(OSFLAG))
 	@echo
 endif
 
+sublime: ## Install Sublime Text
+ifneq (OSX,$(OSFLAG))
+	@echo 'TODO:'
+# 	cd ../.install
+# 	make dld D_URL=$(VSCODE_URL) D_DST=vscode.$(EXT)
+# 	make li PACKAGE=vscode.$(EXT)
+endif
+ifeq (OSX,$(OSFLAG))
+	cd ../.install
+	link=$(SUBLIME_URL)
+	make dld D_URL="$$link" D_DST="$$HOME/tmp/$${link##*/}"
+	make li PACKAGE="$$HOME/tmp/$${link##*/}"
+	make rm RM_FILE="$$HOME/$${link##*/}"
+endif
+
 vscode: ## Install Visual Studio Code
 ifneq (OSX,$(OSFLAG))
-	cd ../.install
-	make dld D_URL=$(VSCODE_URL) D_DST=vscode.$(EXT)
-	make li PACKAGE=vscode.$(EXT)
+	@echo 'TODO:'
+# 	cd ../.install
+# 	make dld D_URL=$(VSCODE_URL) D_DST=vscode.$(EXT)
+# 	make li PACKAGE=vscode.$(EXT)
 endif
 ifeq (OSX,$(OSFLAG))
 	cd ../.install && make i PACKAGE=visual-studio-code
