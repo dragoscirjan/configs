@@ -1,4 +1,4 @@
-Makefile
+## v0.2
 #
 # Detect OS
 #
@@ -38,23 +38,14 @@ endif
 SHELL_IS := 
 ifeq ($(SHELL),/bin/bash)
     SHELL_IS = bash
+else ifeq ($(SHELL),/usr/bin/bash)
+    SHELL_IS = bash
 else ifeq ($(SHELL),/bin/sh)
+	SHELL_IS = bash
+else ifeq ($(SHELL),C:/Program Files/Git/usr/bin/sh.exe)
 	SHELL_IS = bash
 else
     SHELL_IS = powershell
-endif
-
-#
-# Windows utils directive
-#
-ifeq ($(SHELL),powershell)
-	Add-Type -AssemblyName System.IO.Compression.FileSystem
-	function Unzip
-	{
-	    param([string]$zipfile, [string]$outpath)
-
-	    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
-	}
 endif
 
 #
@@ -62,9 +53,22 @@ endif
 #
 .PHONY: help
 help:
+ifeq ($(SHELL_IS),bash)
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+else
+	@echo 'Windows Help not available yet.'
+endif
 .DEFAULT_GOAL := help
 
 #
 # Actual Action Definitions
 #
+
+all-help: ## Demo Help
+ifeq ($(SHELL_IS),bash)
+	@find . -mindepth 1 -maxdepth 1 -type d | while read d; do \
+		test -f $$d/Makefile && echo "$$d" && make --directory=$$d; \
+	done
+else
+	@echo 'Windows Help not available yet.'
+endif

@@ -1,3 +1,4 @@
+## v0.2
 #
 # Detect OS
 #
@@ -37,23 +38,14 @@ endif
 SHELL_IS := 
 ifeq ($(SHELL),/bin/bash)
     SHELL_IS = bash
+else ifeq ($(SHELL),/usr/bin/bash)
+    SHELL_IS = bash
 else ifeq ($(SHELL),/bin/sh)
+	SHELL_IS = bash
+else ifeq ($(SHELL),C:/Program Files/Git/usr/bin/sh.exe)
 	SHELL_IS = bash
 else
     SHELL_IS = powershell
-endif
-
-#
-# Windows utils directive
-#
-ifeq ($(SHELL),powershell)
-	Add-Type -AssemblyName System.IO.Compression.FileSystem
-	function Unzip
-	{
-	    param([string]$zipfile, [string]$outpath)
-
-	    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
-	}
 endif
 
 #
@@ -61,12 +53,25 @@ endif
 #
 .PHONY: help
 help:
+ifeq ($(SHELL_IS),bash)
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+else
+	@echo 'Windows Help not available yet.'
+endif
 .DEFAULT_GOAL := help
 
 #
 # Actual Action Definitions
 #
+
+#
+# Dirs
+#
+
+DIR_INSTALL=../.install
+LINUX_NOT_IMPLEMENTED = "Not implemented under Linux"
+OSX_NOT_IMPLEMENTED = "Not implemented under OSX"
+WINDOWS_NOT_IMPLEMENTED = "Not implemented under Windows"
 
 ifeq (LINUX,$(OSFLAG))
 ifeq (debian,$(shell test -f $(which dpkg 2> /dev/null) && echo 'debian'))
@@ -100,12 +105,11 @@ ifeq (WIN32,$(OSFLAG))
 endif
 
 mktmp:
-ifeq (WIN32, $(OSFLAG))
-	@echo 'TODO:'
+ifeq (bash,$(SHELL_IS))
+	mkdir -p $$HOME/tmp
 else
-	mkdir -p $HOME/tmp
+	powershell "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
 endif
-
 
 # IDEA_APP=CL # CLion
 # IDEA_APP=IIC # Idea CE
@@ -130,26 +134,38 @@ intellij: mktmp
 			make rm RM_FILE="$$HOME/$${link##*/}"; \
 		done
 
-atom: ## Install Atom
-ifneq (OSX,$(OSFLAG))
-	@echo 'TODO:'
-# 	cd ../.install
-# 	make dld D_URL=$(VSCODE_URL) D_DST=vscode.$(EXT)
-# 	make li PACKAGE=vscode.$(EXT)
+atom: mktmp ## Install Atom
+ifeq (LINUX,$(OSFLAG))
+	@echo "$(LINUX_NOT_IMPLEMENTED)"
 endif
 ifeq (OSX,$(OSFLAG))
 	cd ../.install && make i PACKAGE=atom
 endif
+ifeq (WIN32,$(OSFLAG))
+	make --directory=$(DIR_INSTALL) dld D_URL="https://atom.io/download/windows_x64" D_DST="~/tmp/atom.exe"
+	make --directory=$(DIR_INSTALL) li PACKAGE="~/tmp/atom.exe"
+ifeq (bash,$(SHELL_IS))
+	make --directory=$(DIR_INSTALL) rm RM_FILE="~/tmp/atom.exe"
+else
+	@echo "Please manually remove ~/tmp/atom.exe after install: rm ~/tmp/atom.exe"
+endif
+endif
 
 atom-beta: ## Install Atom Beta
-ifneq (OSX,$(OSFLAG))
-	@echo 'TODO:'
-# 	cd ../.install
-# 	make dld D_URL=$(VSCODE_URL) D_DST=vscode.$(EXT)
-# 	make li PACKAGE=vscode.$(EXT)
+ifeq (LINUX,$(OSFLAG))
+	@echo "$(LINUX_NOT_IMPLEMENTED)"
 endif
 ifeq (OSX,$(OSFLAG))
 	cd ../.install && make i PACKAGE=atom-beta
+endif
+ifeq (WIN32,$(OSFLAG))
+	make --directory=$(DIR_INSTALL) dld D_URL="https://atom.io/download/windows_x64?channel=beta" D_DST="~/tmp/atom-beta.exe"
+	make --directory=$(DIR_INSTALL) li PACKAGE="~/tmp/atom-beta.exe"
+ifeq (bash,$(SHELL_IS))
+	make --directory=$(DIR_INSTALL) rm RM_FILE="~/tmp/atom-beta.exe"
+else
+	@echo "Please manually remove ~/tmp/atom.exe after install: rm ~/tmp/atom-beta.exe"
+endif
 endif
 
 

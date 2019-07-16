@@ -1,3 +1,4 @@
+## v0.2
 #
 # Detect OS
 #
@@ -37,23 +38,14 @@ endif
 SHELL_IS := 
 ifeq ($(SHELL),/bin/bash)
     SHELL_IS = bash
+else ifeq ($(SHELL),/usr/bin/bash)
+    SHELL_IS = bash
 else ifeq ($(SHELL),/bin/sh)
+	SHELL_IS = bash
+else ifeq ($(SHELL),C:/Program Files/Git/usr/bin/sh.exe)
 	SHELL_IS = bash
 else
     SHELL_IS = powershell
-endif
-
-#
-# Windows utils directive
-#
-ifeq ($(SHELL),powershell)
-	Add-Type -AssemblyName System.IO.Compression.FileSystem
-	function Unzip
-	{
-	    param([string]$zipfile, [string]$outpath)
-
-	    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $outpath)
-	}
 endif
 
 #
@@ -61,8 +53,16 @@ endif
 #
 .PHONY: help
 help:
+ifeq ($(SHELL_IS),bash)
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+else
+	@echo 'Windows Help not available yet.'
+endif
 .DEFAULT_GOAL := help
+
+#
+# Actual Action Definitions
+#
 
 #
 # Actual Action Definitions
@@ -90,7 +90,7 @@ endif
 
 li: apt-utils ## Install Local Package Depending on OS
 ifeq (WIN32, $(OSFLAG))
-	$(PACKAGE)
+	powershell -ExecutionPolicy ByPass -File ../.windows/run.ps1 --file "$(PACKAGE)" --arguments "$(LI_WIN_ARGS)"
 endif
 ifeq (OSX, $(OSFLAG))
 	# http://commandlinemac.blogspot.com/2008/12/installing-dmg-application-from-command.html
@@ -110,16 +110,16 @@ D_URL=
 D_DST=
 
 dld: ## Download file from web for installing: make dld D_URL=http://... D_DST=./file.exe
-ifeq (WIN32,$(OSFLAG))
-	@echo 'To Be Implemented'
-else
+ifeq (bash,$(SHELL_IS))
 	curl -SL "$(D_URL)" --output "$(D_DST)"
+else
+	powershell -ExecutionPolicy ByPass -File ../.windows/download.ps1 --url "$(D_URL)" --output "$(D_DST)"
 endif
 
 RM_FILE=
 rm: ## Remove file
-ifeq (WIN32,$(OSFLAG))
-	@echo 'To Be Implemented'
-else
+ifeq (bash,$(SHELL_IS))
 	rm -rf "$(RM_FILE)"
+else
+	rm "$(RM_FILE)"
 endif
