@@ -64,45 +64,79 @@ endif
 # Actual Action Definitions
 #
 
-#
-# Dirs
-#
-
-DIR_INSTALL=../.install
 LINUX_NOT_IMPLEMENTED = "Not implemented under Linux"
 OSX_NOT_IMPLEMENTED = "Not implemented under OSX"
 WINDOWS_NOT_IMPLEMENTED = "Not implemented under Windows"
 
-ifeq (LINUX,$(OSFLAG))
-ifeq (debian,$(shell test -f $(which dpkg 2> /dev/null) && echo 'debian'))
-	EXT=deb
+DIR_INSTALL = ../.install
 
-	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
-	VSCODE_URL=https://update.code.visualstudio.com/latest/linux-deb-x64/stable
-endif
-ifeq (debian,$(shell test -f $(which rpm 2> /dev/null) && echo 'debian'))
-	EXT=rpm
+# INTELLIJ_APP=CL # CLion
+# INTELLIJ_APP=IIC # Idea CE
+# INTELLIJ_APP=IIU # Idea
+# INTELLIJ_APP=GO # GoLand
+# INTELLIJ_APP=PS # PhpStorm
+# INTELLIJ_APP=PCC # PyCharm CE
+# INTELLIJ_APP=PCP # PyCharm
+# INTELLIJ_APP=RM # RubyMine
+# INTELLIJ_APP=WS # WebStorm
+INTELLIJ_APP=
+INTELLIJ_OS=linux
 
-	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
-	VSCODE_URL=https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
-endif
-	RM=rm -rf
-	TIMESTAMP_SECCONDS=$(shell date +%s)
-endif
-ifeq (OSX,$(OSFLAG))
-	TIMESTAMP_SECCONDS=$(shell date +%s)
-	EXT=dmg
-
-	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
-	VSCODE_URL=https://update.code.visualstudio.com/latest/darwin/stable
-endif
+# ifeq (LINUX,$(OSFLAG))
+# 	@echo "$(LINUX_NOT_IMPLEMENTED)"
+# endif
+# ifeq (OSX,$(OSFLAG))
+# 	cd ../.install && make i PACKAGE=atom-beta
+# endif
 ifeq (WIN32,$(OSFLAG))
-	EXT=exe
-
-	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
-	VSCODE_URL=https://update.code.visualstudio.com/latest/win32-x64-user/stable
-	TIMESTAMP_SECCONDS=$(shell date +%s)
+	INTELLIJ_OS=windows
+	TIMESTAMP_SECCONDS=$(shell date)
+	JQ=../bin/jq.exe
 endif
+
+
+# ifeq (LINUX,$(OSFLAG))
+# ifeq (debian,$(shell test -f $(which dpkg 2> /dev/null) && echo 'debian'))
+# 	EXT=deb
+
+# 	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
+# 	VSCODE_URL=https://update.code.visualstudio.com/latest/linux-deb-x64/stable
+# endif
+# ifeq (debian,$(shell test -f $(which rpm 2> /dev/null) && echo 'debian'))
+# 	EXT=rpm
+
+# 	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
+# 	VSCODE_URL=https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
+# endif
+# 	RM=rm -rf
+# 	TIMESTAMP_SECCONDS=$(shell date +%s)
+# endif
+# ifeq (OSX,$(OSFLAG))
+# 	TIMESTAMP_SECCONDS=$(shell date +%s)
+# 	EXT=dmg
+
+# 	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
+# 	VSCODE_URL=https://update.code.visualstudio.com/latest/darwin/stable
+# endif
+# ifeq (WIN32,$(OSFLAG))
+# 	EXT=exe
+
+# 	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
+# 	VSCODE_URL=
+# 	TIMESTAMP_SECCONDS=$(shell date +%s)
+# endif
+
+
+intellij: mktmp winutils
+# 	if [ "$(INTELLIJ_APP)" == "" ]; then \	
+# 	fi
+	curl -sSL "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)" \
+		| $(JQ) -r 'keys[] as $$k | .[$$k] | .[0] | .downloads.$(INTELLIJ_OS).link' \
+		| while read link; do \
+			echo $$link; \
+			echo ~/tmp/$$(echo $$link | awk -F'/' '{print $$NF}'); \
+		done
+# 			make --directory=$(DIR_INSTALL) iu URL="$$link" FILE="~/tmp/$$(echo $$link | awk -F'/' '{print $$NF}')"; \
 
 mktmp:
 ifeq (bash,$(SHELL_IS))
@@ -111,30 +145,10 @@ else
 	powershell "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
 endif
 
-# IDEA_APP=CL # CLion
-# IDEA_APP=IIC # Idea CE
-# IDEA_APP=IIU # Idea
-# IDEA_APP=GO # GoLand
-# IDEA_APP=PS # PhpStorm
-# IDEA_APP=PCC # PyCharm CE
-# IDEA_APP=PCP # PyCharm
-# IDEA_APP=RM # RubyMine
-# IDEA_APP=WS # WebStorm
-IDEA_APP=
-IDEA_OS=linux
-intellij: mktmp
-# 	if [ "$(IDEA_APP)" == "" ]; then \	
-# 	fi
-	curl -sSL "https://data.services.jetbrains.com/products/releases?code=$(IDEA_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)" \
-		| jq -r 'keys[] as $$k | .[$$k] | .[0] | .downloads.$(IDEA_OS).link' \
-		| while read link; do \
-			cd ../.install; \
-			make dld D_URL="$$link" D_DST="$$HOME/tmp/$${link##*/}"; \
-			make li PACKAGE="$$HOME/tmp/$${link##*/}"; \
-			make rm RM_FILE="$$HOME/$${link##*/}"; \
-		done
+winutils:
+	test -f ../bin/jq.exe || make --directory=$(DIR_INSTALL) dld URL="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-win64.exe" FILE="../bin/jq.exe"
 
-atom: mktmp ## Install Atom
+atom: ## Install Atom
 ifeq (LINUX,$(OSFLAG))
 	@echo "$(LINUX_NOT_IMPLEMENTED)"
 endif
@@ -142,13 +156,7 @@ ifeq (OSX,$(OSFLAG))
 	cd ../.install && make i PACKAGE=atom
 endif
 ifeq (WIN32,$(OSFLAG))
-	make --directory=$(DIR_INSTALL) dld D_URL="https://atom.io/download/windows_x64" D_DST="~/tmp/atom.exe"
-	make --directory=$(DIR_INSTALL) li PACKAGE="~/tmp/atom.exe"
-ifeq (bash,$(SHELL_IS))
-	make --directory=$(DIR_INSTALL) rm RM_FILE="~/tmp/atom.exe"
-else
-	@echo "Please manually remove ~/tmp/atom.exe after install: rm ~/tmp/atom.exe"
-endif
+	make --directory=$(DIR_INSTALL) iu URL=https://atom.io/download/windows_x64 FILE="~/tmp/atom.exe"
 endif
 
 atom-beta: ## Install Atom Beta
@@ -159,66 +167,56 @@ ifeq (OSX,$(OSFLAG))
 	cd ../.install && make i PACKAGE=atom-beta
 endif
 ifeq (WIN32,$(OSFLAG))
-	make --directory=$(DIR_INSTALL) dld D_URL="https://atom.io/download/windows_x64?channel=beta" D_DST="~/tmp/atom-beta.exe"
-	make --directory=$(DIR_INSTALL) li PACKAGE="~/tmp/atom-beta.exe"
-ifeq (bash,$(SHELL_IS))
-	make --directory=$(DIR_INSTALL) rm RM_FILE="~/tmp/atom-beta.exe"
-else
-	@echo "Please manually remove ~/tmp/atom.exe after install: rm ~/tmp/atom-beta.exe"
-endif
+	make --directory=$(DIR_INSTALL) iu URL="https://atom.io/download/windows_x64?channel=beta" FILE="~/tmp/atom-beta.exe"
 endif
 
+# idea: ## Install IntelliJ IDEA
+# ifeq (LINUX,$(OSFLAG))
+# 	@echo
+# endif
+# ifeq (OSX,$(OSFLAG))
+# 	make intellij INTELLIJ_APP=IIU INTELLIJ_OS=mac
+# endif
+# ifeq (WIN32,$(OSFLAG))
+# 	@echo
+# endif
 
-idea: ## Install IntelliJ IDEA
-ifeq (LINUX,$(OSFLAG))
-	@echo
-endif
-ifeq (OSX,$(OSFLAG))
-	make intellij IDEA_APP=IIU IDEA_OS=mac
-endif
-ifeq (WIN32,$(OSFLAG))
-	@echo
-endif
+# idea-ce: ## Install IntelliJ IDEA CE
+# ifeq (LINUX,$(OSFLAG))
+# 	@echo
+# endif
+# ifeq (OSX,$(OSFLAG))
+# 	make intellij INTELLIJ_APP=IIC INTELLIJ_OS=mac
+# endif
+# ifeq (WIN32,$(OSFLAG))
+# 	@echo
+# endif
 
-idea-ce: ## Install IntelliJ IDEA CE
-ifeq (LINUX,$(OSFLAG))
-	@echo
-endif
-ifeq (OSX,$(OSFLAG))
-	make intellij IDEA_APP=IIC IDEA_OS=mac
-endif
-ifeq (WIN32,$(OSFLAG))
-	@echo
-endif
+# pycharm: ## Install IntelliJ PyCharm
+# ifeq (LINUX,$(OSFLAG))
+# 	@echo
+# endif
+# ifeq (OSX,$(OSFLAG))
+# 	make intellij INTELLIJ_APP=PCP INTELLIJ_OS=mac
+# endif
+# ifeq (WIN32,$(OSFLAG))
+# 	@echo
+# endif
 
-pycharm: ## Install IntelliJ PyCharm
-ifeq (LINUX,$(OSFLAG))
-	@echo
-endif
-ifeq (OSX,$(OSFLAG))
-	make intellij IDEA_APP=PCP IDEA_OS=mac
-endif
-ifeq (WIN32,$(OSFLAG))
-	@echo
-endif
-
-pycharm-ce: ## Install IntelliJ PyCharm CE
-ifeq (LINUX,$(OSFLAG))
-	@echo
-endif
-ifeq (OSX,$(OSFLAG))
-	make intellij IDEA_APP=PCC IDEA_OS=mac
-endif
-ifeq (WIN32,$(OSFLAG))
-	@echo
-endif
+# pycharm-ce: ## Install IntelliJ PyCharm CE
+# ifeq (LINUX,$(OSFLAG))
+# 	@echo
+# endif
+# ifeq (OSX,$(OSFLAG))
+# 	make intellij INTELLIJ_APP=PCC INTELLIJ_OS=mac
+# endif
+# ifeq (WIN32,$(OSFLAG))
+# 	@echo
+# endif
 
 sublime: ## Install Sublime Text
-ifneq (OSX,$(OSFLAG))
-	@echo 'TODO:'
-# 	cd ../.install
-# 	make dld D_URL=$(VSCODE_URL) D_DST=vscode.$(EXT)
-# 	make li PACKAGE=vscode.$(EXT)
+ifeq (LINUX,$(OSFLAG))
+	@echo "$(LINUX_NOT_IMPLEMENTED)"
 endif
 ifeq (OSX,$(OSFLAG))
 	cd ../.install
@@ -227,22 +225,28 @@ ifeq (OSX,$(OSFLAG))
 	make li PACKAGE="$$HOME/tmp/$${link##*/}"
 	make rm RM_FILE="$$HOME/$${link##*/}"
 endif
+ifeq (WIN32,$(OSFLAG))
+	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe" IL_WIN_ARGS="/silent /norestart"
+endif
 
 vscode: ## Install Visual Studio Code
-ifneq (OSX,$(OSFLAG))
-	@echo 'TODO:'
-# 	cd ../.install
-# 	make dld D_URL=$(VSCODE_URL) D_DST=vscode.$(EXT)
-# 	make li PACKAGE=vscode.$(EXT)
+ifeq (LINUX,$(OSFLAG))
+	@echo "$(LINUX_NOT_IMPLEMENTED)"
 endif
 ifeq (OSX,$(OSFLAG))
 	cd ../.install && make i PACKAGE=visual-studio-code
 endif
+ifeq (WIN32,$(OSFLAG))
+	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/win32-x64/stable" FILE="~/tmp/vscode.exe" IL_WIN_ARGS="/silent /norestart"
+endif
 
 vscode-insiders: ## Install Visual Studio Code Insiders
-ifneq (OSX,$(OSFLAG))
-	@echo 'TODO:'
+ifeq (LINUX,$(OSFLAG))
+	@echo "$(LINUX_NOT_IMPLEMENTED)"
 endif
 ifeq (OSX,$(OSFLAG))
 	cd ../.install && make i PACKAGE=visual-studio-code-insiders
+endif
+ifeq (WIN32,$(OSFLAG))
+	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/win32-x64/insider" FILE="~/tmp/vscode-insider.exe" IL_WIN_ARGS="/silent /norestart"
 endif

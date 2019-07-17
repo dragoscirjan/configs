@@ -64,8 +64,12 @@ endif
 # Actual Action Definitions
 #
 
+LINUX_NOT_IMPLEMENTED = "Not implemented under Linux"
+OSX_NOT_IMPLEMENTED = "Not implemented under OSX"
+WINDOWS_NOT_IMPLEMENTED = "Not implemented under Windows"
+
 #
-# Actual Action Definitions
+# Utils
 #
 
 apt-utils:
@@ -74,52 +78,69 @@ ifeq (LINUX,$(OSFLAG))
 	which apt-get > /dev/null && sudo apt-get install apt-transport-https
 endif
 
-i: apt-utils ## Install Package Depending on OS
-ifeq (WIN32, $(OSFLAG))
-	choko install $(PACKAGE)
-endif
-ifeq (OSX, $(OSFLAG))
-	brew install $(PACKAGE) || brew cask install $(PACKAGE)
-endif
-ifeq (LINUX,$(OSFLAG))
-	which apt > /dev/null && sudo apt install -y $(PACKAGE)
-	which apt-get > /dev/null && sudo apt-get install -y $(PACKAGE)
-	which yum > /dev/null && sudo yum install -y $(PACKAGE)
-	which dnf > /dev/null && sudo dnf install -y $(PACKAGE)
-endif
-
-li: apt-utils ## Install Local Package Depending on OS
-ifeq (WIN32, $(OSFLAG))
-	powershell -ExecutionPolicy ByPass -File ../.windows/run.ps1 --file "$(PACKAGE)" --arguments "$(LI_WIN_ARGS)"
-endif
-ifeq (OSX, $(OSFLAG))
-	# http://commandlinemac.blogspot.com/2008/12/installing-dmg-application-from-command.html
-	hdiutil mount $(PACKAGE) -mountpoint $$HOME/tmp/volume
-	find /Users/dragos.cirjan/tmp/volume -type d -iname "*.app" -mindepth 1 -maxdepth 1 \
-		| while read app; do sudo cp -R "$$app" /Applications; done
-	find /Users/dragos.cirjan/tmp/volume -type f -iname "*.pkg" -mindepth 1 -maxdepth 1 \
-		| while read app; do echo sudo installer -package $$app -target "/Volumes/Macintosh HD"; done
-	hdiutil unmount $$HOME/tmp/volume
-endif
-ifeq (LINUX,$(OSFLAG))
-	which dpkg > /dev/null && sudo dpkg -i $(PACKAGE) || apt-get install -f
-	which rpm > /dev/null && sudo rpm -i $(PACKAGE)
-endif
-
-D_URL=
-D_DST=
-
-dld: ## Download file from web for installing: make dld D_URL=http://... D_DST=./file.exe
+dld: ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
 ifeq (bash,$(SHELL_IS))
-	curl -SL "$(D_URL)" --output "$(D_DST)"
+	curl -SL "$(URL)" --output "$(FILE)"
 else
-	powershell -ExecutionPolicy ByPass -File ../.windows/download.ps1 --url "$(D_URL)" --output "$(D_DST)"
+	powershell -ExecutionPolicy ByPass -File ../.windows/download.ps1 --url "$(URL)" --output "$(FILE)"
 endif
 
-RM_FILE=
-rm: ## Remove file
+rm: ## Remove file 
 ifeq (bash,$(SHELL_IS))
-	rm -rf "$(RM_FILE)"
+	rm -rf "$(FILE)"
 else
-	rm "$(RM_FILE)"
+	rm "$(FILE)"
+endif
+
+#
+# Install Commands
+#
+
+# i: apt-utils ## Install Package Depending on OS
+# ifeq (WIN32, $(OSFLAG))
+# 	choko install $(PACKAGE)
+# endif
+# ifeq (OSX, $(OSFLAG))
+# 	brew install $(PACKAGE) || brew cask install $(PACKAGE)
+# endif
+# ifeq (LINUX,$(OSFLAG))
+# 	which apt > /dev/null && sudo apt install -y $(PACKAGE)
+# 	which apt-get > /dev/null && sudo apt-get install -y $(PACKAGE)
+# 	which yum > /dev/null && sudo yum install -y $(PACKAGE)
+# 	which dnf > /dev/null && sudo dnf install -y $(PACKAGE)
+# endif
+
+il: apt-utils ## Install Local Package Depending on OS
+# ifeq (LINUX,$(OSFLAG))
+# 	which dpkg > /dev/null && sudo dpkg -i $(PACKAGE) || apt-get install -f
+# 	which rpm > /dev/null && sudo rpm -i $(PACKAGE)
+# endif
+# ifeq (OSX, $(OSFLAG))
+# 	# http://commandlinemac.blogspot.com/2008/12/installing-dmg-application-from-command.html
+# 	hdiutil mount $(PACKAGE) -mountpoint $$HOME/tmp/volume
+# 	find /Users/dragos.cirjan/tmp/volume -type d -iname "*.app" -mindepth 1 -maxdepth 1 \
+# 		| while read app; do sudo cp -R "$$app" /Applications; done
+# 	find /Users/dragos.cirjan/tmp/volume -type f -iname "*.pkg" -mindepth 1 -maxdepth 1 \
+# 		| while read app; do echo sudo installer -package $$app -target "/Volumes/Macintosh HD"; done
+# 	hdiutil unmount $$HOME/tmp/volume
+# endif
+ifeq (WIN32, $(OSFLAG))
+	powershell -ExecutionPolicy ByPass -File ../.windows/installer.ps1 --file "$(FILE)" --arguments "$(IL_WIN_ARGS)"
+endif
+
+iu: ## Install URL Package Depending on OS
+ifeq (LINUX,$(OSFLAG))
+	@echo "$(LINUX_NOT_IMPLEMENTED)"
+endif
+ifeq (OSX,$(OSFLAG))
+	@echo "$(OSX_NOT_IMPLEMENTED)"
+endif
+ifeq (WIN32,$(OSFLAG))
+	make dld
+	make il PACKAGE="$(FILE)"
+ifeq (bash,$(SHELL_IS))
+	make rm
+else
+	@echo "Please manually remove ~/tmp/atom.exe after install: rm $(FILE)"
+endif
 endif
