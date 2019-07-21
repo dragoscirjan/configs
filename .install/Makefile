@@ -63,6 +63,14 @@ endif
 #
 # Actual Action Definitions
 #
+#
+#
+
+ifeq (bash,$(SHELL_IS))
+	CURL=curl -SL
+else
+	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
+endif
 
 LINUX_NOT_IMPLEMENTED = "Not implemented under Linux"
 OSX_NOT_IMPLEMENTED = "Not implemented under OSX"
@@ -80,9 +88,9 @@ endif
 
 dld: ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
 ifeq (bash,$(SHELL_IS))
-	curl -SL "$(URL)" --output "$(FILE)"
+	$(CURL) "$(URL)" --output "$(FILE)"
 else
-	powershell -ExecutionPolicy ByPass -File ../.windows/download.ps1 --url "$(URL)" --output "$(FILE)"
+	$(CURL) "$(URL)" --output "$(FILE)"
 endif
 
 rm: ## Remove file 
@@ -125,7 +133,7 @@ il: apt-utils ## Install Local Package Depending on OS
 # 	hdiutil unmount $$HOME/tmp/volume
 # endif
 ifeq (WIN32, $(OSFLAG))
-	powershell -ExecutionPolicy ByPass -File ../.windows/installer.ps1 --file "$(FILE)" --arguments "$(IL_WIN_ARGS)"
+	powershell -ExecutionPolicy ByPass -Command "Start-Process "$(FILE)" -NoNewWindow -Wait $(IL_WIN_ARGS)"
 endif
 
 iu: ## Install URL Package Depending on OS
@@ -138,9 +146,6 @@ endif
 ifeq (WIN32,$(OSFLAG))
 	make dld
 	make il PACKAGE="$(FILE)"
-ifeq (bash,$(SHELL_IS))
 	make rm
-else
-	@echo "Please manually remove ~/tmp/atom.exe after install: rm $(FILE)"
 endif
 endif

@@ -68,8 +68,11 @@ LINUX_NOT_IMPLEMENTED = "Not implemented under Linux"
 OSX_NOT_IMPLEMENTED = "Not implemented under OSX"
 WINDOWS_NOT_IMPLEMENTED = "Not implemented under Windows"
 
+POWERSHELL=powershell -ExecutionPolicy ByPass
+
 DIR_INSTALL = ../.install
 
+CURL=curl -SL
 # INTELLIJ_APP=CL # CLion
 # INTELLIJ_APP=IIC # Idea CE
 # INTELLIJ_APP=IIU # Idea
@@ -81,19 +84,23 @@ DIR_INSTALL = ../.install
 # INTELLIJ_APP=WS # WebStorm
 INTELLIJ_APP=
 INTELLIJ_OS=linux
+JQ=jq
+TIMESTAMP_SECCONDS=$(shell date +%s)
 
 # ifeq (LINUX,$(OSFLAG))
 # 	@echo "$(LINUX_NOT_IMPLEMENTED)"
 # endif
-# ifeq (OSX,$(OSFLAG))
-# 	cd ../.install && make i PACKAGE=atom-beta
-# endif
+ifeq (OSX,$(OSFLAG))
+	INTELLIJ_OS=mac
+endif
 ifeq (WIN32,$(OSFLAG))
 	INTELLIJ_OS=windows
-	TIMESTAMP_SECCONDS=$(shell date)
 	JQ=../bin/jq.exe
+	TIMESTAMP_SECCONDS=$(shell powershell "(New-TimeSpan -Start (Get-Date \"01/01/1970\") -End (Get-Date)).TotalSeconds")
 endif
-
+ifeq (powershell,$(SHELL_IS))
+	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
+endif
 
 # ifeq (LINUX,$(OSFLAG))
 # ifeq (debian,$(shell test -f $(which dpkg 2> /dev/null) && echo 'debian'))
@@ -128,54 +135,54 @@ endif
 
 
 intellij: mktmp winutils
+ifeq (shell,$(SHELL_IS))
+else
+	$(POWERSHELL) -File ./intellij.ps1 --url "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
+endif
 # 	if [ "$(INTELLIJ_APP)" == "" ]; then \	
 # 	fi
-	curl -sSL "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)" \
-		| $(JQ) -r 'keys[] as $$k | .[$$k] | .[0] | .downloads.$(INTELLIJ_OS).link' \
-		| while read link; do \
-			echo $$link; \
-			echo ~/tmp/$$(echo $$link | awk -F'/' '{print $$NF}'); \
-		done
+# 	$(CURL) "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
+# 		| $(JQ) -r 'keys[] as $$k | .[$$k] | .[0] | .downloads.$(INTELLIJ_OS).link' \
+# 		| while read link; do \
+# 			echo $$link; \
+# 			echo ~/tmp/$$(echo $$link | awk -F'/' '{print $$NF}'); \
+# 		done
 # 			make --directory=$(DIR_INSTALL) iu URL="$$link" FILE="~/tmp/$$(echo $$link | awk -F'/' '{print $$NF}')"; \
 
 mktmp:
 ifeq (bash,$(SHELL_IS))
 	mkdir -p $$HOME/tmp
 else
-	powershell "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
+	$(POWERSHELL) "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
 endif
 
 winutils:
-	test -f ../bin/jq.exe || make --directory=$(DIR_INSTALL) dld URL="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-win64.exe" FILE="../bin/jq.exe"
+	$(POWERSHELL) "if (Test-Path -Path ../bin/jq.exe) { exit 0 } 
+# 	make --directory=$(DIR_INSTALL) dld URL="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-win64.exe" FILE="../bin/jq.exe"
 
-atom: ## Install Atom
+ATOM_MODE=stabel
+# ATOM_MODE=beta
+atom: mktmp ## Install Atom
 ifeq (LINUX,$(OSFLAG))
 	@echo "$(LINUX_NOT_IMPLEMENTED)"
 endif
 ifeq (OSX,$(OSFLAG))
-	cd ../.install && make i PACKAGE=atom
+	cd ../.install && make i PACKAGE=atom$$(test "$(ATOM_MODE)" == "beta" && echo "-beta")
 endif
 ifeq (WIN32,$(OSFLAG))
+ifeq (beta,$(ATOM_MODE))
+	make --directory=$(DIR_INSTALL) iu URL="https://atom.io/download/windows_x64?channel=beta" FILE="~/tmp/atom-beta.exe"
+else
 	make --directory=$(DIR_INSTALL) iu URL=https://atom.io/download/windows_x64 FILE="~/tmp/atom.exe"
 endif
-
-atom-beta: ## Install Atom Beta
-ifeq (LINUX,$(OSFLAG))
-	@echo "$(LINUX_NOT_IMPLEMENTED)"
-endif
-ifeq (OSX,$(OSFLAG))
-	cd ../.install && make i PACKAGE=atom-beta
-endif
-ifeq (WIN32,$(OSFLAG))
-	make --directory=$(DIR_INSTALL) iu URL="https://atom.io/download/windows_x64?channel=beta" FILE="~/tmp/atom-beta.exe"
 endif
 
-# idea: ## Install IntelliJ IDEA
+idea: ## Install IntelliJ IDEA
 # ifeq (LINUX,$(OSFLAG))
 # 	@echo
 # endif
 # ifeq (OSX,$(OSFLAG))
-# 	make intellij INTELLIJ_APP=IIU INTELLIJ_OS=mac
+	make intellij INTELLIJ_APP=IIU
 # endif
 # ifeq (WIN32,$(OSFLAG))
 # 	@echo
