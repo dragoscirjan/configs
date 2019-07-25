@@ -225,7 +225,7 @@ ifeq (OSX,$(OSFLAG))
 	make rm RM_FILE="$$HOME/$${link##*/}"
 endif
 ifeq (WIN32,$(OSFLAG))
-	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe" IL_WIN_ARGS="/silent /norestart"
+	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe"
 endif
 
 vscode: ## Install Visual Studio Code
@@ -236,7 +236,7 @@ ifeq (OSX,$(OSFLAG))
 	cd ../.install && make i PACKAGE=visual-studio-code
 endif
 ifeq (WIN32,$(OSFLAG))
-	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/win32-x64/stable" FILE="~/tmp/vscode.exe" IL_WIN_ARGS="/silent /norestart"
+	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/win32-x64/stable" FILE="~/tmp/vscode.exe"
 endif
 
 vscode-insiders: ## Install Visual Studio Code Insiders
@@ -247,5 +247,5 @@ ifeq (OSX,$(OSFLAG))
 	cd ../.install && make i PACKAGE=visual-studio-code-insiders
 endif
 ifeq (WIN32,$(OSFLAG))
-	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/win32-x64/insider" FILE="~/tmp/vscode-insider.exe" IL_WIN_ARGS="/silent /norestart"
+	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/win32-x64/insider" FILE="~/tmp/vscode-insider.exe"
 endif

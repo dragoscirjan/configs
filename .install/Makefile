@@ -133,7 +133,7 @@ il: apt-utils ## Install Local Package Depending on OS
 # 	hdiutil unmount $$HOME/tmp/volume
 # endif
 ifeq (WIN32, $(OSFLAG))
-	powershell -ExecutionPolicy ByPass -Command "Start-Process "$(FILE)" -NoNewWindow -Wait $(IL_WIN_ARGS)"
+	powershell -ExecutionPolicy ByPass -Command "Start-Process "$(FILE) $(IL_WIN_ARGS)" -NoNewWindow -Wait"
 endif
 
 iu: ## Install URL Package Depending on OS

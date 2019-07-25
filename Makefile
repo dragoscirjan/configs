@@ -72,3 +72,8 @@ ifeq ($(SHELL_IS),bash)
 else
 	@echo 'Windows Help not available yet.'
 endif
+
+all: ide
+
+ide:
+	make --directory=./ide atom idea-ce pycharm-ce sublime vscode
