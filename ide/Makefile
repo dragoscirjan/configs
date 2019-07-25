@@ -136,18 +136,10 @@ endif
 
 intellij: mktmp winutils
 ifeq (shell,$(SHELL_IS))
+	echo TODO
 else
-	$(POWERSHELL) -File ./intellij.ps1 --url "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
+	$(POWERSHELL) -File ./intellij.ps1 --keys $(INTELLIJ_APP) --url "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
 endif
-# 	if [ "$(INTELLIJ_APP)" == "" ]; then \	
-# 	fi
-# 	$(CURL) "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
-# 		| $(JQ) -r 'keys[] as $$k | .[$$k] | .[0] | .downloads.$(INTELLIJ_OS).link' \
-# 		| while read link; do \
-# 			echo $$link; \
-# 			echo ~/tmp/$$(echo $$link | awk -F'/' '{print $$NF}'); \
-# 		done
-# 			make --directory=$(DIR_INSTALL) iu URL="$$link" FILE="~/tmp/$$(echo $$link | awk -F'/' '{print $$NF}')"; \
 
 mktmp:
 ifeq (bash,$(SHELL_IS))
@@ -182,44 +174,44 @@ idea: ## Install IntelliJ IDEA
 # 	@echo
 # endif
 # ifeq (OSX,$(OSFLAG))
+# 	make intellij INTELLIJ_APP=IIU
+# endif
+ifeq (WIN32,$(OSFLAG))
 	make intellij INTELLIJ_APP=IIU
-# endif
-# ifeq (WIN32,$(OSFLAG))
-# 	@echo
-# endif
+endif
 
-# idea-ce: ## Install IntelliJ IDEA CE
+idea-ce: ## Install IntelliJ IDEA CE
 # ifeq (LINUX,$(OSFLAG))
 # 	@echo
 # endif
 # ifeq (OSX,$(OSFLAG))
 # 	make intellij INTELLIJ_APP=IIC INTELLIJ_OS=mac
 # endif
-# ifeq (WIN32,$(OSFLAG))
-# 	@echo
-# endif
+ifeq (WIN32,$(OSFLAG))
+	make intellij INTELLIJ_APP=IIC
+endif
 
-# pycharm: ## Install IntelliJ PyCharm
+pycharm: ## Install IntelliJ PyCharm
 # ifeq (LINUX,$(OSFLAG))
 # 	@echo
 # endif
 # ifeq (OSX,$(OSFLAG))
 # 	make intellij INTELLIJ_APP=PCP INTELLIJ_OS=mac
 # endif
-# ifeq (WIN32,$(OSFLAG))
-# 	@echo
-# endif
+ifeq (WIN32,$(OSFLAG))
+	make intellij INTELLIJ_APP=PCP
+endif
 
-# pycharm-ce: ## Install IntelliJ PyCharm CE
+pycharm-ce: ## Install IntelliJ PyCharm CE
 # ifeq (LINUX,$(OSFLAG))
 # 	@echo
 # endif
 # ifeq (OSX,$(OSFLAG))
 # 	make intellij INTELLIJ_APP=PCC INTELLIJ_OS=mac
 # endif
-# ifeq (WIN32,$(OSFLAG))
-# 	@echo
-# endif
+ifeq (WIN32,$(OSFLAG))
+	make intellij INTELLIJ_APP=PCC
+endif
 
 sublime: ## Install Sublime Text
 ifeq (LINUX,$(OSFLAG))

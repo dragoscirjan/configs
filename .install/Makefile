@@ -148,4 +148,3 @@ ifeq (WIN32,$(OSFLAG))
 	make il PACKAGE="$(FILE)"
 	make rm
 endif
-endif
