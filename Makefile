@@ -77,3 +77,6 @@ all: ide
 
 ide:
 	make --directory=./ide atom idea-ce pycharm-ce sublime vscode
+
+browsers:
+	make --directory=./browsers firefox edge opera vivaldi
