@@ -61,14 +61,27 @@ endif
 .DEFAULT_GOAL := help
 
 #
-# Actual Action Definitions
+# Binaries
 #
 
-LINUX_NOT_IMPLEMENTED = "Not implemented under Linux"
-OSX_NOT_IMPLEMENTED = "Not implemented under OSX"
-WINDOWS_NOT_IMPLEMENTED = "Not implemented under Windows"
-
+ifeq (bash,$(SHELL_IS))
+	CURL=curl -SL
+else
+	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
+endif
 POWERSHELL=powershell -ExecutionPolicy ByPass
+
+#
+# ENV
+#
+
+NOT_IMPLEMENTED_LINUX = "Not implemented under Linux"
+NOT_IMPLEMENTED_OSX = "Not implemented under OSX"
+NOT_IMPLEMENTED_WINDOWS = "Not implemented under Windows"
+
+#
+# Actual Action Definitions
+#
 
 DIR_INSTALL = ../.install
 
@@ -88,7 +101,7 @@ JQ=jq
 TIMESTAMP_SECCONDS=$(shell date +%s)
 
 # ifeq (LINUX,$(OSFLAG))
-# 	@echo "$(LINUX_NOT_IMPLEMENTED)"
+# 	@echo "$(NOT_IMPLEMENTED_LINUX)"
 # endif
 ifeq (OSX,$(OSFLAG))
 	INTELLIJ_OS=mac
@@ -102,150 +115,73 @@ ifeq (powershell,$(SHELL_IS))
 	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
 endif
 
-# ifeq (LINUX,$(OSFLAG))
-# ifeq (debian,$(shell test -f $(which dpkg 2> /dev/null) && echo 'debian'))
-# 	EXT=deb
+utils-LINUX:
+	@echo
 
-# 	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
-# 	VSCODE_URL=https://update.code.visualstudio.com/latest/linux-deb-x64/stable
-# endif
-# ifeq (debian,$(shell test -f $(which rpm 2> /dev/null) && echo 'debian'))
-# 	EXT=rpm
+utils-OSX:
+	@echo Do I need JQ?
 
-# 	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
-# 	VSCODE_URL=https://update.code.visualstudio.com/latest/linux-rpm-x64/stable
-# endif
-# 	RM=rm -rf
-# 	TIMESTAMP_SECCONDS=$(shell date +%s)
-# endif
-# ifeq (OSX,$(OSFLAG))
-# 	TIMESTAMP_SECCONDS=$(shell date +%s)
-# 	EXT=dmg
+utils-WIN32:
+	make --directory=$(DIR_INSTALL) dld URL="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-win64.exe" FILE="../bin/jq.exe"
 
-# 	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
-# 	VSCODE_URL=https://update.code.visualstudio.com/latest/darwin/stable
-# endif
-# ifeq (WIN32,$(OSFLAG))
-# 	EXT=exe
+intellij: utils-$(OSFLAG) intellij-$(OSFLAG)
 
-# 	SUBLIME_URL=$(shell curl -sSL https://www.sublimetext.com | grep "Download for Mac" | awk -F'"' '{ print $$4 }')
-# 	VSCODE_URL=
-# 	TIMESTAMP_SECCONDS=$(shell date +%s)
-# endif
+intellij-LINUX:
 
+intellij-OSX:
 
-intellij: mktmp winutils
-ifeq (shell,$(SHELL_IS))
-	echo TODO
-else
+intellij-WIN32:
 	$(POWERSHELL) -File ./intellij.ps1 --keys $(INTELLIJ_APP) --url "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
-endif
-
-mktmp:
-ifeq (bash,$(SHELL_IS))
-	mkdir -p $$HOME/tmp
-else
-	$(POWERSHELL) "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
-endif
-
-winutils:
-	$(POWERSHELL) "if (Test-Path -Path ../bin/jq.exe) { exit 0 } 
-# 	make --directory=$(DIR_INSTALL) dld URL="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-win64.exe" FILE="../bin/jq.exe"
 
 ATOM_MODE=stabel
 # ATOM_MODE=beta
-atom: mktmp ## Install Atom
-ifeq (LINUX,$(OSFLAG))
-	@echo "$(LINUX_NOT_IMPLEMENTED)"
-endif
-ifeq (OSX,$(OSFLAG))
-	cd ../.install && make i PACKAGE=atom$$(test "$(ATOM_MODE)" == "beta" && echo "-beta")
-endif
-ifeq (WIN32,$(OSFLAG))
+atom: atom-$(OSFLAG) ## Install Atom
+
+atom-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
+
+atom-OSX:
+	make --directory=../.install i PACKAGE=atom$$(test "$(ATOM_MODE)" == "beta" && echo "-beta")
+
+atom-WIN32:
 ifeq (beta,$(ATOM_MODE))
 	make --directory=$(DIR_INSTALL) iu URL="https://atom.io/download/windows_x64?channel=beta" FILE="~/tmp/atom-beta.exe"
 else
 	make --directory=$(DIR_INSTALL) iu URL=https://atom.io/download/windows_x64 FILE="~/tmp/atom.exe"
 endif
-endif
 
 idea: ## Install IntelliJ IDEA
-# ifeq (LINUX,$(OSFLAG))
-# 	@echo
-# endif
-# ifeq (OSX,$(OSFLAG))
-# 	make intellij INTELLIJ_APP=IIU
-# endif
-ifeq (WIN32,$(OSFLAG))
 	make intellij INTELLIJ_APP=IIU
-endif
 
 idea-ce: ## Install IntelliJ IDEA CE
-# ifeq (LINUX,$(OSFLAG))
-# 	@echo
-# endif
-# ifeq (OSX,$(OSFLAG))
-# 	make intellij INTELLIJ_APP=IIC INTELLIJ_OS=mac
-# endif
-ifeq (WIN32,$(OSFLAG))
 	make intellij INTELLIJ_APP=IIC
-endif
 
 pycharm: ## Install IntelliJ PyCharm
-# ifeq (LINUX,$(OSFLAG))
-# 	@echo
-# endif
-# ifeq (OSX,$(OSFLAG))
-# 	make intellij INTELLIJ_APP=PCP INTELLIJ_OS=mac
-# endif
-ifeq (WIN32,$(OSFLAG))
 	make intellij INTELLIJ_APP=PCP
-endif
 
 pycharm-ce: ## Install IntelliJ PyCharm CE
-# ifeq (LINUX,$(OSFLAG))
-# 	@echo
-# endif
-# ifeq (OSX,$(OSFLAG))
-# 	make intellij INTELLIJ_APP=PCC INTELLIJ_OS=mac
-# endif
-ifeq (WIN32,$(OSFLAG))
 	make intellij INTELLIJ_APP=PCC
-endif
 
-sublime: ## Install Sublime Text
-ifeq (LINUX,$(OSFLAG))
-	@echo "$(LINUX_NOT_IMPLEMENTED)"
-endif
-ifeq (OSX,$(OSFLAG))
-	cd ../.install
-	link=$(SUBLIME_URL)
-	make dld D_URL="$$link" D_DST="$$HOME/tmp/$${link##*/}"
-	make li PACKAGE="$$HOME/tmp/$${link##*/}"
-	make rm RM_FILE="$$HOME/$${link##*/}"
-endif
-ifeq (WIN32,$(OSFLAG))
+sublime: sublime-$(OSFLAG) ## Install Sublime Text
+
+sublime-LINUX:
+	@echo "$(NOT_IMPLEMENTED_LINUX)"
+
+sublime-OSX:
+# 	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe"
+
+sublime-WIN32:
 	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe"
-endif
 
+VSCODE=stable
+VSCODE=insider
 vscode: ## Install Visual Studio Code
-ifeq (LINUX,$(OSFLAG))
-	@echo "$(LINUX_NOT_IMPLEMENTED)"
-endif
-ifeq (OSX,$(OSFLAG))
-	cd ../.install && make i PACKAGE=visual-studio-code
-endif
-ifeq (WIN32,$(OSFLAG))
-	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/win32-x64/stable" FILE="~/tmp/vscode.exe"
-endif
 
-vscode-insiders: ## Install Visual Studio Code Insiders
-ifeq (LINUX,$(OSFLAG))
-	@echo "$(LINUX_NOT_IMPLEMENTED)"
-endif
-ifeq (OSX,$(OSFLAG))
-	cd ../.install && make i PACKAGE=visual-studio-code-insiders
-endif
-ifeq (WIN32,$(OSFLAG))
-	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/win32-x64/insider" FILE="~/tmp/vscode-insider.exe"
-endif
+vscode-LINUX:
+	@echo "$(NOT_IMPLEMENTED_LINUX)"
+
+vscode-OSX:
+	cd ../.install && make i PACKAGE=visual-studio-code
+
+vscode-WIN32:
+	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/win32-x64/$(VSCODE)" FILE="~/tmp/vscode.exe"

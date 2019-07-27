@@ -61,22 +61,44 @@ endif
 .DEFAULT_GOAL := help
 
 #
+# Binaries
+#
+
+ifeq (bash,$(SHELL_IS))
+	CURL=curl -SL
+else
+	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
+endif
+POWERSHELL=powershell -ExecutionPolicy ByPass
+
+#
+# ENV
+#
+
+NOT_IMPLEMENTED_LINUX = "Not implemented under Linux"
+NOT_IMPLEMENTED_OSX = "Not implemented under OSX"
+NOT_IMPLEMENTED_WINDOWS = "Not implemented under Windows"
+
+#
 # Actual Action Definitions
 #
 
-all-help: ## Demo Help
-ifeq ($(SHELL_IS),bash)
+all-help: all-help-$(SHELL_IS) ## List Help on all Config Folders
+
+all-help-bash:
 	@find . -mindepth 1 -maxdepth 1 -type d | while read d; do \
-		test -f $$d/Makefile && echo "$$d" && make --directory=$$d; \
+		test -f $$d/Makefile \
+			&& echo "$$d" \
+			&& make --directory=$$d; \
 	done
-else
+
+all-help-powershell:
 	@echo 'Windows Help not available yet.'
-endif
 
-all: ide
+all: ide browsers ## Install all required tools
 
-ide:
+ide: ## Install Used IDEs
 	make --directory=./ide atom idea-ce pycharm-ce sublime vscode
 
-browsers:
+browsers: ## Install Used Browsers
 	make --directory=./browsers firefox edge opera vivaldi
