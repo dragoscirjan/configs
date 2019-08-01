@@ -1,4 +1,4 @@
-## v0.2
+## v0.3
 #
 # Detect OS
 #
@@ -64,11 +64,6 @@ endif
 # Binaries
 #
 
-ifeq (bash,$(SHELL_IS))
-	CURL=curl -SL
-else
-	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
-endif
 POWERSHELL=powershell -ExecutionPolicy ByPass
 
 #

@@ -1,4 +1,4 @@
-## v0.2
+## v0.3
 #
 # Detect OS
 #
@@ -63,7 +63,7 @@ endif
 #
 # Binaries
 #
-#
+
 POWERSHELL=powershell -ExecutionPolicy ByPass
 
 #
@@ -80,25 +80,49 @@ DIR_INSTALL = ../.install
 # Actual Action Definitions
 #
 
-git: git-$(OSFLAG) ## Install Git
+golang: golang-$(OSFLAG) ## Install golang
 
-git-LINUX:
+golang-LINUX:
 	@echo $(NOT_IMPLEMENTED_LINUX)
 
-git-OSX:
+golang-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-git-WIN32:
-	make --directory=$(DIR_INSTALL) iu URL="https://github.com/git-for-windows/git/releases/download/v2.22.0.windows.1/Git-2.22.0-64-bit.exe" FILE="~/tmp/git.exe"
+golang-WIN32:
+	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go1.12.7.windows-amd64.msi" FILE="~/tmp/go-lang.msi"
 
 
-gitkraken: gitkraken-$(OSFLAG) ## Install GitKraken
+nodejs: nodejs-$(OSFLAG) ## Install NodeJs
 
-gitkraken-LINUX:
+nodejs-LINUX:
 	@echo $(NOT_IMPLEMENTED_LINUX)
 
-gitkraken-OSX:
+nodejs-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-gitkraken-WIN32:
-	make --directory=$(DIR_INSTALL) iu URL="https://release.gitkraken.com/win64/GitKrakenSetup.exe" FILE="~/tmp/git-kraken.exe"
+nodejs-WIN32:
+	make --directory=$(DIR_INSTALL) iu URL="https://nodejs.org/dist/v10.16.1/node-v10.16.1-x64.msi" FILE="~/tmp/node.msi"
+
+
+python: python-$(OSFLAG) ## Install Python
+
+python-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
+
+python-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+python-WIN32:
+	make --directory=$(DIR_INSTALL) iu URL="https://www.python.org/ftp/python/3.7.4/python-3.7.4.exe" FILE="~/tmp/python.exe"
+
+
+ruby: ruby-$(OSFLAG) ## Install Ruby
+
+ruby-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
+
+ruby-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+ruby-WIN32:
+	make --directory=$(DIR_INSTALL) iu URL="https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.6.3-1/rubyinstaller-2.6.3-1-x64.exe" FILE="~/tmp/ruby.exe"
