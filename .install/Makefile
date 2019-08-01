@@ -64,12 +64,13 @@ endif
 # Binaries
 #
 
+POWERSHELL=powershell -ExecutionPolicy ByPass
+
 ifeq (bash,$(SHELL_IS))
 	CURL=curl -SL
 else
-	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
+	CURL=$(POWERSHELL) -File ../.ps/curl.ps1 --url
 endif
-POWERSHELL=powershell -ExecutionPolicy ByPass
 
 #
 # ENV
@@ -78,6 +79,8 @@ POWERSHELL=powershell -ExecutionPolicy ByPass
 NOT_IMPLEMENTED_LINUX = "Not implemented under Linux"
 NOT_IMPLEMENTED_OSX = "Not implemented under OSX"
 NOT_IMPLEMENTED_WINDOWS = "Not implemented under Windows"
+
+IL_WIN_ARGS ?= ''
 
 #
 # Actual Action Definitions
@@ -93,7 +96,7 @@ mktmp-bash:
 	mkdir -p ~/tmp
 
 mktmp-powershell:
-	$(POWERSHELL) "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
+	$(POWERSHELL) -Command "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
 
 apt-utils:
 ifeq (LINUX,$(OSFLAG))
@@ -117,7 +120,7 @@ dld-powershell:
 # Remove FIle
 #
 
-rm: rm-$(SHELL_IS) ## Remove file 
+rm: ## Remove file 
 	rm "$(FILE)"
 
 #
@@ -158,7 +161,7 @@ il-OSX-bash:
 	hdiutil unmount $$HOME/tmp/volume
 
 il-WIN32-bash: 
-	powershell -ExecutionPolicy ByPass -Command "Start-Process "$(FILE) $(IL_WIN_ARGS)" -NoNewWindow -Wait"
+	$(POWERSHELL) -File ../.ps/install.ps1 --file "$(FILE)" --args "$(IL_WIN_ARGS)"
 
 il-WIN32-powershell: il-WIN32-bash
 
@@ -176,8 +179,8 @@ iu-OSX-bash:
 	@echo "$(NOT_IMPLEMENTED_OSX)"
 
 iu-WIN32-bash: 
-	make dld
+# 	make dld
 	make il-WIN32-bash FILE="$(FILE)" IL_WIN_ARGS=$(IL_WIN_ARGS)
-	make rm
+# 	make rm
 
 iu-WIN32-powershell: iu-WIN32-bash
