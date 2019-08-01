@@ -128,7 +128,12 @@ dld-powershell:
 # Remove FIle
 #
 
-rm: ## Remove file 
+rm: rm-$(SHELL_IS) ## Remove file
+
+rm-bash: 
+	rm -rf "$(FILE)"
+
+rm-powershell:
 	rm "$(FILE)"
 
 #
