@@ -179,8 +179,8 @@ iu-OSX-bash:
 	@echo "$(NOT_IMPLEMENTED_OSX)"
 
 iu-WIN32-bash: 
-# 	make dld
+	make dld
 	make il-WIN32-bash FILE="$(FILE)" IL_WIN_ARGS=$(IL_WIN_ARGS)
-# 	make rm
+	make rm
 
 iu-WIN32-powershell: iu-WIN32-bash
