@@ -99,6 +99,13 @@ all: ide browsers ## Install all required tools
 
 ide: ## Install Used IDEs
 	make --directory=./ide atom idea-ce pycharm-ce sublime vscode
+	make --directory=./git gitkraken
 
 browsers: ## Install Used Browsers
 	make --directory=./browsers firefox edge opera vivaldi
+
+terminal: ## Install Office Tools
+	make --directory=./office libreoffice wpsoffice
+
+terminal: ## Install Terminal Tools
+	make --directory=./terminal conemu cmder iterm

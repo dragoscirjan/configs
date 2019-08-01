@@ -98,6 +98,14 @@ mktmp-bash:
 mktmp-powershell:
 	$(POWERSHELL) -Command "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
 
+mkbin: mkbin-$(SHELL_IS)
+
+mkbin-bash:
+	mkdir -p ~/bin
+
+mkbin-powershell:
+	$(POWERSHELL) -Command "New-Item -Force -Path $$HOME -Name bin -ItemType directory"
+
 apt-utils:
 ifeq (LINUX,$(OSFLAG))
 	which apt > /dev/null && sudo apt install apt-transport-https
@@ -108,7 +116,7 @@ endif
 # Download File
 #
 
-dld: mktmp dld-$(SHELL_IS) ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
+dld: mktmp mkbin dld-$(SHELL_IS) ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
 
 dld-bash:
 	$(CURL) "$(URL)" --output $(FILE)
