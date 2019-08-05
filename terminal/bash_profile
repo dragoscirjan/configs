@@ -1,0 +1,17 @@
+
+which thefuck > /dev/null && eval $(thefuck --alias)
+
+# Git branch in prompt.
+
+parse_git_branch() {
+  which git > /dev/null && git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+  which git > /dev/null || echo 'no git installed'
+}
+
+export PS1="\u@\h \W\[\033[32m\]\$(parse_git_branch)\[\033[00m\] \[\033[32m\]λ\[\033[00m\] "
+
+uname -a | grep Darwin \
+	&& export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+
+mkdir -p $HOME/bin
+export PATH="$HOME/bin:$PATH"
