@@ -147,10 +147,10 @@ i: apt-utils i-$(OSFLAG) ## Install Package Depending on OS
 i-LINUX: i-$(OSID)
 
 i-ubuntu:
-	which apt > /dev/null && sudo apt install -y $(PACKAGE)
+	sudo apt install -y $(PACKAGE)
 
 i-debian:
-	which apt-get > /dev/null && sudo apt-get install -y $(PACKAGE)
+	sudo apt-get install -y $(PACKAGE)
 
 # 	which dnf > /dev/null && sudo dnf install -y $(PACKAGE)
 # 	which yum > /dev/null && sudo yum install -y $(PACKAGE)
@@ -172,7 +172,7 @@ il-LINUX-bash: il-LINUX-bash-$(OSID)
 il-LINUX-bash-ubuntu: il-LINUX-bash-debian
 
 il-LINUX-bash-debian:
-	which dpkg > /dev/null && sudo dpkg -i $(FILE) || apt-get install -f
+	sudo dpkg -i $(FILE) || sudo apt-get install -fy
 
 il-OSX-bash:
 	# http://commandlinemac.blogspot.com/2008/12/installing-dmg-application-from-command.html

@@ -1,9 +1,10 @@
-## v0.2
+## v0.4
 #
 # Detect OS
 #
 OSFLAG :=
 OSARCH :=
+OSID :=
 ifeq ($(OS),Windows_NT)
 	OSFLAG = WIN32
 	ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
@@ -16,6 +17,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		OSFLAG = LINUX
+		OSID = $(shell cat /etc/*-release | egrep "^ID=" | cut -f2 -d=)
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSFLAG = OSX
@@ -133,12 +135,21 @@ intellij-OSX:
 intellij-WIN32:
 	$(POWERSHELL) -File ./intellij.ps1 --keys $(INTELLIJ_APP) --url "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
 
-ATOM_MODE=stabel
+ATOM_MODE=stable
 # ATOM_MODE=beta
 atom: atom-$(OSFLAG) ## Install Atom
 
-atom-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+atom-LINUX: atom-$(OSID)
+
+atom-ubuntu: atom-debian
+
+atom-debian: atom-debian-$(ATOM_MODE)
+
+atom-debian-stable: 
+	make --directory=$(DIR_INSTALL) iu URL="https://atom-installer.github.com/v1.39.1/atom-amd64.deb?s=$(shell date +%s)&ext=.deb" FILE="~/tmp/atom.deb"
+
+atom-debian-beta:
+	make --directory=$(DIR_INSTALL) iu URL="https://atom-installer.github.com/v1.40.0-beta1/atom-amd64.deb?s=$(shell date +%s)&ext=.deb" FILE="~/tmp/atom.deb"
 
 atom-OSX:
 	make --directory=../.install i PACKAGE=atom$$(test "$(ATOM_MODE)" == "beta" && echo "-beta")
