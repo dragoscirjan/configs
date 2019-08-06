@@ -1,9 +1,10 @@
-## v0.2
+## v0.4
 #
 # Detect OS
 #
 OSFLAG :=
 OSARCH :=
+OSID :=
 ifeq ($(OS),Windows_NT)
 	OSFLAG = WIN32
 	ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
@@ -16,6 +17,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		OSFLAG = LINUX
+		OSID = $(shell cat /etc/*-release | egrep "^ID=" | cut -f2 -d=)
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSFLAG = OSX
@@ -109,14 +111,14 @@ mkbin-powershell:
 apt-utils:
 ifeq (LINUX,$(OSFLAG))
 	which apt > /dev/null && sudo apt install apt-transport-https
-	which apt-get > /dev/null && sudo apt-get install apt-transport-https
+	which apt-get > /dev/null && sudo apt-get install -y apt-transport-https curl bzip2 gzip
 endif
 
 #
 # Download File
 #
 
-dld: mktmp mkbin dld-$(SHELL_IS) ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
+dld:  apt-utils mktmp mkbin dld-$(SHELL_IS) ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
 
 dld-bash:
 	$(CURL) "$(URL)" --output $(FILE)
@@ -142,11 +144,16 @@ rm-powershell:
 
 i: apt-utils i-$(OSFLAG) ## Install Package Depending on OS
 
-i-LINUX:
+i-LINUX: i-$(OSID)
+
+i-ubuntu:
 	which apt > /dev/null && sudo apt install -y $(PACKAGE)
+
+i-debian:
 	which apt-get > /dev/null && sudo apt-get install -y $(PACKAGE)
-	which yum > /dev/null && sudo yum install -y $(PACKAGE)
-	which dnf > /dev/null && sudo dnf install -y $(PACKAGE)
+
+# 	which dnf > /dev/null && sudo dnf install -y $(PACKAGE)
+# 	which yum > /dev/null && sudo yum install -y $(PACKAGE)
 
 i-OSX:
 	brew install $(PACKAGE) || brew cask install $(PACKAGE)
@@ -160,9 +167,12 @@ i-WIN32:
 
 il: apt-utils il-$(OSFLAG)-$(SHELL_IS) ## Install Local Package Depending on OS
 
-il-LINUX-bash:
+il-LINUX-bash: il-LINUX-bash-$(OSID)
+
+il-LINUX-bash-ubuntu: il-LINUX-bash-debian
+
+il-LINUX-bash-debian:
 	which dpkg > /dev/null && sudo dpkg -i $(FILE) || apt-get install -f
-	which rpm > /dev/null && sudo rpm -i $(FILE)
 
 il-OSX-bash:
 	# http://commandlinemac.blogspot.com/2008/12/installing-dmg-application-from-command.html
@@ -183,16 +193,16 @@ il-WIN32-powershell: il-WIN32-bash
 # Install from URL
 #
 
-iu: iu-$(OSFLAG)-$(SHELL_IS) ## Install URL Package Depending on OS
+iu: dld iu-$(OSFLAG)-$(SHELL_IS) ## Install URL Package Depending on OS
 
 iu-LINUX-bash:
-	@echo "$(NOT_IMPLEMENTED_LINUX)"
+	make il-LINUX-bash FILE="$(FILE)"
+	make rm
 
 iu-OSX-bash:
 	@echo "$(NOT_IMPLEMENTED_OSX)"
 
-iu-WIN32-bash: 
-	make dld
+iu-WIN32-bash:
 	make il-WIN32-bash FILE="$(FILE)" IL_WIN_ARGS=$(IL_WIN_ARGS)
 	make rm
 

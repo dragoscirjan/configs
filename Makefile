@@ -1,9 +1,10 @@
-## v0.3
+## v0.4
 #
 # Detect OS
 #
 OSFLAG :=
 OSARCH :=
+OSID :=
 ifeq ($(OS),Windows_NT)
 	OSFLAG = WIN32
 	ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
@@ -16,6 +17,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		OSFLAG = LINUX
+		OSID = $(shell cat /etc/*-release | egrep "^ID=" | cut -f2 -d=)
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSFLAG = OSX
@@ -97,7 +99,7 @@ ide: ## Install Used IDEs
 	make --directory=./git gitkraken
 
 browsers: ## Install Used Browsers
-	make --directory=./browsers firefox edge opera vivaldi
+	make --directory=./browsers chromium firefox edge opera vivaldi
 
 terminal: ## Install Office Tools
 	make --directory=./office libreoffice wpsoffice
