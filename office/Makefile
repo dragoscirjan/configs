@@ -1,9 +1,10 @@
-## v0.2
+## v0.4
 #
 # Detect OS
 #
 OSFLAG :=
 OSARCH :=
+OSID :=
 ifeq ($(OS),Windows_NT)
 	OSFLAG = WIN32
 	ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
@@ -16,6 +17,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		OSFLAG = LINUX
+		OSID = $(shell cat /etc/*-release | egrep "^ID=" | cut -f2 -d=)
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSFLAG = OSX
@@ -90,7 +92,7 @@ DIR_INSTALL = ../.install
 libreoffice: libreoffice-$(OSFLAG) ## Install Libre Office
 
 libreoffice-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+	make --directory=$(DIR_INSTALL) i PACKAGE=libreoffice
 
 libreoffice-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
@@ -101,8 +103,16 @@ libreoffice-WIN32:
 
 wpsoffice: wpsoffice-$(OSFLAG) ## Install WPS Office
 
-wpsoffice-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+# http://wps-community.org/downloads
+wpsoffice-LINUX: wpsoffice-$(OSID)
+
+wpsoffice-ubuntu: wpsoffice-debian
+
+wpsoffice-debian:
+	make --directory=$(DIR_INSTALL) iu URL="http://kdl.cc.ksosoft.com/wps-community/download/8722/wps-office_11.1.0.8722_amd64.deb" FILE="~/tmp/wps-office.deb"
+
+# wpsoffice-redhat:
+# 	make --directory=$(DIR_INSTALL) iu URL="http://kdl.cc.ksosoft.com/wps-community/download/8722/wps-office-11.1.0.8722-1.x86_64.rpm" FILE="~/tmp/wps-office.rpm"
 
 wpsoffice-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
