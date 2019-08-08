@@ -118,7 +118,7 @@ ifeq (powershell,$(SHELL_IS))
 endif
 
 utils-LINUX:
-	@echo
+	make --directory=$(DIR_INSTALL) i PACKAGE=jq
 
 utils-OSX:
 	@echo Do I need JQ?
@@ -129,8 +129,24 @@ utils-WIN32:
 intellij: utils-$(OSFLAG) intellij-$(OSFLAG)
 
 intellij-LINUX:
+	curl -sSL "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)" \
+		| jq -r 'keys[] as $$k | .[$$k] | .[0] | .downloads.$(INTELLIJ_OS).link' \
+		| while read link; do \
+			echo $$link; \
+			make --directory=$(DIR_INSTALL) dld URL="$$link" FILE="~/tmp/$${link##*/}"; \
+			tar -xzvf ~/tmp/$${link##*/} -C ~/bin; \
+			make --directory=$(DIR_INSTALL) rm FILE="~/tmp/$${link##*/}"; \
+		done
 
 intellij-OSX:
+	curl -sSL "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)" \
+		| jq -r 'keys[] as $$k | .[$$k] | .[0] | .downloads.$(INTELLIJ_OS).link' \
+		| while read link; do \
+			echo $$link; \
+			make --directory=$(DIR_INSTALL) dld URL="$$link" FILE="~/tmp/$${link##*/}"; \
+			make --directory=$(DIR_INSTALL) li PACKAGE="~/tmp/$${link##*/}"; \
+			make --directory=$(DIR_INSTALL) rm FILE="~/tmp/$${link##*/}"; \
+		done
 
 intellij-WIN32:
 	$(POWERSHELL) -File ./intellij.ps1 --keys $(INTELLIJ_APP) --url "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
