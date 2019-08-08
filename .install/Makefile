@@ -147,9 +147,11 @@ i: apt-utils i-$(OSFLAG) ## Install Package Depending on OS
 i-LINUX: i-$(OSID)
 
 i-ubuntu:
+	sudo apt update
 	sudo apt install -y $(PACKAGE)
 
 i-debian:
+	sudo apt-get update
 	sudo apt-get install -y $(PACKAGE)
 
 # 	which dnf > /dev/null && sudo dnf install -y $(PACKAGE)

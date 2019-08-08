@@ -175,8 +175,26 @@ pycharm-ce: ## Install IntelliJ PyCharm CE
 
 sublime: sublime-$(OSFLAG) ## Install Sublime Text
 
-sublime-LINUX:
-	@echo "$(NOT_IMPLEMENTED_LINUX)"
+sublime-LINUX: sublime-$(OSID)
+
+sublime-ubuntu: sublime-debian
+
+sublime-debian:
+	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+	echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+	make --directory=$(DIR_INSTALL) i PACKAGE=sublime-text
+
+sublime-centos: sublime-redhat
+
+sublime-redhat:
+	sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
+	sudo yum-config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+	sudo yum install sublime-text
+
+sublime-fedora:
+	sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
+	sudo dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+	sudo dnf install sublime-text
 
 sublime-OSX:
 # 	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe"
@@ -185,11 +203,23 @@ sublime-WIN32:
 	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe"
 
 VSCODE=stable
-VSCODE=insider
-vscode: ## Install Visual Studio Code
+# VSCODE=insider
+vscode: vscode-$(OSFLAG) ## Install Visual Studio Code
 
-vscode-LINUX:
-	@echo "$(NOT_IMPLEMENTED_LINUX)"
+vscode-LINUX: vscode-$(OSID)
+
+vscode-ubuntu: vscode-debian
+
+vscode-debian:
+	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/linux-deb-x64/$(VSCODE)" FILE="~/tmp/vscode.deb"
+
+# vscode-centos: vscode-redhat
+# vscode-fedora: vscode-redhat
+
+# vscode-redhat:
+# 	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/linux-deb-x64/$(VSCODE)" FILE="~/tmp/vscode.deb"
+
+
 
 vscode-OSX:
 	cd ../.install && make i PACKAGE=visual-studio-code
