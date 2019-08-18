@@ -1,9 +1,10 @@
-## v0.2
+## v0.4
 #
 # Detect OS
 #
 OSFLAG :=
 OSARCH :=
+OSID :=
 ifeq ($(OS),Windows_NT)
 	OSFLAG = WIN32
 	ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
@@ -16,6 +17,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		OSFLAG = LINUX
+		OSID = $(shell cat /etc/*-release | egrep "^ID=" | cut -f2 -d=)
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSFLAG = OSX
@@ -102,7 +104,6 @@ endif
 bash-OSX: bash-LINUX
 
 bash-WIN32: bash-LINUX
-		
 
 
 conemu: conemu-$(OSFLAG) ## Install conemu
@@ -143,10 +144,29 @@ iterm-WIN32:
 	@echo $(NOT_IMPLEMENTED_WINDOWS)
 
 
+guake: guake-$(OSFLAG) ## Install Guake
+
+guake-LINUX:
+	make --directory=$(DIR_INSTALL) i guake
+
+guake-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+guake-WIN32:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+
 hyper: hyper-$(OSFLAG) ## Install hyper
 
-hyper-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+hyper-LINUX: hyper-$(OSID)
+
+hyper-debian:
+	make --directory=$(DIR_INSTALL) iu URL="https://releases.hyper.is/download/deb" FILE="~/tmp/hyper.deb"
+
+hyper-ubuntu: hyper-debian
+
+hyper-redhat:
+	make --directory=$(DIR_INSTALL) iu URL="https://releases.hyper.is/download/rpm" FILE="~/tmp/hyper.rpm"
 
 hyper-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)

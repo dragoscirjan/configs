@@ -99,6 +99,8 @@ CURL=curl -SL
 # INTELLIJ_APP=WS # WebStorm
 INTELLIJ_APP=
 INTELLIJ_OS=linux
+INTELLIJ_UTIL=intellij
+# INTELLIJ_UTIL=snap
 JQ=jq
 TIMESTAMP_SECCONDS=$(shell date +%s)
 
@@ -177,17 +179,45 @@ else
 	make --directory=$(DIR_INSTALL) iu URL=https://atom.io/download/windows_x64 FILE="~/tmp/atom.exe"
 endif
 
-idea: ## Install IntelliJ IDEA
+idea: idea-$(INTELLIJ_UTIL) ## Install IntelliJ IDEA
+
+idea-intellij:
 	make intellij INTELLIJ_APP=IIU
 
-idea-ce: ## Install IntelliJ IDEA CE
+idea-snap:
+	snap install intellij-idea-ultimate --classic
+
+idea-ce: idea-ce-$(INTELLIJ_UTIL) ## Install IntelliJ IDEA CE
+
+idea-ce-intellij:
 	make intellij INTELLIJ_APP=IIC
 
-pycharm: ## Install IntelliJ PyCharm
+idea-ce-snap:
+	snap install intellij-idea-community --classic
+
+pycharm: pycharm-$(INTELLIJ_UTIL) ## Install IntelliJ PhpStorm
+
+pycharm-intellij:
+	make intellij INTELLIJ_APP=PS
+
+pycharm-snap:
+	snap install phpstorm --classic
+
+pycharm: pycharm-$(INTELLIJ_UTIL) ## Install IntelliJ PyCharm
+
+pycharm-intellij:
 	make intellij INTELLIJ_APP=PCP
 
-pycharm-ce: ## Install IntelliJ PyCharm CE
+pycharm-snap:
+	snap install pycharm-professional --classic
+
+pycharm-ce: pycharm-ce-$(INTELLIJ_UTIL) ## Install IntelliJ PyCharm CE
+
+pycharm-ce-intellij:
 	make intellij INTELLIJ_APP=PCC
+
+pycharm-ce-snap:
+	snap install pycharm-community --classic
 
 sublime: sublime-$(OSFLAG) ## Install Sublime Text
 
