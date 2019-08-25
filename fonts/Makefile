@@ -84,7 +84,7 @@ mkfont: mkfont-$(SHELL_IS)
 
 mkfont-bash:
 	make --directory=$(DIR_INSTALL) mktmp
-	mkdir -p ~/tmp/font
+	mkdir -p ~/tmp/fonts
 	mkdir -p ~/.fonts
 
 mkfont-powershell:
@@ -95,9 +95,17 @@ fonts-LINUX:
 	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
 	find ~/tmp/fonts -iname "*.ttf" | while read font; do cp $$font ~/.fonts; done
 
+fonts-LINUX-otf:
+	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
+	find ~/tmp/fonts -iname "*.otf" | while read font; do cp $$font ~/.fonts; done
+
 fonts-OSX:
 	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
 	find ~/tmp/fonts -iname "*.ttf" | while read font; do cp $$font ~/Library/Fonts; done
+
+fonts-OSX-otf:
+	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
+	find ~/tmp/fonts -iname "*.otf" | while read font; do cp $$font ~/Library/Fonts; done
 
 #
 # Actual Action Definitions
@@ -126,9 +134,9 @@ hasklig: mkfont hasklig-$(OSFLAG) ## Install Hasklig Font https://github.com/i-t
 hasklig-dld:
 	make --directory=$(DIR_INSTALL) dld URL="https://github.com/i-tu/Hasklig/releases/download/1.1/Hasklig-1.1.zip" FILE="~/tmp/fonts.zip"
 
-hasklig-LINUX: hasklig-dld fonts-LINUX
+hasklig-LINUX: hasklig-dld fonts-LINUX-otf
 
-hasklig-OSX: hasklig-dld fonts-OSX
+hasklig-OSX: hasklig-dld fonts-OSX-otf
 
 hasklig-WIN32: hasklig-dld
 	$(POWERSHELL) -File ../.ps/install-font.ps1
@@ -138,7 +146,8 @@ monoid: mkfont monoid-$(OSFLAG) ## Install Monoid Font https://github.com/larsen
 	make --directory=$(DIR_INSTALL) rm FILE="~/tmp/fonts"
 
 monoid-dld:
-	make --directory=$(DIR_INSTALL) dld URL="https://github.com/larsenwork/monoid/archive/0.61.zip" FILE="~/tmp/fonts.zip"
+# 	make --directory=$(DIR_INSTALL) dld URL="https://github.com/larsenwork/monoid/archive/0.61.zip" FILE="~/tmp/fonts.zip"
+	make --directory=$(DIR_INSTALL) dld URL="https://raw.githubusercontent.com/larsenwork/monoid/2db2d289f4e61010dd3f44e09918d9bb32fb96fd/Monoid.zip" FILE="~/tmp/fonts.zip"
 
 monoid-LINUX: monoid-dld fonts-LINUX
 
@@ -165,4 +174,4 @@ sourcecodepro-WIN32: sourcecodepro-dld
 	$(POWERSHELL) -File ../.ps/install-font.ps1
 
 
-all: firacode sourcecodepro ## Install all Fonts
+all: firacode hasklig monoid sourcecodepro ## Install all Fonts
