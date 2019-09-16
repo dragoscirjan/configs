@@ -42,7 +42,7 @@ else ifeq ($(SHELL),/usr/bin/bash)
     SHELL_IS = bash
 else ifeq ($(SHELL),/bin/sh)
 	SHELL_IS = bash
-else ifeq ($(SHELL),C:/Program Files/conemu/usr/bin/sh.exe)
+else ifeq ($(SHELL),C:/Program Files/Git/usr/bin/sh.exe)
 	SHELL_IS = bash
 else
     SHELL_IS = powershell
@@ -92,10 +92,11 @@ BASH_CONFIG_FOLDER=.
 bash: bash-$(OSFLAG) ## Install bash
 
 bash-LINUX:
-ifeq(bash,$(SHELL_IS))
-	cp $(BASH_CONFIG_FOLDER)/bash_profile $HOME/.bash_profile.$(date +%s)
-	cat ./bash_profile > $HOME/.bash_profile && source $HOME/.bash_profile
+ifeq (bash,$(SHELL_IS))
+	cp $(BASH_CONFIG_FOLDER)/bash_profile ~/.bash_profile.$(shell date +%s) || true
+	cat ./bash_profile > ~/.bash_profile && source ~/.bash_profile
 else
+	echo $(SHELL)
 	@echo "You're not using bash as shell interface."
 	exit 1
 endif
@@ -104,7 +105,6 @@ bash-OSX: bash-LINUX
 
 bash-WIN32: bash-LINUX
 		
-
 
 conemu: conemu-$(OSFLAG) ## Install conemu
 
