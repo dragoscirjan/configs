@@ -1,9 +1,10 @@
-## v0.3
+## v0.4
 #
 # Detect OS
 #
 OSFLAG :=
 OSARCH :=
+OSID :=
 ifeq ($(OS),Windows_NT)
 	OSFLAG = WIN32
 	ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
@@ -16,6 +17,7 @@ else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
 		OSFLAG = LINUX
+		OSID = $(shell cat /etc/*-release | egrep "^ID=" | cut -f2 -d=)
 	endif
 	ifeq ($(UNAME_S),Darwin)
 		OSFLAG = OSX
@@ -90,6 +92,27 @@ golang-OSX:
 
 golang-WIN32:
 	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go1.12.7.windows-amd64.msi" FILE="~/tmp/go-lang.msi"
+
+# JAVA_VERSION=8
+JAVA_VERSION=11
+JAVA_TYPE=open
+# JAVA_TYPE=oracle
+java: java-$(OSFLAG) ## Install Java
+
+java-LINUX: java-$(OSID)
+
+java-ubuntu: java-debian
+java-debian: java-debian-$(JAVA_TYPE)
+
+java-debian-open:
+	make --directory=$(DIR_INSTALL) i PACKAGE="openjdk-$(JAVA_VERSION)-jdk openjdk-$(JAVA_VERSION)-jre"
+
+java-debian-oracle:
+	sudo add-apt-repository ppa:webupd8team/java
+
+java-OSX:
+
+java-WIN32:
 
 
 nodejs: nodejs-$(OSFLAG) ## Install NodeJs

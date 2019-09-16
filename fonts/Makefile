@@ -84,43 +84,94 @@ mkfont: mkfont-$(SHELL_IS)
 
 mkfont-bash:
 	make --directory=$(DIR_INSTALL) mktmp
-	mkdir -p ~/tmp/font
+	mkdir -p ~/tmp/fonts
+	mkdir -p ~/.fonts
 
 mkfont-powershell:
 	make --directory=$(DIR_INSTALL) mktmp
 	$(POWERSHELL) -Command "New-Item -Force -Path $$HOME/tmp -Name font -ItemType directory"
 
+fonts-LINUX:
+	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
+	find ~/tmp/fonts -iname "*.ttf" | while read font; do cp $$font ~/.fonts; done
+
+fonts-LINUX-otf:
+	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
+	find ~/tmp/fonts -iname "*.otf" | while read font; do cp $$font ~/.fonts; done
+
+fonts-OSX:
+	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
+	find ~/tmp/fonts -iname "*.ttf" | while read font; do cp $$font ~/Library/Fonts; done
+
+fonts-OSX-otf:
+	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
+	find ~/tmp/fonts -iname "*.otf" | while read font; do cp $$font ~/Library/Fonts; done
+
 #
 # Actual Action Definitions
 #
 
-firacode: firacode-$(OSFLAG) ## Install Fira Code Font https://github.com/tonsky/FiraCode
+firacode: mkfont firacode-dld firacode-$(OSFLAG) ## Install Fira Code Font https://github.com/tonsky/FiraCode
 	make --directory=$(DIR_INSTALL) rm FILE="~/tmp/fonts"
 
-firacode-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+firacode-dld:
+	make --directory=$(DIR_INSTALL) dld URL="https://github.com/tonsky/FiraCode/releases/download/1.206/FiraCode_1.206.zip" FILE="~/tmp/fonts.zip"
 
-firacode-OSX:
+firacode-LINUX: firacode-dld fonts-LINUX
+	make --directory=$(DIR_INSTALL) rm FILE="~/tmp/fonts.zip"
+
+firacode-OSX: firacode-dld
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-firacode-WIN32:
-	make --directory=$(DIR_INSTALL) dld URL="https://github.com/tonsky/FiraCode/releases/download/1.206/FiraCode_1.206.zip" FILE="~/tmp/fonts.zip"
+firacode-WIN32: firacode-dld
 	$(POWERSHELL) -Command "Expand-Archive -Force ~/tmp/fonts.zip -DestinationPath ~/tmp/fonts"
 	$(POWERSHELL) -File ../.ps/install-font.ps1
+
+
+hasklig: mkfont hasklig-$(OSFLAG) ## Install Hasklig Font https://github.com/i-tu/Hasklig
+	make --directory=$(DIR_INSTALL) rm FILE="~/tmp/fonts"
+
+hasklig-dld:
+	make --directory=$(DIR_INSTALL) dld URL="https://github.com/i-tu/Hasklig/releases/download/1.1/Hasklig-1.1.zip" FILE="~/tmp/fonts.zip"
+
+hasklig-LINUX: hasklig-dld fonts-LINUX-otf
+
+hasklig-OSX: hasklig-dld fonts-OSX-otf
+
+hasklig-WIN32: hasklig-dld
+	$(POWERSHELL) -File ../.ps/install-font.ps1
+
+
+monoid: mkfont monoid-$(OSFLAG) ## Install Monoid Font https://github.com/larsenwork/monoid
+	make --directory=$(DIR_INSTALL) rm FILE="~/tmp/fonts"
+
+monoid-dld:
+# 	make --directory=$(DIR_INSTALL) dld URL="https://github.com/larsenwork/monoid/archive/0.61.zip" FILE="~/tmp/fonts.zip"
+	make --directory=$(DIR_INSTALL) dld URL="https://raw.githubusercontent.com/larsenwork/monoid/2db2d289f4e61010dd3f44e09918d9bb32fb96fd/Monoid.zip" FILE="~/tmp/fonts.zip"
+
+monoid-LINUX: monoid-dld fonts-LINUX
+
+monoid-OSX: monoid-dld fonts-OSX
+
+monoid-WIN32: monoid-dld
+	$(POWERSHELL) -File ../.ps/install-font.ps1
+
 
 
 sourcecodepro: mkfont sourcecodepro-$(OSFLAG) ## Install Source Code Pro Font https://github.com/adobe-fonts/source-code-pro
 	make --directory=$(DIR_INSTALL) rm FILE="~/tmp/fonts"
 
-sourcecodepro-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
-
-sourcecodepro-OSX:
-	@echo $(NOT_IMPLEMENTED_OSX)
-
-sourcecodepro-WIN32:
+sourcecodepro-dld:
 	make --directory=$(DIR_INSTALL) dld URL="https://github.com/adobe-fonts/source-code-pro/releases/download/variable-fonts/SourceCodeVariable-Italic.ttf" FILE="~/tmp/fonts/SourceCodeVariable-Italic.ttf"
 	make --directory=$(DIR_INSTALL) dld URL="https://github.com/adobe-fonts/source-code-pro/releases/download/variable-fonts/SourceCodeVariable-Roman.ttf" FILE="~/tmp/fonts/SourceCodeVariable-Roman.ttf"
+
+sourcecodepro-LINUX: sourcecodepro-dld fonts-LINUX
+
+sourcecodepro-OSX: sourcecodepro-dld
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+sourcecodepro-WIN32: sourcecodepro-dld
 	$(POWERSHELL) -File ../.ps/install-font.ps1
 
-all: firacode sourcecodepro ## Install all Fonts
+
+all: firacode hasklig monoid sourcecodepro ## Install all Fonts

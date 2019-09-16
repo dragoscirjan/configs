@@ -99,6 +99,8 @@ CURL=curl -SL
 # INTELLIJ_APP=WS # WebStorm
 INTELLIJ_APP=
 INTELLIJ_OS=linux
+INTELLIJ_UTIL=intellij
+# INTELLIJ_UTIL=snap
 JQ=jq
 TIMESTAMP_SECCONDS=$(shell date +%s)
 
@@ -118,7 +120,7 @@ ifeq (powershell,$(SHELL_IS))
 endif
 
 utils-LINUX:
-	@echo
+	make --directory=$(DIR_INSTALL) i PACKAGE=jq
 
 utils-OSX:
 	@echo Do I need JQ?
@@ -129,8 +131,24 @@ utils-WIN32:
 intellij: utils-$(OSFLAG) intellij-$(OSFLAG)
 
 intellij-LINUX:
+	curl -sSL "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)" \
+		| jq -r 'keys[] as $$k | .[$$k] | .[0] | .downloads.$(INTELLIJ_OS).link' \
+		| while read link; do \
+			echo $$link; \
+			make --directory=$(DIR_INSTALL) dld URL="$$link" FILE="~/tmp/$${link##*/}"; \
+			tar -xzvf ~/tmp/$${link##*/} -C ~/bin; \
+			make --directory=$(DIR_INSTALL) rm FILE="~/tmp/$${link##*/}"; \
+		done
 
 intellij-OSX:
+	curl -sSL "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)" \
+		| jq -r 'keys[] as $$k | .[$$k] | .[0] | .downloads.$(INTELLIJ_OS).link' \
+		| while read link; do \
+			echo $$link; \
+			make --directory=$(DIR_INSTALL) dld URL="$$link" FILE="~/tmp/$${link##*/}"; \
+			make --directory=$(DIR_INSTALL) li PACKAGE="~/tmp/$${link##*/}"; \
+			make --directory=$(DIR_INSTALL) rm FILE="~/tmp/$${link##*/}"; \
+		done
 
 intellij-WIN32:
 	$(POWERSHELL) -File ./intellij.ps1 --keys $(INTELLIJ_APP) --url "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
@@ -161,22 +179,68 @@ else
 	make --directory=$(DIR_INSTALL) iu URL=https://atom.io/download/windows_x64 FILE="~/tmp/atom.exe"
 endif
 
-idea: ## Install IntelliJ IDEA
+idea: idea-$(INTELLIJ_UTIL) ## Install IntelliJ IDEA
+
+idea-intellij:
 	make intellij INTELLIJ_APP=IIU
 
-idea-ce: ## Install IntelliJ IDEA CE
+idea-snap:
+	snap install intellij-idea-ultimate --classic
+
+idea-ce: idea-ce-$(INTELLIJ_UTIL) ## Install IntelliJ IDEA CE
+
+idea-ce-intellij:
 	make intellij INTELLIJ_APP=IIC
 
-pycharm: ## Install IntelliJ PyCharm
+idea-ce-snap:
+	snap install intellij-idea-community --classic
+
+pycharm: pycharm-$(INTELLIJ_UTIL) ## Install IntelliJ PhpStorm
+
+pycharm-intellij:
+	make intellij INTELLIJ_APP=PS
+
+pycharm-snap:
+	snap install phpstorm --classic
+
+pycharm: pycharm-$(INTELLIJ_UTIL) ## Install IntelliJ PyCharm
+
+pycharm-intellij:
 	make intellij INTELLIJ_APP=PCP
 
-pycharm-ce: ## Install IntelliJ PyCharm CE
+pycharm-snap:
+	snap install pycharm-professional --classic
+
+pycharm-ce: pycharm-ce-$(INTELLIJ_UTIL) ## Install IntelliJ PyCharm CE
+
+pycharm-ce-intellij:
 	make intellij INTELLIJ_APP=PCC
+
+pycharm-ce-snap:
+	snap install pycharm-community --classic
 
 sublime: sublime-$(OSFLAG) ## Install Sublime Text
 
-sublime-LINUX:
-	@echo "$(NOT_IMPLEMENTED_LINUX)"
+sublime-LINUX: sublime-$(OSID)
+
+sublime-ubuntu: sublime-debian
+
+sublime-debian:
+	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+	echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
+	make --directory=$(DIR_INSTALL) i PACKAGE=sublime-text
+
+sublime-centos: sublime-redhat
+
+sublime-redhat:
+	sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
+	sudo yum-config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+	sudo yum install sublime-text
+
+sublime-fedora:
+	sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
+	sudo dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+	sudo dnf install sublime-text
 
 sublime-OSX:
 # 	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe"
@@ -185,11 +249,23 @@ sublime-WIN32:
 	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe"
 
 VSCODE=stable
-VSCODE=insider
-vscode: ## Install Visual Studio Code
+# VSCODE=insider
+vscode: vscode-$(OSFLAG) ## Install Visual Studio Code
 
-vscode-LINUX:
-	@echo "$(NOT_IMPLEMENTED_LINUX)"
+vscode-LINUX: vscode-$(OSID)
+
+vscode-ubuntu: vscode-debian
+
+vscode-debian:
+	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/linux-deb-x64/$(VSCODE)" FILE="~/tmp/vscode.deb"
+
+# vscode-centos: vscode-redhat
+# vscode-fedora: vscode-redhat
+
+# vscode-redhat:
+# 	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/linux-deb-x64/$(VSCODE)" FILE="~/tmp/vscode.deb"
+
+
 
 vscode-OSX:
 	cd ../.install && make i PACKAGE=visual-studio-code
