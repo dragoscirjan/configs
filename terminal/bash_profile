@@ -10,7 +10,7 @@ parse_git_branch() {
 
 export PS1="\u@\h \W\[\033[32m\]\$(parse_git_branch)\[\033[00m\] \[\033[32m\]λ\[\033[00m\] "
 
-uname -a | grep Darwin \
+uname -a | grep Darwin > /dev/null \
 	&& export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
 mkdir -p $HOME/bin
