@@ -83,6 +83,10 @@ DIR_INSTALL = ../.install
 mkfont: mkfont-$(SHELL_IS)
 
 mkfont-bash:
+ifeq ($(OSFLAG),OSX)
+	# fix fuzzy fonts: https://medium.com/@mrahmadawais/fix-macos-mojave-blurry-font-rendering-issue-4331757b0776
+	defaults write -g CGFontRenderingFontSmoothingDisabled -bool NO
+endif
 	make --directory=$(DIR_INSTALL) mktmp
 	mkdir -p ~/tmp/fonts
 	mkdir -p ~/.fonts
