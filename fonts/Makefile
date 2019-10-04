@@ -143,7 +143,8 @@ hasklig-LINUX: hasklig-dld fonts-LINUX-otf
 hasklig-OSX: hasklig-dld fonts-OSX-otf
 
 hasklig-WIN32: hasklig-dld
-	$(POWERSHELL) -File ../.ps/install-font.ps1
+	$(POWERSHELL) -Command "Expand-Archive -Force ~/tmp/fonts.zip -DestinationPath ~/tmp/fonts"
+	$(POWERSHELL) -File ../.ps/install-font.ps1 --ext otf
 
 
 monoid: mkfont monoid-$(OSFLAG) ## Install Monoid Font https://github.com/larsenwork/monoid
