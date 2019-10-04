@@ -81,7 +81,13 @@ NOT_IMPLEMENTED_WINDOWS = "Not implemented under Windows"
 #
 
 mysql: ## Launch a MySQL Global Container
-	docker run --name global-mysql -e MYSQL_ROOT_PASSWORD=weltest -d mysql:5
+	docker run --name global-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=weltest -d mysql:5
 
 mysql-e: ## Launch a MySQL 8 Global Container
-	docker run --name global-mysql-8 -e MYSQL_ROOT_PASSWORD=weltest -d mysql:8
+	docker run --name global-mysql-8 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=weltest -d mysql:8
+
+neo: ## Launch a Neo4j Global Container
+	docker run --name global-neo4j -d -p7687:7687 -p7474:7474 -e NEO4J_AUTH=neo4j/weltest neo4j:latest
+
+postgres: ## Launch a PostGresSQL§ 8 Global Container
+	docker run --name global-postgres -d -p 5432:5432 -e POSTGRES_PASSWORD=weltest postgres:alpine
