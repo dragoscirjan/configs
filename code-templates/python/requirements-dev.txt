@@ -1,0 +1,3 @@
+-r requirements.txt
+
+git+https://github.com/templ-project/python@develop#egg=templ-py
