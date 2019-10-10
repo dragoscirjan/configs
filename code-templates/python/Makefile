@@ -76,7 +76,17 @@ code-yaml-lint: ## YAML Files Linting
 	make exec-over-yaml-files EXEC_COMMAND="yamllint $(shell [ -f .yamllint ] && echo '-c .yamllint')"
 
 exec-over-py-files:
-	$(FIND_PY_FILES) | while read f; do echo $(EXEC_COMMAND) $$f; $(EXEC_COMMAND) $$f; done
+	$(FIND_PY_FILES) | while read f; do \
+		$(EXEC_COMMAND) $$f 2> /tmp/pre-commit-log 1>&2 || ( \
+			echo $$?; \
+			printf "%-114s" "$(EXEC_COMMAND) $$f"; \
+			printf "\033[0;31m[FAIL]\033[0m\n"; \
+			cat /tmp/pre-commit-log; \
+			exit 100; \
+		); \
+		printf "%-116s" "$(EXEC_COMMAND) $$f"; \
+		printf "\033[0;32m[OK]\033[0m\n"; \
+	done
 
 exec-over-json-files:
 	@$(FIND_JSON_FILES) | while read f; do echo $(EXEC_COMMAND) $$f; $(EXEC_COMMAND) $$f; done

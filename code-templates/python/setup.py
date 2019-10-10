@@ -18,7 +18,8 @@ setup(
     license='MIT',
     packages=find_packages(exclude=['ez_setup', 'tests*']),
     package_data={'python-template': ['templates/*']},
-    include_package_data=True,
+    include_pac
+    kage_data=True,
     entry_points="""
         [console_scripts]
         python-template = python-template.main:main
