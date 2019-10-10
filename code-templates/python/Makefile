@@ -1,3 +1,5 @@
+include ./Makefile.template
+
 PY_VER:=
 PY_ENV:=env
 PIP_FLAGS=--trusted-host pypi.org --trusted-host pypi.python.org
@@ -6,34 +8,100 @@ GLOBAL_PYTHON=python$(PY_VER)
 GLOBAPL_PIP=pip$(PY_VER)
 GLOBAL_PIP_INSTALL=$(GLOBAPL_PIP) install $(PIP_FLAGS)
 
-ifeq (Windows_NT,$(OS))
-	LOCAL_PYTHON=$(PY_ENV)/Scripts/python
-	LOCAL_PIP=$(PY_ENV)/Scripts/pip
-else
-	LOCAL_PYTHON=$(PY_ENV)/bin/python
-	LOCAL_PIP=$(PY_ENV)/bin/pip
-endif
-
 LOCAL_PIP_INSTALL=$(LOCAL_PIP) install $(PIP_FLAGS)
 
 VIRTUALENV_ARGS?=--python python$(PY_VER)
 
-.PHONY: clean virtualenv test docker dist dist-upload
+FIND_METHOD=all
+ifeq ($(FIND_METHOD),cached)
+	FIND_PY_FILES=git diff --cached --name-only | egrep "\.py\$$"
+	FIND_YAML_FILES=git diff --cached --name-only | egrep "\.ya?ml\$$"
+else
+	FIND_PY_FILES=find . -iname "*.py" | grep -v ".\/$(PY_ENV)"
+	FIND_YAML_FILES=find . -iname "*.yml" -or -iname "*.yaml" | grep -v ".\/$(PY_ENV)"
+endif
 
-clean:
+clean: ## Clean Code
 	find . -name '*.py[co]' -delete || true
 	find . -type d -iname "*__pycache__*" -delete || true
 
-virtualenv:
-	$(GLOBAL_PIP_INSTALL) virtualenv
-	virtualenv $(VIRTUALENV_ARGS) --prompt '|> pytempl <| ' $(PY_ENV)
-	$(LOCAL_PIP) install -r requirements-dev.txt
-	# $(LOCAL_PYTHON) setup.py develop
-	@echo
-	@echo "VirtualENV Setup Complete. Now run: source $(PY_ENV)/bin/activate"
-	@echo
+code-analysis: ## Code Analysis
 
-test:
+code-analysis--mccabe: # Code Analysis :: Mccabe (http://pypi.python.org/pypi/mccabe)
+	make exec-over-py-files EXEC_COMMAND=python -m mccabe --min 5
+	
+code-analysis--radon: # Code Analysis :: Radon (https://radon.readthedocs.io/en/latest/)
+	make exec-over-py-files EXEC_COMMAND=radon cc --min B --max E
+
+code-audit: code-audit--flake ## Code Audit
+
+code-audit--flake: # Code Audit :: Flake8 (http://flake8.pycqa.org)
+	make exec-over-py-files EXEC_COMMAND="flake8 $(shell [ -f .flake8 ] && echo '--global-config .flake8')"
+
+code-audit--pylama: # Code Audit :: Pylama (https://github.com/klen/pylama)
+	make exec-over-py-files EXEC_COMMAND="pylama $(shell [ -f .pylama.ini ] && echo '--global-config .pylama.ini')"
+
+code-format: code-format--autopep ## Code Formatter
+
+code-format--autopep: # Code Format :: Autopep8 (https://github.com/hhatto/autopep8)
+	make exec-over-py-files EXEC_COMMAND="autopep8 $(shell [ -f .pep8 ] && echo '--global-config .pep8')"
+
+code-format--black: # Code Format :: Flake8 (http://flake8.pycqa.org)
+	make exec-over-py-files EXEC_COMMAND="black $(shell [ -f .black.toml ] && echo '--config .black.toml')"
+
+code-format--isort: # Code Format :: Isort (https://github.com/timothycrosley/isort)
+	make exec-over-py-files EXEC_COMMAND=isort
+
+code-lint: code-lint--pylint code-lint--pycodestyle ## Code Linting
+
+code-lint--bandit: # Code Linting :: Bandit (https://github.com/PyCQA/bandit)
+	make exec-over-py-files EXEC_COMMAND="bandit $(shell [ -f .bandit ] && echo '--ini .bandit')"
+
+code-lint--mypy: # Code Linting :: MyPy (http://mypy-lang.org/)
+	make exec-over-py-files EXEC_COMMAND="mypy $(shell [ -f .mypy.ini ] && echo '--config-file .mypy.toml')"
+
+code-lint--pycodestyle: # Code Linting :: PyCodeStyle (http://pycodestyle.pycqa.org)
+	make exec-over-py-files EXEC_COMMAND="pycodestyle $(shell [ -f .pycodestyleec ] && echo '--config .pycodestylerc')"
+
+code-lint--pydocstyle: # Code Linting :: Pydocstyle (http://www.pydocstyle.org)
+	make exec-over-py-files EXEC_COMMAND="pydocstyle $(shell [ -f .pydocstylerc ] && echo '--config .pydocstylerc')"
+
+code-lint--pyflakes: # Code Linting :: Pyflakes (https://github.com/PyCQA/pyflakes)
+	make exec-over-py-files EXEC_COMMAND=pyflakes
+
+code-lint--pylint: # Code Linting :: Pylint (https://www.pylint.org/)
+	make exec-over-py-files EXEC_COMMAND="pylint $(shell [ -f .pylintrc ] && echo '--rcfile .pylintrc')"
+
+code-yaml-lint: ## YAML Files Linting
+	make exec-over-yaml-files EXEC_COMMAND="yamllint $(shell [ -f .yamllint ] && echo '-c .yamllint')"
+
+exec-over-py-files:
+	$(FIND_PY_FILES) | while read f; do echo $(EXEC_COMMAND) $$f; $(EXEC_COMMAND) $$f; done
+
+exec-over-json-files:
+	@$(FIND_JSON_FILES) | while read f; do echo $(EXEC_COMMAND) $$f; $(EXEC_COMMAND) $$f; done
+
+exec-over-yaml-files:
+	@$(FIND_YAML_FILES) | while read f; do echo $(EXEC_COMMAND) $$f; $(EXEC_COMMAND) $$f; done
+
+dist: clean ## Build Module
+	rm -rf dist/*
+	$(GLOBAL_PYTHON) setup.py sdist
+	$(GLOBAL_PYTHON) setup.py bdist_wheel
+
+dist-upload: ## Upload Module
+	twine upload dist/*
+
+pre-commit: code-format code-analysis code-lint code-yaml-lint test
+	git diff --cached --name-only | while read f; do git add $$f; done
+
+pre-commit-init: ## Initialize Git pre-commit hook
+	cp .pre-commit .git/hooks/pre-commit
+	chmod -x .git/hooks/pre-commit
+
+test: test--unittest-coverage ## Unit Tests
+
+test--pytest: # Unit Tests Test :: Pytest (https://docs.pytest.org/en/latest/)
 	python -m pytest \
 		-v \
 		--cov=pytempl \
@@ -41,13 +109,17 @@ test:
 		--cov-report=html:coverage-report \
 		tests/
 
-docker: clean
-	docker build -t pytempl:latest .
+test--unittest: # Unit Tests Test :: Unittest (https://docs.python.org/3.5/library/unittest.html)
+	python -m unittest discover -s tests -p "*_test.py"
 
-dist: clean
-	rm -rf dist/*
-	$(GLOBAL_PYTHON) setup.py sdist
-	$(GLOBAL_PYTHON) setup.py bdist_wheel
+test--unittest-coverage: # Unittest + Coverage (https://docs.python.org/3.5/library/unittest.html)
+	python -m unittest discover -s tests -p "*_test.py"
 
-dist-upload:
-	twine upload dist/*
+virtualenv:  ## Create Virtualenv
+	$(GLOBAL_PIP_INSTALL) virtualenv
+	virtualenv $(VIRTUALENV_ARGS) --prompt '|> pytempl <| ' $(PY_ENV)
+	$(LOCAL_PIP) install -r requirements-dev.txt
+	# $(LOCAL_PYTHON) setup.py develop
+	@echo
+	@echo "VirtualENV Setup Complete. Now run: source $(PY_ENV)/bin/activate"
+	@echo
