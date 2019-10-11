@@ -29,6 +29,7 @@ terminal: ## Install Terminal Tools
 
 CP_TEMPLATE=cp Makefile.template 
 sync-makefile-template:
+	$(CP_TEMPLATE) ./.install
 	$(CP_TEMPLATE) ./ide
 	$(CP_TEMPLATE) ./router-assus
 	$(CP_TEMPLATE) ./docker
