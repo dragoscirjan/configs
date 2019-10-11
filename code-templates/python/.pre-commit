@@ -1,0 +1,3 @@
+#! /bin/sh
+
+make pre-commit FIND_METHOD=cached

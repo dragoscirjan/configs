@@ -1,3 +1,34 @@
 -r requirements.txt
 
-git+https://github.com/templ-project/python@develop#egg=templ-py
+# code analysis
+mccabe
+radon
+
+# code audit
+flake8
+pylama
+
+# formatters
+autopep8
+# black
+isort
+
+# linters
+bandit
+mypy
+pycodestyle
+pydocstyle
+pyflakes
+pylint
+
+# other linters
+simplejson
+yamllint
+
+# unittests
+coverage
+pytest
+pytest-cov
+pytest-xdist
+
+# git+https://github.com/templ-project/python@develop#egg=templ-py
