@@ -100,6 +100,7 @@ JAVA_TYPE=open
 java: java-$(OSFLAG) ## Install Java
 
 java-LINUX: java-$(OSID)
+	make --directory=$(DIR_INSTALL) i PACKAGE=maven
 
 java-ubuntu: java-debian
 java-debian: java-debian-$(JAVA_TYPE)

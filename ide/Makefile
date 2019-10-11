@@ -153,6 +153,7 @@ intellij-OSX:
 intellij-WIN32:
 	$(POWERSHELL) -File ./intellij.ps1 --keys $(INTELLIJ_APP) --url "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
 
+
 ATOM_MODE=stable
 # ATOM_MODE=beta
 atom: atom-$(OSFLAG) ## Install Atom
@@ -179,6 +180,7 @@ else
 	make --directory=$(DIR_INSTALL) iu URL=https://atom.io/download/windows_x64 FILE="~/tmp/atom.exe"
 endif
 
+
 idea: idea-$(INTELLIJ_UTIL) ## Install IntelliJ IDEA
 
 idea-intellij:
@@ -186,6 +188,7 @@ idea-intellij:
 
 idea-snap:
 	snap install intellij-idea-ultimate --classic
+
 
 idea-ce: idea-ce-$(INTELLIJ_UTIL) ## Install IntelliJ IDEA CE
 
@@ -195,13 +198,15 @@ idea-ce-intellij:
 idea-ce-snap:
 	snap install intellij-idea-community --classic
 
-pycharm: pycharm-$(INTELLIJ_UTIL) ## Install IntelliJ PhpStorm
 
-pycharm-intellij:
+phpstorm: phpstorm-$(INTELLIJ_UTIL) ## Install IntelliJ PhpStorm
+
+phpstorm-intellij:
 	make intellij INTELLIJ_APP=PS
 
-pycharm-snap:
+phpstorm-snap:
 	snap install phpstorm --classic
+
 
 pycharm: pycharm-$(INTELLIJ_UTIL) ## Install IntelliJ PyCharm
 
@@ -211,6 +216,7 @@ pycharm-intellij:
 pycharm-snap:
 	snap install pycharm-professional --classic
 
+
 pycharm-ce: pycharm-ce-$(INTELLIJ_UTIL) ## Install IntelliJ PyCharm CE
 
 pycharm-ce-intellij:
@@ -218,6 +224,7 @@ pycharm-ce-intellij:
 
 pycharm-ce-snap:
 	snap install pycharm-community --classic
+
 
 sublime: sublime-$(OSFLAG) ## Install Sublime Text
 
@@ -248,6 +255,7 @@ sublime-OSX:
 sublime-WIN32:
 	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe"
 
+
 VSCODE=stable
 # VSCODE=insider
 vscode: vscode-$(OSFLAG) ## Install Visual Studio Code
@@ -264,8 +272,6 @@ vscode-debian:
 
 # vscode-redhat:
 # 	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/linux-deb-x64/$(VSCODE)" FILE="~/tmp/vscode.deb"
-
-
 
 vscode-OSX:
 	cd ../.install && make i PACKAGE=visual-studio-code
