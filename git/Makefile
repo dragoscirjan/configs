@@ -10,6 +10,7 @@ git: git-$(OSFLAG) ## Install Git
 	git config --global color.ui auto
 	git config --global core.autocrlf false
 	git config --global core.eol lf
+	git config --global push.default matching
 
 git-LINUX:
 	make --director=$(DIR_INSTALL) i PACKAGE=git
