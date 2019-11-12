@@ -128,7 +128,7 @@ edge-WIN32-insider:
 
 
 FIREFOX=firefox
-firefox: firefox-$(OSFLAG)-$(FIREFOX) ## Install Firefox Browser
+firefox: firefox-$(OSFLAG)-$(FIREFOX) ## Install Firefox Browser FIREFOX=firefox,aurora
 
 firefox-LINUX-firefox:
 	make --directory=$(DIR_INSTALL) i PACKAGE=firefox
@@ -138,10 +138,10 @@ firefox-LINUX-aurora:
 	cd ~/bin && tar -xjvf firefox.tar.bz2 && ln -s ./firefox/firefox ./firefox-aurora
 
 firefox-OSX-firefox:
-	echo $(NOT_IMPLEMENTED_OSX)
+	make --directory=$(DIR_INSTALL) i PACKAGE=firefox
 
 firefox-OSX-aurora:
-	echo $(NOT_IMPLEMENTED_OSX)
+	make --directory=$(DIR_INSTALL) i PACKAGE=firefox-developer-edition BREW_SOURCE=cask
 
 firefox-WIN32-firefox:
 	make --directory=$(DIR_INSTALL) iu URL="https://download.mozilla.org/?product=firefox-devedition-stub&os=win&lang=en-US" FILE="~/tmp/firefox.exe"

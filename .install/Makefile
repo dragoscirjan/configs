@@ -142,7 +142,7 @@ rm-powershell:
 # Install Package
 #
 
-i: apt-utils i-$(OSFLAG) ## Install Package Depending on OS
+i: apt-utils i-$(OSFLAG) ## Install Package Depending on OS BREW_SOURCE=,cask
 
 i-LINUX: i-$(OSID)
 
@@ -157,8 +157,10 @@ i-debian:
 # 	which dnf > /dev/null && sudo dnf install -y $(PACKAGE)
 # 	which yum > /dev/null && sudo yum install -y $(PACKAGE)
 
+BREW_SOURCE=
+# BREW_SOURCE=cask
 i-OSX:
-	brew install $(PACKAGE) || brew cask install $(PACKAGE)
+	brew $(BREW_SOURCE) install $(PACKAGE) || brew $(BREW_SOURCE) reinstall $(PACKAGE)
 
 i-WIN32:
 	choko install $(PACKAGE)
