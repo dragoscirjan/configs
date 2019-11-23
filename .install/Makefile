@@ -160,7 +160,8 @@ i-debian:
 BREW_SOURCE=
 # BREW_SOURCE=cask
 i-OSX:
-	brew $(BREW_SOURCE) install $(PACKAGE) || brew $(BREW_SOURCE) reinstall $(PACKAGE)
+	brew $(BREW_SOURCE) list | grep $(PACKAGE) || brew $(BREW_SOURCE) install $(PACKAGE)
+	brew $(BREW_SOURCE) list | grep $(PACKAGE) && brew $(BREW_SOURCE) reinstall $(PACKAGE)
 
 i-WIN32:
 	choko install $(PACKAGE)
