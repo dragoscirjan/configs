@@ -15,6 +15,7 @@ else
 	$(POWERSHELL) "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
 endif
 
+all: chrome edge firefox opera vivaldi ## Install all browsers (without dev versions)
 
 chrome: chrome-$(OSFLAG) ## Install Google Chrome Browser
 
