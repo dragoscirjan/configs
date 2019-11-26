@@ -11,3 +11,11 @@ choco install make
 #
 # Install Git
 #
+choco install git
+
+#
+# Install Configs
+#
+# mkdir -P ~/bin
+# cd ~/bin
+# git clone https://github.com/dragoscirjan/configs
