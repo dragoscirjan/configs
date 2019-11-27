@@ -42,10 +42,15 @@ utils-LINUX:
 	make --directory=$(DIR_INSTALL) i PACKAGE=jq
 
 utils-OSX:
-	@echo Do I need JQ?
+	make --directory=$(DIR_INSTALL) i PACKAGE=jq
 
 utils-WIN32:
 	make --directory=$(DIR_INSTALL) dld URL="https://github.com/stedolan/jq/releases/download/jq-1.6/jq-win64.exe" FILE="../bin/jq.exe"
+
+
+all-minimal: vscode sublime ## Install Visual Studio Code & Sublime Text
+
+all: all-minimal idea pycharm-ce ## Install `all-minimal`, IntelliJ Idea & PyCharm CE
 
 intellij: utils-$(OSFLAG) intellij-$(OSFLAG)
 
@@ -65,7 +70,7 @@ intellij-OSX:
 		| while read link; do \
 			echo $$link; \
 			make --directory=$(DIR_INSTALL) dld URL="$$link" FILE="~/tmp/$${link##*/}"; \
-			make --directory=$(DIR_INSTALL) li PACKAGE="~/tmp/$${link##*/}"; \
+			make --directory=$(DIR_INSTALL) il FILE="~/tmp/$${link##*/}"; \
 			make --directory=$(DIR_INSTALL) rm FILE="~/tmp/$${link##*/}"; \
 		done
 
@@ -73,15 +78,15 @@ intellij-WIN32:
 	$(POWERSHELL) -File ./intellij.ps1 --keys $(INTELLIJ_APP) --url "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
 
 
-ATOM_MODE=stable
-# ATOM_MODE=beta
-atom: atom-$(OSFLAG) ## Install Atom
+ATOM=stable
+# ATOM=beta
+atom: atom-$(OSFLAG) ## Install Atom ATOM=stable,beta
 
 atom-LINUX: atom-$(OSID)
 
 atom-ubuntu: atom-debian
 
-atom-debian: atom-debian-$(ATOM_MODE)
+atom-debian: atom-debian-$(ATOM)
 
 atom-debian-stable: 
 	make --directory=$(DIR_INSTALL) iu URL="https://atom-installer.github.com/v1.39.1/atom-amd64.deb?s=$(shell date +%s)&ext=.deb" FILE="~/tmp/atom.deb"
@@ -89,11 +94,11 @@ atom-debian-stable:
 atom-debian-beta:
 	make --directory=$(DIR_INSTALL) iu URL="https://atom-installer.github.com/v1.40.0-beta1/atom-amd64.deb?s=$(shell date +%s)&ext=.deb" FILE="~/tmp/atom.deb"
 
-atom-OSX:
-	make --directory=../.install i PACKAGE=atom$$(test "$(ATOM_MODE)" == "beta" && echo "-beta")
+atom-OSX: BREW_SOURCE=cask
+	make --directory=$(DIR_INSTALL) i PACKAGE=atom$$(test "$(ATOM)" == "beta" && echo "-beta") BREW_SOURCE=cask
 
 atom-WIN32:
-ifeq (beta,$(ATOM_MODE))
+ifeq (beta,$(ATOM))
 	make --directory=$(DIR_INSTALL) iu URL="https://atom.io/download/windows_x64?channel=beta" FILE="~/tmp/atom-beta.exe"
 else
 	make --directory=$(DIR_INSTALL) iu URL=https://atom.io/download/windows_x64 FILE="~/tmp/atom.exe"
@@ -145,6 +150,15 @@ pycharm-ce-snap:
 	snap install pycharm-community --classic
 
 
+webstorm: phpstorm-$(INTELLIJ_UTIL) ## Install IntelliJ WebStorm
+
+webstorm-intellij:
+	make intellij INTELLIJ_APP=WS
+
+webstorm-snap:
+	snap install phpstorm --classic
+
+
 sublime: sublime-$(OSFLAG) ## Install Sublime Text
 
 sublime-LINUX: sublime-$(OSID)
@@ -177,7 +191,7 @@ sublime-WIN32:
 
 VSCODE=stable
 # VSCODE=insider
-vscode: vscode-$(OSFLAG) ## Install Visual Studio Code
+vscode: vscode-$(OSFLAG) ## Install Visual Studio Code VSCODE=stable,insider
 
 vscode-LINUX: vscode-$(OSID)
 
@@ -193,7 +207,7 @@ vscode-debian:
 # 	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/linux-deb-x64/$(VSCODE)" FILE="~/tmp/vscode.deb"
 
 vscode-OSX:
-	cd ../.install && make i PACKAGE=visual-studio-code
+	make --directory=$(DIR_INSTALL) i PACKAGE=visual-studio-code$$(test "$(VSCODE)" == "insider" && echo "-insiders") BREW_SOURCE=cask
 
 vscode-WIN32:
 	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/win32-x64/$(VSCODE)" FILE="~/tmp/vscode.exe"

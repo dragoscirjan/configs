@@ -6,6 +6,11 @@ include ./Makefile.template
 
 IL_WIN_ARGS ?= ''
 
+CURL=curl -SL
+ifeq (powershell,$(SHELL_IS))
+	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
+endif
+
 #
 # Utils
 #
@@ -36,9 +41,10 @@ endif
 # Download File
 #
 
-dld:  apt-utils mktmp mkbin dld-$(SHELL_IS) ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
+dld: apt-utils mktmp mkbin dld-$(SHELL_IS) ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
 
 dld-bash:
+
 	$(CURL) "$(URL)" --output $(FILE)
 
 dld-powershell:
@@ -100,9 +106,9 @@ il-LINUX-bash-debian:
 il-OSX-bash:
 	# http://commandlinemac.blogspot.com/2008/12/installing-dmg-application-from-command.html
 	hdiutil mount $(FILE) -mountpoint $$HOME/tmp/volume
-	find /Users/dragos.cirjan/tmp/volume -type d -iname "*.app" -mindepth 1 -maxdepth 1 \
+	find $$HOME/tmp/volume -type d -iname "*.app" -mindepth 1 -maxdepth 1 \
 		| while read app; do sudo cp -R "$$app" /Applications; done
-	find /Users/dragos.cirjan/tmp/volume -type f -iname "*.pkg" -mindepth 1 -maxdepth 1 \
+	find $$HOME/tmp/volume -type f -iname "*.pkg" -mindepth 1 -maxdepth 1 \
 		| while read app; do echo sudo installer -package $$app -target "/Volumes/Macintosh HD"; done
 	hdiutil unmount $$HOME/tmp/volume
 
