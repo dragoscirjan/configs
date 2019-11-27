@@ -1,74 +1,8 @@
-## v0.4
-#
-# Detect OS
-#
-OSFLAG :=
-OSARCH :=
-OSID :=
-ifeq ($(OS),Windows_NT)
-	OSFLAG = WIN32
-	ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
-		OSARCH = AMD64
-	endif
-	ifeq ($(PROCESSOR_ARCHITECTURE),x86)
-		OSARCH = IA32
-	endif
-else
-	UNAME_S := $(shell uname -s)
-	ifeq ($(UNAME_S),Linux)
-		OSFLAG = LINUX
-		OSID = $(shell cat /etc/*-release | egrep "^ID=" | cut -f2 -d=)
-	endif
-	ifeq ($(UNAME_S),Darwin)
-		OSFLAG = OSX
-	endif
-		UNAME_P := $(shell uname -p)
-	ifeq ($(UNAME_P),x86_64)
-		OSARCH = AMD64
-	endif
-		ifneq ($(filter %86,$(UNAME_P)),)
-			OSARCH = IA32
-		endif
-	ifneq ($(filter arm%,$(UNAME_P)),)
-		OSARCH = ARM
-	endif
-endif
-
-#
-# Detect Shell
-#
-SHELL_IS := 
-ifeq ($(SHELL),/bin/bash)
-    SHELL_IS = bash
-else ifeq ($(SHELL),/usr/bin/bash)
-    SHELL_IS = bash
-else ifeq ($(SHELL),/bin/sh)
-	SHELL_IS = bash
-else ifeq ($(SHELL),C:/Program Files/Git/usr/bin/sh.exe)
-	SHELL_IS = bash
-else
-    SHELL_IS = powershell
-endif
-
-#
-# Help Directive
-#
-.PHONY: help
-help:
-ifeq ($(SHELL_IS),bash)
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-else
-	@echo 'Windows Help not available yet.'
-endif
-.DEFAULT_GOAL := help
+include ./Makefile.template
 
 #
 # Actual Action Definitions
 #
-
-NOT_IMPLEMENTED_LINUX = "Not implemented under Linux"
-NOT_IMPLEMENTED_OSX = "Not implemented under OSX"
-NOT_IMPLEMENTED_WINDOWS = "Not implemented under Windows"
 
 POWERSHELL=powershell -ExecutionPolicy ByPass
 
@@ -81,13 +15,15 @@ else
 	$(POWERSHELL) "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
 endif
 
-chrome: ## Install Google Chrome Browser
+all: chrome edge firefox opera vivaldi ## Install all browsers (without dev versions)
+
+chrome: chrome-$(OSFLAG) ## Install Google Chrome Browser
 
 chrome-LINUX:
 	xdg-open https://www.google.com/chrome/ || gnome-open https://www.google.com/chrome/
 
 chrome-OSX:
-	cd ../.install && make i PACKAGE=atom$$(test "$(ATOM_MODE)" == "beta" && echo "-beta")
+	make --directory=$(DIR_INSTALL) i PACKAGE=google-chrome BREW_SOURCE=cask
 
 chrome-WIN32:
 	powershell -ExecutionPolicy ByPass -Command " Start-Process -FilePath https://www.google.com/chrome/"
@@ -96,7 +32,7 @@ chrome-WIN32:
 chromium: chromium-$(OSFLAG) ## Install Chromium Browser
 
 chromium-LINUX:
-	make --directory=$(DIR_INSTALL) i PACKAGE=chromium-browser
+	make --directory=$(DIR_INSTALL) i PACKAGE=chromium-browser BREW_SOURCE
 
 chromium-OSX:
 	@echo "$(NOT_IMPLEMENTED_OSX)"
@@ -106,7 +42,7 @@ chromium-WIN32:
 
 
 EDGE=edge
-edge: ## Install Edge Browser
+edge: chromium-$(OSFLAG)-$(EDGE) ## Install Edge Browser EDGE=edge,insider
 	
 edge-LINUX-edge:
 	echo "$(NOT_IMPLEMENTED_LINUX)"
@@ -115,10 +51,10 @@ edge-LINUX-insider:
 	echo "$(NOT_IMPLEMENTED_LINUX)"
 
 edge-OSX-edge:
-	echo "$(NOT_IMPLEMENTED_OSX)"
+	make --directory=$(DIR_INSTALL) i PACKAGE=homebrew/cask-versions/microsoft-edge-beta BREW_SOURCE=cask
 
 edge-OSX-insider:
-	echo "$(NOT_IMPLEMENTED_OSX)"
+	make --directory=$(DIR_INSTALL) i PACKAGE=homebrew/cask-versions/microsoft-edge-canary BREW_SOURCE=cask
 
 edge-WIN32-edge:
 	echo "This one should already be installed."
@@ -131,14 +67,14 @@ FIREFOX=firefox
 firefox: firefox-$(OSFLAG)-$(FIREFOX) ## Install Firefox Browser FIREFOX=firefox,aurora
 
 firefox-LINUX-firefox:
-	make --directory=$(DIR_INSTALL) i PACKAGE=firefox
+	make --directory=$(DIR_INSTALL) i PACKAGE=firefox BREW_SOURCE=cask
 
 firefox-LINUX-aurora:
 	make --directory=$(DIR_INSTALL) dld URL="https://download-installer.cdn.mozilla.net/pub/devedition/releases/69.0b11/linux-x86_64/en-US/firefox-69.0b11.tar.bz2" FILE="~/bin/firefox.tar.bz2"
 	cd ~/bin && tar -xjvf firefox.tar.bz2 && ln -s ./firefox/firefox ./firefox-aurora
 
 firefox-OSX-firefox:
-	make --directory=$(DIR_INSTALL) i PACKAGE=firefox
+	make --directory=$(DIR_INSTALL) i PACKAGE=firefox BREW_SOURCE=cask
 
 firefox-OSX-aurora:
 	make --directory=$(DIR_INSTALL) i PACKAGE=firefox-developer-edition BREW_SOURCE=cask
@@ -151,7 +87,7 @@ firefox-WIN32-aurora:
 
 
 OPERA=opera
-opera: opera-$(OSFLAG)-$(OPERA) ## Install Opera Browser
+opera: opera-$(OSFLAG)-$(OPERA) ## Install Opera Browser OPERA=opera,neon
 
 opera-LINUX-opera: opera-$(OSID)-$(OPERA)
 
@@ -164,10 +100,10 @@ opera-LINUX-neon:
 	echo $(NOT_IMPLEMENTED_LINUX)
 
 opera-OSX-opera:
-	echo $(NOT_IMPLEMENTED_OSX)
+	make --directory=$(DIR_INSTALL) i PACKAGE=opera BREW_SOURCE=cask
 
 opera-OSX-neon:
-	echo $(NOT_IMPLEMENTED_OSX)
+	make --directory=$(DIR_INSTALL) i PACKAGE=opera-neon BREW_SOURCE=cask
 
 opera-WIN32-opera:
 	make --directory=$(DIR_INSTALL) iu URL="http://get.geo.opera.com/.private/OperaNeonSetup.exe?utm_tryagain=yes" FILE="~/tmp/opera.exe"
@@ -185,8 +121,8 @@ vivaldi-ubuntu: vivaldi-debian
 vivaldi-debian:
 	make --directory=$(DIR_INSTALL) iu URL="https://downloads.vivaldi.com/stable/vivaldi-stable_2.6.1566.49-1_amd64.deb" FILE="~/tmp/vivaldi.deb"
 	
-vivalid-OSX:
-	cd ../.install && make i PACKAGE=atom$$(test "$(ATOM_MODE)" == "beta" && echo "-beta")
+vivaldi-OSX:
+	make --directory=$(DIR_INSTALL) i PACKAGE=vivaldi BREW_SOURCE=cask
 
 vivaldi-WIN32:
 	make --directory=$(DIR_INSTALL) iu URL="https://downloads.vivaldi.com/stable/Vivaldi.2.6.1566.49.exe" FILE="~/tmp/vivaldi.exe"
