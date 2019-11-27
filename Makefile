@@ -45,3 +45,4 @@ sync-makefile-template:
 	$(CP_TEMPLATE) ./code-templates/python
 	$(CP_TEMPLATE) ./code-templates/typescript
 	$(CP_TEMPLATE) ./git
+	$(CP_TEMPLATE) ./quemu/macos
