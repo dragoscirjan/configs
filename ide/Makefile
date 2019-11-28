@@ -94,7 +94,7 @@ atom-debian-stable:
 atom-debian-beta:
 	make --directory=$(DIR_INSTALL) iu URL="https://atom-installer.github.com/v1.40.0-beta1/atom-amd64.deb?s=$(shell date +%s)&ext=.deb" FILE="~/tmp/atom.deb"
 
-atom-OSX: BREW_SOURCE=cask
+atom-OSX: 
 	make --directory=$(DIR_INSTALL) i PACKAGE=atom$$(test "$(ATOM)" == "beta" && echo "-beta") BREW_SOURCE=cask
 
 atom-WIN32:
@@ -187,6 +187,31 @@ sublime-OSX:
 
 sublime-WIN32:
 	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe"
+
+
+vim: vim-$(OSFLAG) ## Install VIM
+
+vim-LINUX:
+	make --directory=$(DIR_INSTALL) i PACKAGE=vim
+	curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	cp ~/.vimrc ~/.vimrc-$$(date +%F).$$(date +%N)
+	cp .vimrc ~/.vimrc
+
+vim-OSX:
+	curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	cp ~/.vimrc ~/.vimrc-$$(date +%F).$$(date +%N)
+	cp .vimrc ~/.vimrc
+
+vim-WINDOWS:
+	make --directory=$(DIR_INSTALL) i PACKAGE=neovim
+	#md ~\AppData\Local\nvim\autoload
+	#$$uri = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+	#(New-Object Net.WebClient).DownloadFile(
+	#  $uri,
+	#  $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath(
+	#    "~\AppData\Local\nvim\autoload\plug.vim"
+	#  )
+	#)
 
 
 VSCODE=stable
