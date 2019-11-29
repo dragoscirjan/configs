@@ -97,19 +97,19 @@ mkfont-powershell:
 
 fonts-LINUX:
 	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
-	find ~/tmp/fonts -iname "*.ttf" | while read font; do cp $$font ~/.fonts; done
+	find ~/tmp/fonts -iname "*.ttf" | while read font; do echo "Installing '$$font' ..."; cp "$$font" ~/.fonts; done
 
 fonts-LINUX-otf:
 	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
-	find ~/tmp/fonts -iname "*.otf" | while read font; do cp $$font ~/.fonts; done
+	find ~/tmp/fonts -iname "*.otf" | while read font; do echo "Installing '$$font' ..."; cp "$$font" ~/.fonts; done
 
 fonts-OSX:
 	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
-	find ~/tmp/fonts -iname "*.ttf" | while read font; do cp $$font ~/Library/Fonts; done
+	find ~/tmp/fonts -iname "*.ttf" | while read font; do echo "Installing '$$font' ..."; cp "$$font" ~/Library/Fonts; done
 
 fonts-OSX-otf:
 	unzip ~/tmp/fonts.zip -d ~/tmp/fonts
-	find ~/tmp/fonts -iname "*.otf" | while read font; do cp $$font ~/Library/Fonts; done
+	find ~/tmp/fonts -iname "*.otf" | while read font; do echo "Installing '$$font' ..."; cp "$$font" ~/Library/Fonts; done
 
 #
 # Actual Action Definitions
@@ -161,6 +161,29 @@ monoid-OSX: monoid-dld fonts-OSX
 monoid-WIN32: monoid-dld
 	$(POWERSHELL) -File ../.ps/install-font.ps1
 
+
+nerd: mkfont nerd-hack-$(OSFLAG) nerd-hasklig-$(OSFLAG) ## Install Nerd https://github.com/ryanoasis/nerd-fonts
+
+nerd-hack-dld:
+	make --directory=$(DIR_INSTALL) dld URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v2.0.0/Hack.zip" FILE="~/tmp/fonts.zip"
+
+nerd-hack-LINUX: nerd-hack-dld fonts-LINUX
+
+nerd-hack-OSX: nerd-hack-dld fonts-OSX
+
+nerd-hack-WIN32: nerd-hack-dld
+	$(POWERSHELL) -File ../.ps/install-font.ps1
+
+nerd-hasklig-dld:
+	make --directory=$(DIR_INSTALL) dld URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v2.0.0/Hasklig.zip" FILE="~/tmp/fonts.zip"
+
+nerd-hasklig-LINUX: nerd-hasklig-dld fonts-LINUX-otf
+
+nerd-hasklig-OSX: nerd-hasklig-dld fonts-OSX-otf
+
+nerd-hasklig-WIN32: nerd-hasklig-dld
+	$(POWERSHELL) -Command "Expand-Archive -Force ~/tmp/fonts.zip -DestinationPath ~/tmp/fonts"
+	$(POWERSHELL) -File ../.ps/install-font.ps1 --ext otf
 
 
 sourcecodepro: mkfont sourcecodepro-$(OSFLAG) ## Install Source Code Pro Font https://github.com/adobe-fonts/source-code-pro

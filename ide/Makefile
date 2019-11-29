@@ -123,6 +123,27 @@ idea-ce-snap:
 	snap install intellij-idea-community --classic
 
 
+neovim: vim-$(OSFLAG) ## Install NeoVIM
+
+neovim-font:
+	make --directory=../fonts nerd
+
+neovim-LINUX: neovim-font
+	# 	make --directory=$(DIR_INSTALL) i PACKAGE=neovim
+	# 	make --directory=$(DIR_INSTALL) i PACKAGE=python-neovim
+# 	make --directory=$(DIR_INSTALL) i PACKAGE=python3-neovim
+# 	cp -rdf ~/.local/share/nvim/site/init.vim ~/.local/share/nvim/site/init.vim-$$(date +%F).$$(date +%N) || true
+	mkdir -p ~/.config/nvim
+	cp -rdf neovim-init.vim ~/.config/nvim/init.vim
+
+neovim-OSX: neovim-font
+	echo $(NOT_IMPLEMENTED_OSX)
+
+neovim-WINDOWS: neovim-font
+	echo $(NOT_IMPLEMENTED_WINDOWS)
+# 	make --directory=$(DIR_INSTALL) i PACKAGE=neovim 
+
+
 phpstorm: phpstorm-$(INTELLIJ_UTIL) ## Install IntelliJ PhpStorm
 
 phpstorm-intellij:
@@ -191,27 +212,22 @@ sublime-WIN32:
 
 vim: vim-$(OSFLAG) ## Install VIM
 
-vim-LINUX:
+vim-font:
+	make --directory=../fonts nerd
+
+vim-LINUX: vim-font
 	make --directory=$(DIR_INSTALL) i PACKAGE=vim
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	cp ~/.vimrc ~/.vimrc-$$(date +%F).$$(date +%N)
+	cp ~/.vimrc ~/.vimrc-$$(date +%F).$$(date +%N) || true
 	cp .vimrc ~/.vimrc
 
-vim-OSX:
+vim-OSX: vim-font
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	cp ~/.vimrc ~/.vimrc-$$(date +%F).$$(date +%N)
+	cp ~/.vimrc ~/.vimrc-$$(date +%F).$$(date +%N) || true
 	cp .vimrc ~/.vimrc
 
-vim-WINDOWS:
-	make --directory=$(DIR_INSTALL) i PACKAGE=neovim
-	#md ~\AppData\Local\nvim\autoload
-	#$$uri = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-	#(New-Object Net.WebClient).DownloadFile(
-	#  $uri,
-	#  $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath(
-	#    "~\AppData\Local\nvim\autoload\plug.vim"
-	#  )
-	#)
+vim-WINDOWS: vim-font
+	echo $(NOT_IMPLEMENTED_WINDOWS)
 
 
 VSCODE=stable
