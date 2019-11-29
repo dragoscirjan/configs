@@ -129,10 +129,10 @@ neovim-font:
 	make --directory=../fonts nerd
 
 neovim-LINUX: neovim-font
-	# 	make --directory=$(DIR_INSTALL) i PACKAGE=neovim
-	# 	make --directory=$(DIR_INSTALL) i PACKAGE=python-neovim
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=python3-neovim
-# 	cp -rdf ~/.local/share/nvim/site/init.vim ~/.local/share/nvim/site/init.vim-$$(date +%F).$$(date +%N) || true
+	make --directory=$(DIR_INSTALL) i PACKAGE=neovim
+	make --directory=$(DIR_INSTALL) i PACKAGE=python-neovim
+	make --directory=$(DIR_INSTALL) i PACKAGE=python3-neovim
+	cp -rdf ~/.config/nvim/init.vim ~/.config/nvim/init.vim-$$(date +%F).$$(date +%N) || true
 	mkdir -p ~/.config/nvim
 	cp -rdf neovim-init.vim ~/.config/nvim/init.vim
 

@@ -32,7 +32,7 @@ Plug 'airblade/vim-gitgutter'
 " Generic Tools
 Plug 'scrooloose/nerdcommenter' " Comment Code	
 Plug 'editorconfig/editorconfig-vim'
-Plug 'neoclide/coc.nvim', { 'do': 'yarn install' } " Intelli Sense
+Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'} " Intelli Sense
 Plug 'mattn/emmet-vim' " Emmet
 
 "
@@ -106,11 +106,11 @@ let g:coc_global_extensions = [
   \ 'coc-pairs',
   \ 'coc-prettier',
   \ 'coc-tsserver',
+  \ 'coc-eslint',
   \ 'coc-tslint',
   \ 'coc-json',
   \ 'coc-yaml',
   \ ]
-"  \ 'coc-eslint',
 "  \ 'coc-html',
 "  \ 'coc-css',
 "  \ 'coc-stylelint',
