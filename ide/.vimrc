@@ -32,7 +32,7 @@ Plug 'airblade/vim-gitgutter'
 " Generic Tools
 Plug 'scrooloose/nerdcommenter' " Comment Code	
 Plug 'editorconfig/editorconfig-vim'
-Plug 'neoclide/coc.nvim' " Intelli Sense
+Plug 'neoclide/coc.nvim', { 'do': 'yarn install' } " Intelli Sense
 Plug 'mattn/emmet-vim' " Emmet
 
 "
@@ -50,7 +50,6 @@ call plug#end()
 " Settings
 """
 
-
 " Set IDE Encoding
 set encoding=UTF-8
 
@@ -59,7 +58,7 @@ set number
 "set nonumber
 
 " Theme
-colorscheme gruvbox
+:silent! colorscheme gruvbox
 
 "
 " Make it more IDEish
@@ -105,11 +104,19 @@ let g:user_emmet_mode='a'    "enable all function in all mode.
 let g:coc_global_extensions = [
   \ 'coc-snippets',
   \ 'coc-pairs',
-  \ 'coc-tsserver',
-  \ 'coc-eslint',
   \ 'coc-prettier',
+  \ 'coc-tslint',
+  \ 'coc-eslint',
+  \ 'coc-tsserver',
   \ 'coc-json',
+  \ 'coc-yaml',
   \ ]
+"  \ 'coc-html',
+"  \ 'coc-css',
+"  \ 'coc-stylelint',
+"  \ 'coc-vetur',
+"  \ 'coc-python',
+"  \ 'coc-java',
 
 
 
