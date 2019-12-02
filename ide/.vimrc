@@ -52,6 +52,15 @@ call plug#end()
 
 " Set IDE Encoding
 set encoding=UTF-8
+if has("macunix") || has('os2')
+  set guifont=Hack\ Nerd\ Font\:12
+else
+    if has('unix')
+      set guifont=Hack\ Nerd\ Font\ 12
+    else " if has('win32')
+      set guifont=Hack\ Nerd\ Font\ 12
+    endif
+endif
 
 " show line numbers
 set number
