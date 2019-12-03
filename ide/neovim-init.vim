@@ -30,9 +30,10 @@ Plug 'airblade/vim-gitgutter'
 
 " Generic Tools
 Plug 'scrooloose/nerdcommenter' " Comment Code	
-Plug 'editorconfig/editorconfig-vim'
+Plug 'editorconfig/editorconfig-vim' " Editorconfig
 Plug 'neoclide/coc.nvim', {'do': 'yarn install --frozen-lockfile'} " Intelli Sense
 Plug 'mattn/emmet-vim' " Emmet
+Plug 'wakatime/vim-wakatime' " Wakatime
 
 "
 " TS
