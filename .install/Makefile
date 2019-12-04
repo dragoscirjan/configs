@@ -44,7 +44,6 @@ endif
 dld: apt-utils mktmp mkbin dld-$(SHELL_IS) ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
 
 dld-bash:
-
 	$(CURL) "$(URL)" --output $(FILE)
 
 dld-powershell:
@@ -132,7 +131,7 @@ iu-OSX-bash:
 	@echo "$(NOT_IMPLEMENTED_OSX)"
 
 iu-WIN32-bash:
-	make il-WIN32-bash FILE="$(FILE)" IL_WIN_ARGS=$(IL_WIN_ARGS)
+	make il-WIN32-bash FILE="$(FILE)" IL_WIN_ARGS="$(IL_WIN_ARGS)"
 	make rm
 
 iu-WIN32-powershell: iu-WIN32-bash

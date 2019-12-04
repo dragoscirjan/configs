@@ -64,9 +64,9 @@ python-LINUX:
 python-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
+WIN_PY_VER = 3.7.5
 python-WIN32:
-# 	make --directory=$(DIR_INSTALL) dld URL="https://www.python.org/ftp/python/3.7.4/python-3.7.4.exe" FILE="~/tmp/python.exe"
-	$(POWERSHELL) -Command "~/tmp/pythoon.exe /passive 	InstallAllUsers=1 PrependPath=1 Include_test=0"
+	make --directory=$(DIR_INSTALL) iu URL="https://www.python.org/ftp/python/$(WIN_PY_VER)/python-$(WIN_PY_VER).exe" FILE="~/tmp/python.exe" IL_WIN_ARGS="/NoCRLCheck /passive InstallAllUsers=1 PrependPath=1 Include_test=0"
 
 
 ruby: ruby-$(OSFLAG) ## Install Ruby
@@ -78,4 +78,4 @@ ruby-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
 ruby-WIN32:
-	make --directory=$(DIR_INSTALL) iu URL="https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.6.3-1/rubyinstaller-2.6.3-1-x64.exe" FILE="~/tmp/ruby.exe"
+	make --directory=$(DIR_INSTALL) iu URL="https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.6.3-1/rubyinstaller-2.6.3-1-x64.exe" FILE="~/tmp/ruby.exe IL_WIN_ARGS="/sp- /silent"
