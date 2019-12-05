@@ -122,27 +122,37 @@ idea-ce-intellij:
 idea-ce-snap:
 	snap install intellij-idea-community --classic
 
+NEO_CONFIG_PATH=~/.config/nvm
+ifeq ($(OSFLAG),WIN32)
+	NEO_CONFIG_PATH=~/AppData/Local/nvim
+endif
 
 neovim: vim-$(OSFLAG) ## Install NeoVIM
 
 neovim-font:
 	make --directory=../fonts nerd
 
+nevim-postinstall:
+	# config
+	mkdir -p $(NEO_CONFIG_PATH)
+	cp -rdf $(NEO_CONFIG_PATH)/init.vim $(NEO_CONFIG_PATH)/init.vim-$$(date +%F).$$(date +%N) || true
+	cp -rdf neovim-init.vim $(NEO_CONFIG_PATH)/init.vim
+	# vim-plug
+	curl --insecure -fLo $(NEO_CONFIG_PATH)/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
 neovim-LINUX: neovim-font
 	make --directory=$(DIR_INSTALL) i PACKAGE=neovim
 	make --directory=$(DIR_INSTALL) i PACKAGE=python-neovim
 	make --directory=$(DIR_INSTALL) i PACKAGE=python3-neovim
-	cp -rdf ~/.config/nvim/init.vim ~/.config/nvim/init.vim-$$(date +%F).$$(date +%N) || true
-	mkdir -p ~/.config/nvim
-	cp -rdf neovim-init.vim ~/.config/nvim/init.vim
+	make neovim-postinstall
 
 neovim-OSX: neovim-font
 	echo $(NOT_IMPLEMENTED_OSX)
 
 neovim-WINDOWS: neovim-font
 	echo $(NOT_IMPLEMENTED_WINDOWS)
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=neovim 
-
+	make neovim-postinstall
+	sed -e "s|~/.local/share|~/AppData/Local|g" -i ~/AppData/Local/nvim/init.vim
 
 phpstorm: phpstorm-$(INTELLIJ_UTIL) ## Install IntelliJ PhpStorm
 
@@ -215,19 +225,22 @@ vim: vim-$(OSFLAG) ## Install VIM
 vim-font:
 	make --directory=../fonts nerd
 
+vim-postinstall:
+	# config
+	cp ~/.vimrc ~/.vimrc-$$(date +%F).$$(date +%N) || true
+	cp .vimrc ~/.vimrc
+	# vim-plug
+	curl --insecure -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
 vim-LINUX: vim-font
 	make --directory=$(DIR_INSTALL) i PACKAGE=vim
-	curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	cp ~/.vimrc ~/.vimrc-$$(date +%F).$$(date +%N) || true
-	cp .vimrc ~/.vimrc
+	make vim-postinstall
 
 vim-OSX: vim-font
-	curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	cp ~/.vimrc ~/.vimrc-$$(date +%F).$$(date +%N) || true
-	cp .vimrc ~/.vimrc
+	make vim-postinstall
 
 vim-WINDOWS: vim-font
-	echo $(NOT_IMPLEMENTED_WINDOWS)
+	make vim-postinstall
 
 
 VSCODE=stable
