@@ -10,16 +10,30 @@ DIR_INSTALL = ../.install
 # Actual Action Definitions
 #
 
+GO_VERSION = 1.13.5
+
 golang: golang-$(OSFLAG) ## Install golang
+	export GOPATH="$$HOME/go"
+	# Go Critic (VS Code Required)
+	go get -v github.com/go-lintpack/lintpack/...
+	go get -v github.com/go-critic/go-critic/...
+	# Go Doc (VS Code Required)
+	# go get -v github.com/zmb3/gogetdoc/...
+	# Go Outliner (VS Code Required)
+	go get -u github.com/766b/go-outliner 
 
 golang-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+	make --directory=$(DIR_INSTALL) dld URL="https://dl.google.com/go/go$(GO_VERSION).linux-amd64.tar.gz" FILE="~/tmp/go-lang.tar.gz"
+	cd ~/tmp && tar -xzf go-lang.tar.gz && sudo mv go /usr/local
+	sudo rm -rf /usr/local/bin/go /usr/local/bin/gofmt
+	sudo ln -s /usr/local/go/bin/go /usr/local/bin/go
+	sudo ln -s /usr/local/go/bin/gofmt /usr/local/bin/gofmt
 
 golang-OSX:
-	@echo $(NOT_IMPLEMENTED_OSX)
+	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go$(GO_VERSION).darwin-amd64.pkg" FILE="~/tmp/go-lang.pkg"
 
 golang-WIN32:
-	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go1.12.7.windows-amd64.msi" FILE="~/tmp/go-lang.msi"
+	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go$(GO_VERSION).windows-amd64.msi" FILE="~/tmp/go-lang.msi"
 
 # JAVA_VERSION=8
 JAVA_VERSION=11

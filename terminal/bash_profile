@@ -1,5 +1,26 @@
 
-which thefuck > /dev/null && eval $(thefuck --alias)
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+#force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+#which thefuck > /dev/null && eval $(thefuck --alias)
 
 # Git branch in prompt.
 
@@ -8,10 +29,26 @@ parse_git_branch() {
   which git > /dev/null || echo 'no git installed'
 }
 
-export PS1="\u@\h \W\[\033[32m\]\$(parse_git_branch)\[\033[00m\] \[\033[32m\]λ\[\033[00m\] "
+if [ -f /etc/debian_version ]; then
+  if [ "$color_prompt" = yes ]; then
+    export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[32m\]$(parse_git_branch)\[\033[00m\] \[\033[32m\]λ\[\033[00m\] '
+  else
+    export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(parse_git_branch) λ '
+  fi
+else
+  export PS1="\u@\h \W\[\033[32m\]\$(parse_git_branch)\[\033[00m\] \[\033[32m\]λ\[\033[00m\] "
+fi
+
+prepare_go() {
+  export GOROOT=$HOME/go
+  export PATH=$PATH:$GOROOT/bin
+}
+
 
 uname -a | grep Darwin > /dev/null \
 	&& export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
 mkdir -p $HOME/bin
 export PATH="$HOME/bin:$PATH"
+
+which go > /dev/null && prepare_go

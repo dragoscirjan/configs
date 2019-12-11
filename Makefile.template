@@ -34,6 +34,8 @@ else
 	endif
 endif
 
+echo 'test'
+
 #
 # Detect Shell
 #
@@ -44,6 +46,7 @@ else ifeq ($(SHELL),/usr/bin/bash)
     SHELL_IS = bash
 else ifeq ($(SHELL),/bin/sh)
 	SHELL_IS = bash
+# TODO: The following ifeq should dissapear
 else ifeq ($(SHELL),C:/Program Files/Git/usr/bin/sh.exe)
 	SHELL_IS = bash
 else
