@@ -94,7 +94,7 @@ opera-LINUX-opera: opera-$(OSID)-$(OPERA)
 opera-ubuntu-opera: opera-debian-opera
 
 opera-debian-opera:
-	make --directory=$(DIR_INSTALL) iu URL="https://download3.operacdn.com/pub/opera/desktop/62.0.3331.99/linux/opera-stable_62.0.3331.99_amd64.deb" FILE="~/tmp/opera.deb"
+	make --directory=$(DIR_INSTALL) iu URL="https://download3.operacdn.com/pub/opera/desktop/65.0.3467.69/linux/opera-stable_65.0.3467.69_amd64.deb" FILE="~/tmp/opera.deb"
 
 opera-LINUX-neon:
 	echo $(NOT_IMPLEMENTED_LINUX)
