@@ -58,10 +58,21 @@ java-OSX:
 java-WIN32:
 
 
+NODE_VERSION=13
 nodejs: nodejs-$(OSFLAG) ## Install NodeJs
 
 nodejs-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+ifeq ($(OSID),debian)
+	curl -sL https://deb.nodesource.com/setup_$(NODE_VERSION).x | bash -
+	sudo apt-get install -y nodejs
+endif
+ifeq ($(OSID),ubuntu)
+	curl -sL https://deb.nodesource.com/setup_$(NODE_VERSION).x | sudo -E bash -
+	sudo apt-get install -y nodejs
+endif
+ifeq ($(OSID),rhel)
+	curl -sL https://rpm.nodesource.com/setup_$(NODE_VERSION).x | sudo bash -
+endif
 
 nodejs-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
