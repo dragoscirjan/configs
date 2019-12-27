@@ -59,7 +59,7 @@ java-WIN32:
 
 
 NODE_VERSION=13
-nodejs: nodejs-$(OSFLAG) ## Install NodeJs
+nodejs: nodejs-$(OSFLAG) ## Install NodeJs NODE_VERSION=13,12,11,10,8
 
 nodejs-LINUX:
 ifeq ($(OSID),debian)
