@@ -20,7 +20,7 @@ golang: golang-$(OSFLAG) ## Install golang
 	# Go Doc (VS Code Required)
 	# go get -v github.com/zmb3/gogetdoc/...
 	# Go Outliner (VS Code Required)
-	go get -u github.com/766b/go-outliner 
+	go get -u github.com/766b/go-outliner
 
 golang-LINUX:
 	make --directory=$(DIR_INSTALL) dld URL="https://dl.google.com/go/go$(GO_VERSION).linux-amd64.tar.gz" FILE="~/tmp/go-lang.tar.gz"

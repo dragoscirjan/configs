@@ -88,14 +88,14 @@ atom-ubuntu: atom-debian
 
 atom-debian: atom-debian-$(ATOM)
 
-atom-debian-stable: 
-	make --directory=$(DIR_INSTALL) iu URL="https://atom-installer.github.com/v1.39.1/atom-amd64.deb?s=$(shell date +%s)&ext=.deb" FILE="~/tmp/atom.deb"
+atom-debian-stable:
+	bash ../bin/install.sh --generic-url="https://atom.io/download/deb" --generic-match="atom-amd64.deb" --package-type=deb
 
 atom-debian-beta:
-	make --directory=$(DIR_INSTALL) iu URL="https://atom-installer.github.com/v1.40.0-beta1/atom-amd64.deb?s=$(shell date +%s)&ext=.deb" FILE="~/tmp/atom.deb"
+	bash ../bin/install.sh --generic-url="https://atom.io/download/deb?channel=beta" --generic-match="atom-amd64.deb" --package-type=deb
 
-atom-OSX: 
-	make --directory=$(DIR_INSTALL) i PACKAGE=atom$$(test "$(ATOM)" == "beta" && echo "-beta") BREW_SOURCE=cask
+atom-OSX:
+	bash ../bin/install.sh --package=atom$$(test "$(ATOM)" == "beta" && echo "-beta") --package-type=dmg --package-repo=cask
 
 atom-WIN32:
 ifeq (beta,$(ATOM))
@@ -252,7 +252,7 @@ vscode-LINUX: vscode-$(OSID)
 vscode-ubuntu: vscode-debian
 
 vscode-debian:
-	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/linux-deb-x64/$(VSCODE)" FILE="~/tmp/vscode.deb"
+	bash ../bin/install.sh --download-url="https://update.code.visualstudio.com/latest/linux-deb-x64/$(VSCODE)" --package-type=deb
 
 # vscode-centos: vscode-redhat
 # vscode-fedora: vscode-redhat
