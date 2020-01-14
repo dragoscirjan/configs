@@ -13,7 +13,7 @@ i-LINUX:
 	sudo curl -L "https://github.com/docker/compose/releases/download/$$(curl -sLS https://github.com/docker/compose/releases | grep releases | grep tag | awk -F'>' '{print $$2}' | awk -F'<' '{print $$1}' | grep 1 | head -n1)/docker-compose-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-compose
 	sudo chmod +x /usr/local/bin/docker-compose
 
-	sudo curl -L https://github.com/docker/machine/releases/download/$$(curl -sLS https://github.com/docker/machine/releases | grep releases | grep tag | awk -F'>' '{print $$2}' | awk -F'<' '{print $$1}' | grep 1 | head -n1)/docker-machine-`uname -s`-`uname -m` >/usr/local/bin/docker-machine
+	sudo curl -L https://github.com/docker/machine/releases/download/$$(curl -sLS https://github.com/docker/machine/releases | grep releases | grep tag | awk -F'>' '{print $$2}' | awk -F'<' '{print $$1}' | grep 1 | head -n1)/docker-machine-`uname -s`-`uname -m` -o /usr/local/bin/docker-machine
 	sudo chmod +x /usr/local/bin/docker-machine
 
 i-OSX:
