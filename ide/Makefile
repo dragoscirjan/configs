@@ -199,25 +199,25 @@ sublime-ubuntu: sublime-debian
 sublime-debian:
 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
 	echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
-	make --directory=$(DIR_INSTALL) i PACKAGE=sublime-text
+	bash ../bin/install.sh --package=sublime-text --package-type=deb
 
-sublime-centos: sublime-redhat
+# sublime-centos: sublime-redhat
 
-sublime-redhat:
-	sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
-	sudo yum-config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
-	sudo yum install sublime-text
+# sublime-redhat:
+# 	sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
+# 	sudo yum-config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+# 	sudo yum install sublime-text
 
-sublime-fedora:
-	sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
-	sudo dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
-	sudo dnf install sublime-text
+# sublime-fedora:
+# 	sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
+# 	sudo dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
+# 	sudo dnf install sublime-text
 
 sublime-OSX:
-	make --directory=$(DIR_INSTALL) i PACKAGE=sublime-text BREW_SOURCE=cask
+	bash ../bin/install.sh --package=sublime-text --package-type=dmg --package-repo=cask
 
-sublime-WIN32:
-	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe"
+# sublime-WIN32:
+# 	make --directory=$(DIR_INSTALL) iu URL="https://download.sublimetext.com/Sublime%20Text%20Build%203207%20x64%20Setup.exe" FILE="~/tmp/sublime.exe"
 
 
 vim: vim-$(OSFLAG) ## Install VIM

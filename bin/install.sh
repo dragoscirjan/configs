@@ -166,11 +166,12 @@ do_install_package() {
   local packageRepo=$3
   case $packageType in
     deb)
-      sudo dpkg -i $1 || apt-get install -fy;
+      sudo apt-get install -y $package;
       ;;
     dmg)
       brew $packageRepo list | grep $package || brew $packageRepo install $package
       brew $packageRepo list | grep $package && brew $packageRepo reinstall $package
+      ;;
     *)
       echo "Invalid package type.";
       exit 0;
