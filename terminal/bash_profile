@@ -29,17 +29,25 @@ parse_git_branch() {
   which git > /dev/null || echo 'no git installed'
 }
 
+user_color=$'\033[32m'
+user_sign='λ'
+if [ "$EUID" -eq 0 ]; then
+  user_color=$'\033[31m'
+  user_sign='#'
+fi
+
 if [ -f /etc/debian_version ]; then
   if [ "$color_prompt" = yes ]; then
-    export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[32m\]$(parse_git_branch)\[\033[00m\] \[\033[32m\]λ\[\033[00m\] '
+    export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[32m\]$(parse_git_branch)\[\033[00m\] \[\033[32m\]${user_color}λ\[\033[00m\] '
   else
-    export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(parse_git_branch) λ '
+    export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(parse_git_branch) ${user_sign} '
   fi
 else
-  export PS1="\u@\h \W\[\033[32m\]\$(parse_git_branch)\[\033[00m\] \[\033[32m\]λ\[\033[00m\] "
+  export PS1="\u@\h \W\[\033[32m\]\$(parse_git_branch)\[\033[00m\] \[\033[32m\]${user_color}λ\[\033[00m\] "
 fi
 
 prepare_go() {
+#  export GOROOT=$HOME/go
   export GOPATH=$HOME/go
   export PATH=$PATH:$GOPATH/bin
 }
