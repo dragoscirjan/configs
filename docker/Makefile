@@ -4,16 +4,18 @@ include Makefile.template
 # Actual Action Definitions
 #
 
+_root_check:
+	@echo "Need root to run Kubernetes Install." && [ "$$(whoami)" = "root" ]
 
 i: i-$(OSFLAG) ## Install Docker
 
-i-LINUX:
-	sudo curl -sL https://get.docker.com | bash
+i-LINUX: _root_check
+	curl -sL https://get.docker.com | bash
 
-	sudo curl -L "https://github.com/docker/compose/releases/download/$$(curl -sLS https://github.com/docker/compose/releases | grep releases | grep tag | awk -F'>' '{print $$2}' | awk -F'<' '{print $$1}' | grep 1 | head -n1)/docker-compose-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-compose
+	curl -L "https://github.com/docker/compose/releases/download/$$(curl -sLS https://github.com/docker/compose/releases | grep releases | grep tag | awk -F'>' '{print $$2}' | awk -F'<' '{print $$1}' | grep 1 | head -n1)/docker-compose-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-compose
 	sudo chmod +x /usr/local/bin/docker-compose
 
-	sudo curl -L https://github.com/docker/machine/releases/download/$$(curl -sLS https://github.com/docker/machine/releases | grep releases | grep tag | awk -F'>' '{print $$2}' | awk -F'<' '{print $$1}' | grep 1 | head -n1)/docker-machine-`uname -s`-`uname -m` -o /usr/local/bin/docker-machine
+	curl -L https://github.com/docker/machine/releases/download/$$(curl -sLS https://github.com/docker/machine/releases | grep releases | grep tag | awk -F'>' '{print $$2}' | awk -F'<' '{print $$1}' | grep 1 | head -n1)/docker-machine-`uname -s`-`uname -m` -o /usr/local/bin/docker-machine
 	sudo chmod +x /usr/local/bin/docker-machine
 
 i-OSX:
@@ -56,18 +58,20 @@ swl: ## Destroy Docker Swarm Worker
 	sudo docker swarm leave -f
 	@echo "Swarm's the shit, mate! Why 'ya wanna leave?"
 
-ki: ki-$(OSFLAG) ## Install Kubernetes KubeAdm, KubeCtl
+ki: ki-$(OSFLAG) ## Install Kubernetes KubeAdm, KubeCtl, KubeLet
 	kubeadm version
 	kubectl version
 
-ki-LINUX: ki-$(OSID)
+ki-LINUX: _root_check ki-$(OSID)
 
 ki-debian:
-	sudo apt-get update && sudo apt-get install -y apt-transport-https
+	# https://www.youtube.com/watch?v=UWg3ORRRF60&t=604s
+	apt-get update && sudo apt-get install -y apt-transport-https
 	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 	echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-	sudo apt-get update
-	sudo apt-get install -y kubeadm kubectl
+	apt-get update
+	apt-get install -y kubeadm kubectl kubelet
+	sed '/Environment=[^\n]*/,$$!b;//{x;//p;g};//!H;$$!d;x;s//&\nEnvironment="cgroup-driver=systemd\/cgroup-driver=cgroupfs"/' -i /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
 ki-ubuntu: ki-debian
 
@@ -95,31 +99,54 @@ ki-WIN32:
 	echo $(NOT_IMPLEMENTED_WINDOWS)
 
 
-KUBE_ADVERTISE=$(shell ip addr show | grep -E "inet [0-9]" | grep -Ev " (lo|docker)" | head -n 1 | awk '{print $$2}')
+KUBE_ADVERTISE=$(shell ip addr show | grep -E "inet [0-9]" | grep -Ev " (lo|docker)" | head -n 1 | awk '{print $$2}' | awk -F'/' '{print $$1}')
+KUBE_POD_NETWORK_TYPE=flannel
+KUBE_POD_NETWORK_ADDR=10.244.0.0/16 # Use for Flanel
+# KUBE_POD_NETWORK_TYPE=calico
+# KUBE_POD_NETWORKADDR=192.168.0.0/16 # Use for Calico
 KUBE_MASTER_ACTIVATE_ARGS=
 
 km_check:
 	@echo "Activating Kubernetes (Master). Advertise Address is: $(KUBE_ADVERTISE)."
 	@read -r -p "Do you wish to continue? [N/y] " response && [ "$$response" = "y" ]
 
-km: km_check ## Activate Kubernetes as Master KUBE_ADVERTISE=? KUBE_MASTER_ACTIVATE_ARGS=?
+km: km_check ## (1) Activate Kubernetes as Master :: KUBE_ADVERTISE=? KUBE_MASTER_ACTIVATE_ARGS=? KUBE_POD_NETWORK_TYPE=flannel KUBE_POD_NETWORK_ADDR=10.244.0.0/16
 	# https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/
 	sudo swapoff -a
-	sudo kubeadm init --pod-network-cidr=$(KUBE_ADVERTISE) $(KUBE_MASTER_ACTIVATE_ARGS)
+	sudo kubeadm init --pod-network-cidr=$(KUBE_POD_NETWORK_ADDR) --apiserver-advertise-address=$(KUBE_ADVERTISE) $(KUBE_MASTER_ACTIVATE_ARGS)
 
-kmc: ## Configure Kubernetes Master server
+kmc: ## (2) Configure Kubernetes Master server
 	mkdir -p $$HOME/.kube
 	sudo cp -i /etc/kubernetes/admin.conf $$HOME/.kube/config
 	sudo chown $(shell id -u):$(shell id -g) $$HOME/.kube/config
 
-KUBE_JOIN_TOKEN=$(shell sudo kubeadm token list --skip-headers | grep -E "[1-9][0-9]?h" | awk '{print $1}' | head -n 1)
-KUBE_JOIN_HASH=$(shell openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //')
-KUBE_JOIN_ADDR=$(shell ip addr show | grep -E "inet [0-9]" | grep -Ev " (lo|docker)" | head -n 1 | awk '{print $$2}' | awk -F'/' '{print $$1}')
+kmn: ## (3) Configure Kubernetes Network :: KUBE_POD_NETWORK_TYPE=flannel KUBE_POD_NETWORK_ADDR=10.244.0.0/16
+ifeq ($(KUBE_POD_NETWORK_TYPE), flannel)
+	kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+else
+ifeq ($(KUBE_POD_NETWORK_TYPE), calico)
+	# https://docs.projectcalico.org/v3.0/getting-started/kubernetes/
+	kubectl apply -f https://docs.projectcalico.org/v3.0/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
+else
+	@echo "No network supported."
+endif
+endif
+
+kmd: ## (4) Configure Kubernetes Dashboard :: KUBE_ADVERTISE=?
+	kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc5/aio/deploy/recommended.yaml
+	sleep 10
+	kubectl create serviceaccount dashboard -n kubernetes-dashboard
+	kubectl create clusterrolebinding dasboard-admin -n default --clusterrole=cluster-admin --serviceaccount=default:dashboard
+	kubectl get secret $$(kubectl get serviceaccount default -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode
+	sleep 5
+	kubectl proxy --address='$(KUBE_ADVERTISE)'
 
 kmj:
-	# https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/
-ifneq ($(KUBE_JOIN_TOKEN),)
-	@echo "kubeadm join --discovery-token $(KUBE_JOIN_TOKEN) --discovery-token-ca-cert-hash $(KUBE_JOIN_HASH) $(KUBE_JOIN_ADDR):6443"
+	@# https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/
+ifneq ($(shell sudo kubeadm token list --skip-headers | grep -E "[1-9][0-9]?h" | awk '{print $$1}' | head -n 1),)
+	@echo "kubeadm join \
+		--discovery-token $(shell sudo kubeadm token list --skip-headers | grep -E "[1-9][0-9]?h" | awk '{print $$1}' | head -n 1) \
+		--discovery-token-ca-cert-hash $(shell openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //') $(shell ip addr show | grep -E "inet [0-9]" | grep -Ev " (lo|docker)" | head -n 1 | awk '{print $$2}' | awk -F'/' '{print $$1}'):6443"
 else
 	@kubeadm token create --print-join-command
 endif
