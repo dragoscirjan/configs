@@ -12,6 +12,13 @@ i: i-$(OSFLAG) ## Install Docker
 i-LINUX: _root_check
 	curl -sL https://get.docker.com | bash
 
+	bash ./scripts/docker-config.sh
+
+	mkdir -p /etc/systemd/system/docker.service.d
+
+	systemctl daemon-reload
+	systemctl restart docker
+
 	curl -L "https://github.com/docker/compose/releases/download/$$(curl -sLS https://github.com/docker/compose/releases | grep releases | grep tag | awk -F'>' '{print $$2}' | awk -F'<' '{print $$1}' | grep 1 | head -n1)/docker-compose-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-compose
 	sudo chmod +x /usr/local/bin/docker-compose
 
@@ -65,7 +72,9 @@ ki: ki-$(OSFLAG) ## Install Kubernetes KubeAdm, KubeCtl, KubeLet
 ki-LINUX: _root_check ki-$(OSID)
 
 ki-debian:
-	# https://www.youtube.com/watch?v=UWg3ORRRF60&t=604s
+	bash ./scripts/docker-config.sh
+
+	@# https://www.youtube.com/watch?v=UWg3ORRRF60&t=604s
 	apt-get update && sudo apt-get install -y apt-transport-https
 	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 	echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
@@ -141,12 +150,12 @@ kmd: ## (4) Configure Kubernetes Dashboard :: KUBE_ADVERTISE=?
 	sleep 5
 	kubectl proxy --address='$(KUBE_ADVERTISE)'
 
-kmj:
-	@# https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/
-ifneq ($(shell sudo kubeadm token list --skip-headers | grep -E "[1-9][0-9]?h" | awk '{print $$1}' | head -n 1),)
-	@echo "kubeadm join \
-		--discovery-token $(shell sudo kubeadm token list --skip-headers | grep -E "[1-9][0-9]?h" | awk '{print $$1}' | head -n 1) \
-		--discovery-token-ca-cert-hash $(shell openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //') $(shell ip addr show | grep -E "inet [0-9]" | grep -Ev " (lo|docker)" | head -n 1 | awk '{print $$2}' | awk -F'/' '{print $$1}'):6443"
-else
-	@kubeadm token create --print-join-command
-endif
+# kmj:
+# 	@# https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/
+# ifneq ($(shell sudo kubeadm token list --skip-headers | grep -E "[1-9][0-9]?h" | awk '{print $$1}' | head -n 1),)
+# 	@echo "kubeadm join \
+# 		--discovery-token $(shell sudo kubeadm token list --skip-headers | grep -E "[1-9][0-9]?h" | awk '{print $$1}' | head -n 1) \
+# 		--discovery-token-ca-cert-hash $(shell openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //') $(shell ip addr show | grep -E "inet [0-9]" | grep -Ev " (lo|docker)" | head -n 1 | awk '{print $$2}' | awk -F'/' '{print $$1}'):6443"
+# else
+# 	@kubeadm token create --print-join-command
+# endif
