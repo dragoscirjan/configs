@@ -44,6 +44,9 @@ r-neo: ## Launch a Neo4j Global Container
 r-postgres: ## Launch a PostGresSQL§ 8 Global Container
 	docker run --name global-postgres -d -p 5432:5432 -e POSTGRES_PASSWORD=weltest postgres:alpine
 
+r-registry: ## Launch Local Registry
+	docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
 SWARM_ADVERTISE=$(shell ip addr show | grep -E "inet [0-9]" | grep -Ev " (lo|docker)" | head -n 1 | awk '{print $$2}' | awk -F'/' '{print $$1}')
 SWARM_MASTER_ACTIVATE_ARGS=
 
