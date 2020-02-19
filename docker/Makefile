@@ -145,7 +145,8 @@ ki-WIN32:
 
 KUBE_ADVERTISE=$(shell ip addr show | grep -E "inet [0-9]" | grep -Ev " (lo|docker)" | head -n 1 | awk '{print $$2}' | awk -F'/' '{print $$1}')
 KUBE_POD_NETWORK_TYPE=flannel
-KUBE_POD_NETWORK_ADDR=10.244.0.0/16 # Use for Flanel
+KUBE_POD_NETWORK_ADDR=172.168.10.0/16 # Use for Flanel
+# KUBE_POD_NETWORK_ADDR=10.244.0.0/16 # Use for Flanel
 # KUBE_POD_NETWORK_TYPE=calico
 # KUBE_POD_NETWORKADDR=192.168.0.0/16 # Use for Calico
 KUBE_MASTER_ACTIVATE_ARGS=
@@ -166,6 +167,7 @@ kmc: ## (2) Configure Kubernetes Master server
 
 kmn: ## (3) Configure Kubernetes Network :: KUBE_POD_NETWORK_TYPE=flannel KUBE_POD_NETWORK_ADDR=10.244.0.0/16
 ifeq ($(KUBE_POD_NETWORK_TYPE), flannel)
+	sudo sysctl net.bridge.bridge-nf-call-iptables=1
 	kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
 else
 ifeq ($(KUBE_POD_NETWORK_TYPE), calico)
