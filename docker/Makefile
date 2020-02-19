@@ -12,18 +12,26 @@ i: i-$(OSFLAG) ## Install Docker
 i-LINUX: _root_check
 	curl -sL https://get.docker.com | bash
 
-	bash ./scripts/docker-config.sh
+	# bash ./scripts/docker-config.sh
 
-	mkdir -p /etc/systemd/system/docker.service.d
+	# mkdir -p /etc/systemd/system/docker.service.d
 
 	systemctl daemon-reload
 	systemctl restart docker
 
+	docker --version
+	sleep 5
+
 	curl -L "https://github.com/docker/compose/releases/download/$$(curl -sLS https://github.com/docker/compose/releases | grep releases | grep tag | awk -F'>' '{print $$2}' | awk -F'<' '{print $$1}' | grep 1 | head -n1)/docker-compose-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-compose
 	sudo chmod +x /usr/local/bin/docker-compose
 
+	docker-compose --version
+	sleep 5
+
 	curl -L https://github.com/docker/machine/releases/download/$$(curl -sLS https://github.com/docker/machine/releases | grep releases | grep tag | awk -F'>' '{print $$2}' | awk -F'<' '{print $$1}' | grep 1 | head -n1)/docker-machine-`uname -s`-`uname -m` -o /usr/local/bin/docker-machine
 	sudo chmod +x /usr/local/bin/docker-machine
+
+	docker-machine --version
 
 i-OSX:
 	echo $(NOT_IMPLEMENTED_OSX)
@@ -44,8 +52,25 @@ r-neo: ## Launch a Neo4j Global Container
 r-postgres: ## Launch a PostGresSQL§ 8 Global Container
 	docker run --name global-postgres -d -p 5432:5432 -e POSTGRES_PASSWORD=weltest postgres:alpine
 
-r-registry: ## Launch Local Registry
-	docker run -d -p 5000:5000 --restart=always --name registry registry:2
+# r-registry: ## Launch Local Registry
+# 	docker run --entrypoint htpasswd registry:2 -Bbn admin weltest > $$HOME/.docker-registry-password
+# 	mkdir -p $$HOME/.docker_cert
+# 	openssl req \
+# 		-newkey rsa:4096 -nodes -sha256 -keyout $$HOME/.docker_cert/cert.key \
+# 		-x509 -days 365 -out $$HOME/.docker_cert/cert.crt
+# 	docker run -d \
+# 		-e REGISTRY_HTTP_ADDR=0.0.0.0:5000 \
+# 		-e "REGISTRY_AUTH=htpasswd" \
+# 		-e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" \
+# 		-e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd \
+# 		-e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/cert.crt \
+# 		-e REGISTRY_HTTP_TLS_KEY=/certs/cert.key \
+# 		-p 5000:5000 \
+# 		-v $HOME/.docker-registry-password:/auth/htpasswd \
+# 		-v $HOME/.docker_cert:/certs \
+# 		--restart=always \
+# 		--name registry \
+# 		registry:2
 
 SWARM_ADVERTISE=$(shell ip addr show | grep -E "inet [0-9]" | grep -Ev " (lo|docker)" | head -n 1 | awk '{print $$2}' | awk -F'/' '{print $$1}')
 SWARM_MASTER_ACTIVATE_ARGS=
@@ -83,7 +108,7 @@ ki-debian:
 	echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
 	apt-get update
 	apt-get install -y kubeadm kubectl kubelet
-	sed '/Environment=[^\n]*/,$$!b;//{x;//p;g};//!H;$$!d;x;s//&\nEnvironment="cgroup-driver=systemd\/cgroup-driver=cgroupfs"/' -i /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+	# sed '/Environment=[^\n]*/,$$!b;//{x;//p;g};//!H;$$!d;x;s//&\nEnvironment="cgroup-driver=systemd\/cgroup-driver=cgroupfs"/' -i /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
 ki-ubuntu: ki-debian
 
