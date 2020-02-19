@@ -103,11 +103,21 @@ ki-debian:
 	bash ./scripts/docker-config.sh
 
 	@# https://www.youtube.com/watch?v=UWg3ORRRF60&t=604s
-	apt-get update && sudo apt-get install -y apt-transport-https
+	apt-get update 
+	apt-get install -y apt-transport-https
+
 	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 	echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
 	apt-get update
-	apt-get install -y kubeadm kubectl kubelet
+	
+	apt-get install -y kubeadm
+	kubeadm version
+
+	sleep 5
+	
+	apt-get install -y kubectl kubelet kubernetes-cni
+	kubectl version
+	
 	# sed '/Environment=[^\n]*/,$$!b;//{x;//p;g};//!H;$$!d;x;s//&\nEnvironment="cgroup-driver=systemd\/cgroup-driver=cgroupfs"/' -i /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
 ki-ubuntu: ki-debian
