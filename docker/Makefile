@@ -94,8 +94,6 @@ swl: ## Destroy Docker Swarm Worker
 	@echo "Swarm's the shit, mate! Why 'ya wanna leave?"
 
 ki: ki-$(OSFLAG) ## Install Kubernetes KubeAdm, KubeCtl, KubeLet
-	kubeadm version
-	kubectl version
 
 ki-LINUX: _root_check ki-$(OSID)
 
@@ -116,7 +114,6 @@ ki-debian:
 	sleep 5
 	
 	apt-get install -y kubectl kubelet kubernetes-cni
-	kubectl version
 	
 	# sed '/Environment=[^\n]*/,$$!b;//{x;//p;g};//!H;$$!d;x;s//&\nEnvironment="cgroup-driver=systemd\/cgroup-driver=cgroupfs"/' -i /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
