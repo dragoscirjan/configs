@@ -98,7 +98,8 @@ ki: ki-$(OSFLAG) ## Install Kubernetes KubeAdm, KubeCtl, KubeLet
 ki-LINUX: _root_check ki-$(OSID)
 
 ki-debian:
-	bash ./scripts/docker-config.sh
+	# bash ./scripts/docker-config.sh
+	sudo swapoff -a
 
 	@# https://www.youtube.com/watch?v=UWg3ORRRF60&t=604s
 	apt-get update 
