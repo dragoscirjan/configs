@@ -9,7 +9,7 @@ _root_check:
 
 i: i-$(OSFLAG) ## Install Docker
 
-i-LINUX: _root_check
+i-LINUX: _root_check  i-$(OSID)
 	curl -sL https://get.docker.com | bash
 
 	# bash ./scripts/docker-config.sh
@@ -32,6 +32,12 @@ i-LINUX: _root_check
 	sudo chmod +x /usr/local/bin/docker-machine
 
 	docker-machine --version
+
+i-debian:
+	apt-get update
+	apt-get install -y curl
+
+i-ubuntu: i-debian
 
 i-OSX:
 	echo $(NOT_IMPLEMENTED_OSX)
@@ -98,6 +104,9 @@ ki: ki-$(OSFLAG) ## Install Kubernetes KubeAdm, KubeCtl, KubeLet
 ki-LINUX: _root_check ki-$(OSID)
 
 ki-debian:
+	# When migrating to Debian 10 or Ubuntu 19+, take a look here:
+	# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#ensure-iptables-tooling-does-not-use-the-nftables-backend
+
 	# bash ./scripts/docker-config.sh
 	sudo swapoff -a
 
@@ -105,16 +114,15 @@ ki-debian:
 	apt-get update 
 	apt-get install -y apt-transport-https
 
+	apt-get update && sudo apt-get install -y apt-transport-https curl
 	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-	echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-	apt-get update
-	
-	apt-get install -y kubeadm
-	kubeadm version
+	echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+	sudo apt-get update
+	sudo apt-get install -y kubelet kubeadm kubectl
+	sudo apt-mark hold kubelet kubeadm kubectl
 
-	sleep 5
-	
-	apt-get install -y kubectl kubelet kubernetes-cni
+	systemctl daemon-reload
+	systemctl restart kubelet
 	
 	# sed '/Environment=[^\n]*/,$$!b;//{x;//p;g};//!H;$$!d;x;s//&\nEnvironment="cgroup-driver=systemd\/cgroup-driver=cgroupfs"/' -i /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
@@ -158,6 +166,7 @@ km_check:
 
 km: km_check ## (1) Activate Kubernetes as Master :: KUBE_ADVERTISE=? KUBE_MASTER_ACTIVATE_ARGS=? KUBE_POD_NETWORK_TYPE=flannel KUBE_POD_NETWORK_ADDR=10.244.0.0/16
 	# https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/
+	# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
 	sudo swapoff -a
 	sudo kubeadm init --pod-network-cidr=$(KUBE_POD_NETWORK_ADDR) --apiserver-advertise-address=$(KUBE_ADVERTISE) $(KUBE_MASTER_ACTIVATE_ARGS)
 
