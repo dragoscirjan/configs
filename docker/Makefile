@@ -12,9 +12,7 @@ i: i-$(OSFLAG) ## Install Docker
 i-LINUX: _root_check  i-$(OSID)
 	curl -sL https://get.docker.com | bash
 
-	# bash ./scripts/docker-config.sh
-
-	# mkdir -p /etc/systemd/system/docker.service.d
+	bash ./scripts/docker-config.sh
 
 	systemctl daemon-reload
 	systemctl restart docker
@@ -175,16 +173,17 @@ kmc: ## (2) Configure Kubernetes Master server
 	sudo cp -i /etc/kubernetes/admin.conf $$HOME/.kube/config
 	sudo chown $(shell id -u):$(shell id -g) $$HOME/.kube/config
 
-kmn: ## (3) Configure Kubernetes Network :: KUBE_POD_NETWORK_TYPE=flannel KUBE_POD_NETWORK_ADDR=10.244.0.0/16
+kmn: ## (3) Configure Kubernetes Network :: KUBE_POD_NETWORK_TYPE=flannel|calico|weave KUBE_POD_NETWORK_ADDR=10.244.0.0/16
+	# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
 ifeq ($(KUBE_POD_NETWORK_TYPE), flannel)
 	sudo sysctl net.bridge.bridge-nf-call-iptables=1
-	kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+	kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
 else
 ifeq ($(KUBE_POD_NETWORK_TYPE), calico)
 	# https://docs.projectcalico.org/v3.0/getting-started/kubernetes/
-	kubectl apply -f https://docs.projectcalico.org/v3.0/getting-started/kubernetes/installation/hosted/kubeadm/1.7/calico.yaml
+	kubectl apply -f kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
 else
-	@echo "No network supported."
+	kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$$(kubectl version | base64 | tr -d '\n')"
 endif
 endif
 
