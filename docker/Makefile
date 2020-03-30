@@ -205,3 +205,27 @@ kmd: ## (4) Configure Kubernetes Dashboard :: KUBE_ADVERTISE=?
 # else
 # 	@kubeadm token create --print-join-command
 # endif
+
+
+mki: mki-$(OSFLAG) ## Install microk8s :: KubeAdm, KubeCtl, KubeLet
+
+mki-LINUX:
+	sudo snap install microk8s --classic --channel=1.18/stable
+	sudo usermod -a -G microk8s $$USER
+	@echo "Run `make mkc` after user change."	
+	su - $$USER
+
+mki-OSX:
+	echo $(NOT_IMPLEMENTED_OSX)
+
+mki-WIN32:
+	echo $(NOT_IMPLEMENTED_WINDOWS)
+
+mkc:
+	microk8s status --wait-ready
+	microk8s.kubectl config view --raw > $$HOME/.kube/config
+
+	sudo microk8s enable dns dashboard registry
+	sudo snap alias microk8s.kubectl kubectl
+
+	kubectl get all --all-namespaces
