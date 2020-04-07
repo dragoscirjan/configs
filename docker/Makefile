@@ -6,12 +6,6 @@ include Makefile.template
 
 APTGET = sudo apt-get
 
-rootcheck:
-	@echo "Need root to run." && [ "$$(whoami)" = "root" ]
-
-norootcheck:
-	@echo "Don't need root to run." && [ "$$(whoami)" != "root" ]
-
 i: i-$(OSFLAG) ## Install Docker
 
 i-LINUX: rootcheck  i-$(OSID)
