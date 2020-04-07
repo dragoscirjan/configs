@@ -21,7 +21,7 @@ ide: ## Install Used IDEs
 browsers: ## Install Used Browsers
 	make --directory=./browsers chromium firefox edge opera vivaldi
 
-terminal: ## Install Office Tools
+office: ## Install Office Tools
 	make --directory=./office libreoffice wpsoffice
 
 terminal: ## Install Terminal Tools
@@ -29,20 +29,4 @@ terminal: ## Install Terminal Tools
 
 CP_TEMPLATE=cp Makefile.template 
 sync-makefile-template:
-	$(CP_TEMPLATE) ./.install
-	$(CP_TEMPLATE) ./ide
-	$(CP_TEMPLATE) ./router-assus
-	$(CP_TEMPLATE) ./docker
-	$(CP_TEMPLATE) ./bin
-	$(CP_TEMPLATE) ./office
-	$(CP_TEMPLATE) ./terminal
-	$(CP_TEMPLATE) ./lang
-	$(CP_TEMPLATE) ./browsers
-	$(CP_TEMPLATE) ./fonts
-	$(CP_TEMPLATE) ./code-templates
-	$(CP_TEMPLATE) ./code-templates/swagger-generator
-	$(CP_TEMPLATE) ./code-templates/php-symfony
-	$(CP_TEMPLATE) ./code-templates/python
-	$(CP_TEMPLATE) ./code-templates/typescript
-	$(CP_TEMPLATE) ./git
-	$(CP_TEMPLATE) ./quemu/macos
+	find . -mindepth 2 -iname "Makefile.template" | while read f; do cp Makefile.template $$f; done

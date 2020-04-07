@@ -4,12 +4,17 @@ include Makefile.template
 # Actual Action Definitions
 #
 
-_root_check:
-	@echo "Need root to run Kubernetes Install." && [ "$$(whoami)" = "root" ]
+APTGET = sudo apt-get
+
+rootcheck:
+	@echo "Need root to run." && [ "$$(whoami)" = "root" ]
+
+norootcheck:
+	@echo "Don't need root to run." && [ "$$(whoami)" != "root" ]
 
 i: i-$(OSFLAG) ## Install Docker
 
-i-LINUX: _root_check  i-$(OSID)
+i-LINUX: rootcheck  i-$(OSID)
 	curl -sL https://get.docker.com | bash
 
 	bash ./scripts/docker-config.sh
@@ -97,38 +102,25 @@ swl: ## Destroy Docker Swarm Worker
 	sudo docker swarm leave -f
 	@echo "Swarm's the shit, mate! Why 'ya wanna leave?"
 
-ki: ki-$(OSFLAG) ## Install Kubernetes KubeAdm, KubeCtl, KubeLet
+k8si: rootcheck k8si-$(OSFLAG) ## Install Kubernetes KubeAdm, KubeCtl, KubeLet
 
-ki-LINUX: _root_check ki-$(OSID)
+k8si-LINUX: k8si-$(OSID)
 
-ki-debian:
-	# When migrating to Debian 10 or Ubuntu 19+, take a look here:
-	# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#ensure-iptables-tooling-does-not-use-the-nftables-backend
+k8si-debian:
+	$(APTGET) update
+	$(APTGET) install -y apt-transport-https
 
-	# bash ./scripts/docker-config.sh
-	sudo swapoff -a
-
-	@# https://www.youtube.com/watch?v=UWg3ORRRF60&t=604s
-	apt-get update 
-	apt-get install -y apt-transport-https
-
-	apt-get update && sudo apt-get install -y apt-transport-https curl
-	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+	$(APTGET) update && sudo apt-get install -y apt-transport-https curl
+	curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | $(APTGET) add - || true
 	echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
-	sudo apt-get update
-	sudo apt-get install -y kubelet kubeadm kubectl
-	sudo apt-mark hold kubelet kubeadm kubectl
+	$(APTGET) update
+	$(APTGET) install -y kubelet kubeadm kubectl
 
-	systemctl daemon-reload
-	systemctl restart kubelet
-	
-	# sed '/Environment=[^\n]*/,$$!b;//{x;//p;g};//!H;$$!d;x;s//&\nEnvironment="cgroup-driver=systemd\/cgroup-driver=cgroupfs"/' -i /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+k8si-ubuntu: k8si-debian
 
-ki-ubuntu: ki-debian
+k8si-fedora: k8si-redhat
 
-ki-fedora: ki-redhat
-
-ki-redhat:
+k8si-redhat:
 	cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 	[kubernetes]
 	name=Kubernetes
@@ -138,42 +130,37 @@ ki-redhat:
 	repo_gpgcheck=1
 	gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 	EOF
-	yum install -y kubectl
+	yum install -y kubeadm
 
-ki-LINUX-snap:
-	snap install kubectl --classic
-
-ki-OSX:
+k8si-OSX:
 	echo $(NOT_IMPLEMENTED_OSX)
 
-ki-WIN32:
+k8si-WIN32:
 	echo $(NOT_IMPLEMENTED_WINDOWS)
 
 
-KUBE_ADVERTISE=$(shell ip addr show | grep -E "inet [0-9]" | grep -Ev " (lo|docker)" | head -n 1 | awk '{print $$2}' | awk -F'/' '{print $$1}')
-KUBE_POD_NETWORK_TYPE=flannel
-KUBE_POD_NETWORK_ADDR=172.168.10.0/16 # Use for Flanel
-# KUBE_POD_NETWORK_ADDR=10.244.0.0/16 # Use for Flanel
-# KUBE_POD_NETWORK_TYPE=calico
-# KUBE_POD_NETWORKADDR=192.168.0.0/16 # Use for Calico
-KUBE_MASTER_ACTIVATE_ARGS=
+k8sc: ## Configure Kubernetes Master (standalone)
+	make k8sc1_init
+	make k8sc2_user
+	make k8sc3_network
 
-km_check:
-	@echo "Activating Kubernetes (Master). Advertise Address is: $(KUBE_ADVERTISE)."
-	@read -r -p "Do you wish to continue? [N/y] " response && [ "$$response" = "y" ]
+KUBE_POD_NETWORK_ADDR = 10.244.0.0/16
+KUBE_POD_NETWORK_TYPE = flannel
 
-km: km_check ## (1) Activate Kubernetes as Master :: KUBE_ADVERTISE=? KUBE_MASTER_ACTIVATE_ARGS=? KUBE_POD_NETWORK_TYPE=flannel KUBE_POD_NETWORK_ADDR=10.244.0.0/16
-	# https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/
-	# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/
+k8sc1_init: norootcheck ## (1) Configure Kubernetes Mastert => init ... :: KUBE_POD_NETWORK_ADDR=10.244.0.0/16
 	sudo swapoff -a
-	sudo kubeadm init --pod-network-cidr=$(KUBE_POD_NETWORK_ADDR) --apiserver-advertise-address=$(KUBE_ADVERTISE) $(KUBE_MASTER_ACTIVATE_ARGS)
+	sudo kubeadm init --pod-network-cidr=$(KUBE_POD_NETWORK_ADDR)
 
-kmc: ## (2) Configure Kubernetes Master server
+	sleep 10
+	kubectl get all --all-namespaces -o wide
+
+k8sc2_user: norootcheck ## (2) Configure Kubernetes Mastert => configure user
+	sudo rm -rf $$HOME/.kube* || true
 	mkdir -p $$HOME/.kube
 	sudo cp -i /etc/kubernetes/admin.conf $$HOME/.kube/config
-	sudo chown $(shell id -u):$(shell id -g) $$HOME/.kube/config
+	sudo chown $$(id -u):$$(id -g) $$HOME/.kube/config
 
-kmn: ## (3) Configure Kubernetes Network :: KUBE_POD_NETWORK_TYPE=flannel|calico|weave KUBE_POD_NETWORK_ADDR=10.244.0.0/16
+k8sc3_network: norootcheck ## (3) Configure Kubernetes Mastert => deploy network KUBE_POD_NETWORK_TYPE=flannel
 	# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#pod-network
 ifeq ($(KUBE_POD_NETWORK_TYPE), flannel)
 	sudo sysctl net.bridge.bridge-nf-call-iptables=1
@@ -187,45 +174,57 @@ else
 endif
 endif
 
-kmd: ## (4) Configure Kubernetes Dashboard :: KUBE_ADVERTISE=?
-	kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc5/aio/deploy/recommended.yaml
+k8sc4_dashboard: norootcheck ## (4) Configure Kubernetes Mastert => (optional) dashboard
+	sudo kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc5/aio/deploy/recommended.yaml
 	sleep 10
-	kubectl create serviceaccount dashboard -n kubernetes-dashboard
-	kubectl create clusterrolebinding dasboard-admin -n default --clusterrole=cluster-admin --serviceaccount=default:dashboard
-	kubectl get secret $$(kubectl get serviceaccount default -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode
+	sudo kubectl create serviceaccount dashboard -n kubernetes-dashboard
+	sudo kubectl create clusterrolebinding dasboard-admin -n default --clusterrole=cluster-admin --serviceaccount=default:dashboard
+	sudo kubectl get secret $$(kubectl get serviceaccount default -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode
 	sleep 5
-	kubectl proxy --address='$(KUBE_ADVERTISE)'
+	@echo
+	@echo "Use 'kubectl proxy --address=<ip>' to view dashboard"
+	@echo
 
-# kmj:
-# 	@# https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-join/
-# ifneq ($(shell sudo kubeadm token list --skip-headers | grep -E "[1-9][0-9]?h" | awk '{print $$1}' | head -n 1),)
-# 	@echo "kubeadm join \
-# 		--discovery-token $(shell sudo kubeadm token list --skip-headers | grep -E "[1-9][0-9]?h" | awk '{print $$1}' | head -n 1) \
-# 		--discovery-token-ca-cert-hash $(shell openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //') $(shell ip addr show | grep -E "inet [0-9]" | grep -Ev " (lo|docker)" | head -n 1 | awk '{print $$2}' | awk -F'/' '{print $$1}'):6443"
-# else
-# 	@kubeadm token create --print-join-command
-# endif
+k8sc5_usemaster: norootcheck ## (5) Configure Kubernetes Mastert => (optional) (don't use in prod) enable pods creation on master
+	kubectl taint nodes --all node-role.kubernetes.io/master-
+
+k8sj: ## Configure Kubernetes Slave :: Generate Join Command
+	kubeadm token create --print-join-command
+
+k8sr: norootcheck ## Reset Kubernetes Master
+	sudo kubeadm reset
+	sudo rm -rf $$HOME/.kube* || true
+	sudo rm -rf /etc/kubernetes
+
+k8sui: norootcheck ## Uninstall Kubernetes
+	$(APTGET) remove -y kubelet kubeadm kubectl
 
 
-mki: mki-$(OSFLAG) ## Install microk8s :: KubeAdm, KubeCtl, KubeLet
+mk8si: mk8si-$(OSFLAG) ## Install Kubernetes microk8s :: KubeAdm, KubeCtl, KubeLet
 
-mki-LINUX:
+mk8si-LINUX:
 	sudo snap install microk8s --classic --channel=1.18/stable
 	sudo usermod -a -G microk8s $$USER
 	@echo "Run `make mkc` after user change."	
 	su - $$USER
 
-mki-OSX:
+mk8si-OSX:
 	echo $(NOT_IMPLEMENTED_OSX)
 
-mki-WIN32:
+mk8si-WIN32:
 	echo $(NOT_IMPLEMENTED_WINDOWS)
 
-mkc:
+mk8sc: ## Configure Kubernetes Master (microk8s)
 	microk8s status --wait-ready
+
+	sudo rm -rf $$HOME/.kube* || true
+	sudo mkdir -p $$HOME/.kube
 	microk8s.kubectl config view --raw > $$HOME/.kube/config
 
 	sudo microk8s enable dns dashboard registry
 	sudo snap alias microk8s.kubectl kubectl
 
 	kubectl get all --all-namespaces
+
+mk8sj: ## Configure Kubernetes Slave (microk8s) :: Generate Join Command
+	microk8s.kubeadm token create --print-join-command
