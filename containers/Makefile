@@ -12,9 +12,10 @@ lxci: lxci-$(OSFLAG) ## Install LXC
 lxci-LINUX: norootcheck  i-$(OSID)
 	
 lxci-debian:
-	$(APTGET) install -y lxc lxc-templates
+	sudo bash ./debian-lxc-install.sh
 
 lxci-ubuntu: lxci-debian
+	$(APTGET) install -y lxc lxc-templates
 
 lxc-unprivileged: norootcheck ## LXC => Configure Unprivileged Containers LXC_UNPRIV_USER=$$(whoami)
 	@# https://www.cyberciti.biz/faq/how-to-create-unprivileged-linux-containers-on-ubuntu-linux/
