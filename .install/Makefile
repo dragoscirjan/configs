@@ -16,7 +16,11 @@ iu: iu-$(OSFLAG) ## Install From URL PACKAGE_URL=... PACKAGE_MATCH=... PACKAGE_A
 iu-WIN32:
 	$(POWERSHELL) -File ../.ps/install.ps1 --Url "$(PACKAGE_URL)" --FileMatch "$(PACKAGE_MATCH)" --ArgumentList "$(PACKAGE_ARGS)"
 
-ip: i-$(OSFLAG) ## Install Local Package
+PACKAGE_PATH =
+ip: i-$(OSFLAG) ## Install Local Package PACKAGE_PATH=... PACKAGE_ARGS=...
+
+iu-WIN32:
+	$(POWERSHELL) -File ../.ps/install.ps1 --FILE "$(PACKAGE_PATH)" --ArgumentList "$(PACKAGE_ARGS)"
 
 # #
 # # Actual Action Definitions
