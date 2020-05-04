@@ -21,13 +21,13 @@ ide: ## Install Used IDEs
 browsers: ## Install Used Browsers
 	make --directory=./browsers chromium firefox edge opera vivaldi
 
-terminal: ## Install Office Tools
+office: ## Install Office Tools
 	make --directory=./office libreoffice wpsoffice
 
 terminal: ## Install Terminal Tools
 	make --directory=./terminal conemu cmder iterm
 
-CP_TEMPLATE=cp Makefile.template 
+CP_TEMPLATE=cp Makefile.template
 sync-makefile-template:
 	$(CP_TEMPLATE) ./.install
 	$(CP_TEMPLATE) ./ide
