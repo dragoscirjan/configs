@@ -1,5 +1,39 @@
 include ./Makefile.template
 
+#
+# Actual Action Definitions
+#
+
+CURL=curl -SL
+ifeq (powershell,$(SHELL_IS))
+	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
+endif
+
+#
+# Utils
+#
+
+apt-utils:
+ifeq (LINUX,$(OSFLAG))
+	which apt > /dev/null && sudo apt install apt-transport-https
+	which apt-get > /dev/null && sudo apt-get install -y apt-transport-https curl bzip2 gzip
+endif
+
+#
+# Download File
+#
+
+dld: apt-utils dld-$(SHELL_IS) ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
+
+dld-bash:
+	$(CURL) "$(URL)" --output $(FILE)
+
+dld-powershell:
+	$(CURL) "$(URL)" --output "$(FILE)"
+
+#
+# Install Local Package
+#
 
 PACKAGE =
 i: i-$(OSFLAG) ## Install From Package Manager PACKAGE=...
@@ -7,6 +41,10 @@ i: i-$(OSFLAG) ## Install From Package Manager PACKAGE=...
 CHOKO_FLAGS =
 i-WIN32:
 	$(POWERSHELL) -Command "chocolatey.exe install $(CHOKO_FLAGS) $(PACKAGE)"
+
+#
+# Install URL Package
+#
 
 PACKAGE_URL =
 PACKAGE_MATCH =
@@ -16,76 +54,19 @@ iu: iu-$(OSFLAG) ## Install From URL PACKAGE_URL=... PACKAGE_MATCH=... PACKAGE_A
 iu-WIN32:
 	$(POWERSHELL) -File ../.ps/install.ps1 --Url "$(PACKAGE_URL)" --FileMatch "$(PACKAGE_MATCH)" --ArgumentList "$(PACKAGE_ARGS)"
 
+#
+# Install Local Package
+#
+
 PACKAGE_PATH =
-ip: i-$(OSFLAG) ## Install Local Package PACKAGE_PATH=... PACKAGE_ARGS=...
+il: il-$(OSFLAG) ## Install Local Package PACKAGE_PATH=... PACKAGE_ARGS=...
 
-iu-WIN32:
-	$(POWERSHELL) -File ../.ps/install.ps1 --FILE "$(PACKAGE_PATH)" --ArgumentList "$(PACKAGE_ARGS)"
+il-WIN32:
+	$(POWERSHELL) -File ../.ps/install.ps1 --File "$(PACKAGE_PATH)" --ArgumentList "$(PACKAGE_ARGS)"
 
-# #
-# # Actual Action Definitions
-# #
-
-# IL_WIN_ARGS ?= ''
-
-# CURL=curl -SL
-# ifeq (powershell,$(SHELL_IS))
-# 	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
-# endif
-
-# #
-# # Utils
-# #
-
-# mktmp: mktmp-$(SHELL_IS)
-
-# mktmp-bash:
-# 	mkdir -p ~/tmp
-
-# mktmp-powershell:
-# 	$(POWERSHELL) -Command "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
-
-# mkbin: mkbin-$(SHELL_IS)
-
-# mkbin-bash:
-# 	mkdir -p ~/bin
-
-# mkbin-powershell:
-# 	$(POWERSHELL) -Command "New-Item -Force -Path $$HOME -Name bin -ItemType directory"
-
-# apt-utils:
-# ifeq (LINUX,$(OSFLAG))
-# 	which apt > /dev/null && sudo apt install apt-transport-https
-# 	which apt-get > /dev/null && sudo apt-get install -y apt-transport-https curl bzip2 gzip
-# endif
-
-# #
-# # Download File
-# #
-
-# dld: apt-utils mktmp mkbin dld-$(SHELL_IS) ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
-
-# dld-bash:
-# 	$(CURL) "$(URL)" --output $(FILE)
-
-# dld-powershell:
-# 	$(CURL) "$(URL)" --output "$(FILE)"
-
-# #
-# # Remove FIle
-# #
-
-# rm: rm-$(SHELL_IS) ## Remove file
-
-# rm-bash:
-# 	rm -rf "$(FILE)"
-
-# rm-powershell:
-# 	rm "$(FILE)"
-
-# #
-# # Install Package
-# #
+#
+# Install Package
+#
 
 # i: apt-utils i-$(OSFLAG) ## Install Package Depending on OS BREW_SOURCE=,cask
 

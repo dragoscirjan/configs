@@ -78,9 +78,9 @@ DIR_INSTALL = ../.install
 # 	$(POWERSHELL) -File ./intellij.ps1 --keys $(INTELLIJ_APP) --url "https://data.services.jetbrains.com/products/releases?code=$(INTELLIJ_APP)&latest=true&type=release&build=&_=$(TIMESTAMP_SECCONDS)"
 
 
-# ATOM=stable
-# # ATOM=beta
-# atom: atom-$(OSFLAG) ## Install Atom ATOM=stable,beta
+ATOM=stable
+# ATOM=beta
+atom: atom-$(OSFLAG) ## Install Atom ATOM=stable,beta
 
 # atom-LINUX: atom-$(OSID)
 
@@ -97,12 +97,14 @@ DIR_INSTALL = ../.install
 # atom-OSX:
 # 	bash ../bin/install.sh --package=atom$$(test "$(ATOM)" == "beta" && echo "-beta") --package-type=dmg --package-repo=cask
 
-# atom-WIN32:
-# ifeq (beta,$(ATOM))
-# 	make --directory=$(DIR_INSTALL) iu URL="https://atom.io/download/windows_x64?channel=beta" FILE="~/tmp/atom-beta.exe"
-# else
-# 	make --directory=$(DIR_INSTALL) iu URL=https://atom.io/download/windows_x64 FILE="~/tmp/atom.exe"
-# endif
+atom-WIN32:
+ifeq (beta,$(ATOM))
+	make --directory=$(DIR_INSTALL) dld URL="https://atom.io/download/windows_x64?channel=beta" FILE="~/Downloads/atom-beta.exe"
+	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/atom-beta.exe"
+else
+	make --directory=$(DIR_INSTALL) dld URL=https://atom.io/download/windows_x64 FILE="~/Downloads/atom.exe"
+	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/atom.exe"
+endif
 
 
 # idea: idea-$(INTELLIJ_UTIL) ## Install IntelliJ IDEA
@@ -220,7 +222,7 @@ sublime-WIN32:
 	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.sublimetext.com/3" PACKAGE_MATCH="Sublime.*Setup" PACKAGE_ARGS="/SP- /VERYSILENT /NORESTART"
 
 
-# vim: vim-$(OSFLAG) ## Install VIM
+vim: vim-$(OSFLAG) ## Install VIM
 
 # vim-font:
 # 	make --directory=../fonts nerd
@@ -239,13 +241,14 @@ sublime-WIN32:
 # vim-OSX: vim-font
 # 	make vim-postinstall
 
-# vim-WINDOWS: vim-font
-# 	make vim-postinstall
+vim-WIN32:
+	@$(POWERSHELL) -Command "Write-Host -ForegroundColor Red '$(NOT_IMPLEMENTED_WINDOWS). Not supported.'"
+	@exit 1
 
 
-# VSCODE=stable
-# # VSCODE=insider
-# vscode: vscode-$(OSFLAG) ## Install Visual Studio Code VSCODE=stable,insider
+VSCODE=stable
+# VSCODE=insider
+vscode: vscode-$(OSFLAG) ## Install Visual Studio Code VSCODE=stable,insider
 
 # vscode-LINUX: vscode-$(OSID)
 
@@ -263,5 +266,6 @@ sublime-WIN32:
 # vscode-OSX:
 # 	make --directory=$(DIR_INSTALL) i PACKAGE=visual-studio-code$$(test "$(VSCODE)" == "insider" && echo "-insiders") BREW_SOURCE=cask
 
-# vscode-WIN32:
-# 	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/win32-x64/$(VSCODE)" FILE="~/tmp/vscode.exe"
+vscode-WIN32:
+	make --directory=$(DIR_INSTALL) dld URL="https://update.code.visualstudio.com/latest/win32-x64/$(VSCODE)" FILE="~/Downloads/vscode-$(VSCODE).exe"
+	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/vscode-$(VSCODE).exe" PACKAGE_ARGS="/SP- /VERYSILENT /NORESTART"
