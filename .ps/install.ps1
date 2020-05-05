@@ -61,6 +61,11 @@ Function DoInstall()
     [String]$File = "",
     [String]$ArgumentList = ""
   )
+  if ($ArgumentList -ne "") {
+    $ArgumentList = $ArgumentList -replace "__HOME__",$Env:UserProfile
+    $ArgumentList = $ArgumentList -replace "__PROGRAMFILES__",$Env:ProgramFiles
+  }
+
   Write-Host -ForegroundColor Green "Installing:" $File
   Write-Host -ForegroundColor Green "with arguments:" ($ArgumentList -Join ", ")
   Write-Host ""

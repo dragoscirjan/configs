@@ -14,6 +14,11 @@ choco install make
 choco install git
 
 #
+# Install curl
+#
+choco install curl
+
+#
 # Install Configs
 #
 # mkdir -P ~/bin

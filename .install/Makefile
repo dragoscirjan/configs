@@ -5,9 +5,6 @@ include ./Makefile.template
 #
 
 CURL=curl -SL
-ifeq (powershell,$(SHELL_IS))
-	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
-endif
 
 #
 # Utils
@@ -20,16 +17,28 @@ ifeq (LINUX,$(OSFLAG))
 endif
 
 #
+# mkdir
+#
+mkdir: mkdir-$(SHELL_IS)
+
+mkdir-bash:
+	mkdir -p $(MKDIR_PATH)
+
+mkdir-powershell:
+	$(POWERSHELL) -Command "New-Item -Force -Path $(MKDIR_PATH)  -Type directory"
+
+#
 # Download File
 #
 
+CURL_OPTS =
 dld: apt-utils dld-$(SHELL_IS) ## Download file from web for installing: make dld URL=http://... FILE=./file.exe
 
 dld-bash:
-	$(CURL) "$(URL)" --output $(FILE)
+	$(CURL) $(CURL_OPTIONS) "$(URL)" --output $(FILE)
 
 dld-powershell:
-	$(CURL) "$(URL)" --output "$(FILE)"
+	$(POWERSHELL) -Command 'Remove-Item alias:curl; $(CURL) $(CURL_OPTS) "$(URL)" --output "$(FILE)"'
 
 #
 # Install Local Package
@@ -40,7 +49,7 @@ i: i-$(OSFLAG) ## Install From Package Manager PACKAGE=...
 
 CHOKO_FLAGS =
 i-WIN32:
-	$(POWERSHELL) -Command "chocolatey.exe install $(CHOKO_FLAGS) $(PACKAGE)"
+	$(POWERSHELL) -Command "chocolatey.exe install $(CHOKO_FLAGS) -Y --Force $(PACKAGE)"
 
 #
 # Install URL Package

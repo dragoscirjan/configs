@@ -18,8 +18,8 @@ DIR_INSTALL = ../.install
 # # INTELLIJ_APP=WS # WebStorm
 # INTELLIJ_APP=
 # INTELLIJ_OS=linux
-# INTELLIJ_UTIL=intellij
-# # INTELLIJ_UTIL=snap
+# OSFLAG=intellij
+# # OSFLAG=snap
 # JQ=jq
 # TIMESTAMP_SECCONDS=$(shell date +%s)
 
@@ -107,139 +107,92 @@ else
 endif
 
 
-# idea: idea-$(INTELLIJ_UTIL) ## Install IntelliJ IDEA
+idea: idea-$(OSFLAG) ## Install JetBrains IntelliJ IDEA
 
-# idea-intellij:
-# 	make intellij INTELLIJ_APP=IIU
+idea-LINUX: req_root_not
+	sudo snap install intellij-idea-ultimate --classic
 
-# idea-snap:
-# 	snap install intellij-idea-ultimate --classic
+idea-WIN32:
+	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/idea/silent.config" FILE="~/Downloads/silent.config"
+	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jetbrains.com/idea/download/download-thanks.html?platform=windows" PACKAGE_MATCH="ideaIU.*exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\IntelliJIDEA-Ultimate-Edition"
 
+idea-ce: idea-ce-$(OSFLAG) ## Install JetBrains IntelliJ IDEA CE
 
-# idea-ce: idea-ce-$(INTELLIJ_UTIL) ## Install IntelliJ IDEA CE
+idea-ce-LINUX: req_root_not
+	sudo snap install intellij-idea-community --classic
 
-# idea-ce-intellij:
-# 	make intellij INTELLIJ_APP=IIC
+idea-ce-WIN32:
+	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/idea/silent.config" FILE="~/Downloads/silent.config"
+	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jetbrains.com/idea/download/download-thanks.html?platform=windows&code=IIC" PACKAGE_MATCH="ideaIC-2020.*exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\IntelliJIDEA-Community-Edition"
 
-# idea-ce-snap:
-# 	snap install intellij-idea-community --classic
+goland: goland-$(OSFLAG) ## Install JetBrains GoLand
 
-# NEO_CONFIG_PATH=~/.config/nvm
-# ifeq ($(OSFLAG),WIN32)
-# 	NEO_CONFIG_PATH=~/AppData/Local/nvim
-# endif
+golang-LINUX: req_root_not
+	sudo snap Install goland --classic
 
-# neovim: vim-$(OSFLAG) ## Install NeoVIM
-
-# neovim-font:
-# 	make --directory=../fonts nerd
-
-# nevim-postinstall:
-# 	# config
-# 	mkdir -p $(NEO_CONFIG_PATH)
-# 	cp -rdf $(NEO_CONFIG_PATH)/init.vim $(NEO_CONFIG_PATH)/init.vim-$$(date +%F).$$(date +%N) || true
-# 	cp -rdf neovim-init.vim $(NEO_CONFIG_PATH)/init.vim
-# 	# vim-plug
-# 	curl --insecure -fLo $(NEO_CONFIG_PATH)/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-# neovim-LINUX: neovim-font
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=neovim
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=python-neovim
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=python3-neovim
-# 	make neovim-postinstall
-
-# neovim-OSX: neovim-font
-# 	echo $(NOT_IMPLEMENTED_OSX)
-
-# neovim-WINDOWS: neovim-font
-# 	echo $(NOT_IMPLEMENTED_WINDOWS)
-# 	make neovim-postinstall
-# 	sed -e "s|~/.local/share|~/AppData/Local|g" -i ~/AppData/Local/nvim/init.vim
-
-# phpstorm: phpstorm-$(INTELLIJ_UTIL) ## Install IntelliJ PhpStorm
-
-# phpstorm-intellij:
-# 	make intellij INTELLIJ_APP=PS
-
-# phpstorm-snap:
-# 	snap install phpstorm --classic
+goland-WIN32:
+	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/go/silent.config" FILE="~/Downloads/silent.config"
+	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="goland-2020.1.1.exe" PACKAGE_MATCH="goland.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\GoLand"
 
 
-# pycharm: pycharm-$(INTELLIJ_UTIL) ## Install IntelliJ PyCharm
+NEO_CONFIG_PATH=~/.config/nvm
+ifeq ($(OSFLAG),WIN32)
+	NEO_CONFIG_PATH=$$HOME\AppData\Local\nvim
+endif
+neovim-postinstall:
+	make --directory=$(DIR_INSTALL) mkdir MKDIR_PATH="$(NEO_CONFIG_PATH)"
+ifeq ($(OSFLAG),WIN32)
+	$(POWERSHELL) -Command 'Copy-Item "$(NEO_CONFIG_PATH)\init.vim" -Destination "$(NEO_CONFIG_PATH)\init-$$(get-date -f yyyyMMddHHmmss).vim"' -Force
+	$(POWERSHELL) -Command 'Copy-Item ".\neovim-init.vim" -Destination "$(NEO_CONFIG_PATH)\init.vim"'
+else
+	cp $(NEO_CONFIG_PATH)/init.vim $(NEO_CONFIG_PATH)/init.vim-$$(date +%F).$$(date +%N)
+	cp ./neovim-init.vim $(NEO_CONFIG_PATH)/init.vim
+endif
+	make --directory=$(DIR_INSTALL) dld URL="https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" FILE="$$$(NEO_CONFIG_PATH)/autoload/plug.vim" CURL_OPTS="--create-dirs"
 
-# pycharm-intellij:
-# 	make intellij INTELLIJ_APP=PCP
+neovim: req_root neovim-$(OSFLAG) ## Install NeoVIM
 
-# pycharm-snap:
-# 	snap install pycharm-professional --classic
+neovim-WIN32:
+	make --directory=$(DIR_INSTALL) i PACKAGE=neovim
+	make neovim-postinstall
+	# sed -e "s|~/.local/share|~/AppData/Local|g" -i $(NEO_CONFIG_PATH)/init.vim
+
+phpstorm: phpstorm-$(OSFLAG) ## Install JetBrains PhpStorm
+
+phpstorm-LINUX:
+	sudo snap install phpstorm --classic
+
+phpstorm-WIN32:
+	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/webide/silent.config"
+	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jetbrains.com/phpstorm/download/download-thanks.html" PACKAGE_MATCH="PhpStorm.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\PhpStorm"
 
 
-# pycharm-ce: pycharm-ce-$(INTELLIJ_UTIL) ## Install IntelliJ PyCharm CE
+pycharm: pycharm-$(OSFLAG) ## Install JetBrains PyCharm
 
-# pycharm-ce-intellij:
-# 	make intellij INTELLIJ_APP=PCC
+pycharm-LINUX:
+	sudo snap install pycharm-professional --classic
 
-# pycharm-ce-snap:
-# 	snap install pycharm-community --classic
+pycharm-WIN32:
+	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/python/silent.config" FILE="~/Downloads/silent.config"
+	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=windows" PACKAGE_MATCH="pycharm-professional.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\PyCharm-Professional"
 
 
-# webstorm: phpstorm-$(INTELLIJ_UTIL) ## Install IntelliJ WebStorm
+pycharm-ce: pycharm-ce-$(OSFLAG) ## Install JetBrains PyCharm CE
 
-# webstorm-intellij:
-# 	make intellij INTELLIJ_APP=WS
+pycharm-ce-LINUX:
+	sudo snap install pycharm-community --classic
 
-# webstorm-snap:
-# 	snap install phpstorm --classic
-
+pycharm-ce-WIN32:
+	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/python/silent.config" FILE="~/Downloads/silent.config"
+	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=windows&code=PCC" PACKAGE_MATCH="pycharm-community.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\PyCharm-Community"
 
 sublime: sublime-$(OSFLAG) ## Install Sublime Text
-
-# sublime-LINUX: sublime-$(OSID)
-
-# sublime-ubuntu: sublime-debian
-
-# sublime-debian:
-# 	wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
-# 	echo "deb https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
-# 	bash ../bin/install.sh --package=sublime-text --package-type=deb
-
-# sublime-centos: sublime-redhat
-
-# sublime-redhat:
-# 	sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
-# 	sudo yum-config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
-# 	sudo yum install sublime-text
-
-# sublime-fedora:
-# 	sudo rpm -v --import https://download.sublimetext.com/sublimehq-rpm-pub.gpg
-# 	sudo dnf config-manager --add-repo https://download.sublimetext.com/rpm/stable/x86_64/sublime-text.repo
-# 	sudo dnf install sublime-text
-
-# sublime-OSX:
-# 	bash ../bin/install.sh --package=sublime-text --package-type=dmg --package-repo=cask
 
 sublime-WIN32:
 	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.sublimetext.com/3" PACKAGE_MATCH="Sublime.*Setup" PACKAGE_ARGS="/SP- /VERYSILENT /NORESTART"
 
 
 vim: vim-$(OSFLAG) ## Install VIM
-
-# vim-font:
-# 	make --directory=../fonts nerd
-
-# vim-postinstall:
-# 	# config
-# 	cp ~/.vimrc ~/.vimrc-$$(date +%F).$$(date +%N) || true
-# 	cp .vimrc ~/.vimrc
-# 	# vim-plug
-# 	curl --insecure -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-# vim-LINUX: vim-font
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=vim
-# 	make vim-postinstall
-
-# vim-OSX: vim-font
-# 	make vim-postinstall
 
 vim-WIN32:
 	@$(POWERSHELL) -Command "Write-Host -ForegroundColor Red '$(NOT_IMPLEMENTED_WINDOWS). Not supported.'"
@@ -250,22 +203,16 @@ VSCODE=stable
 # VSCODE=insider
 vscode: vscode-$(OSFLAG) ## Install Visual Studio Code VSCODE=stable,insider
 
-# vscode-LINUX: vscode-$(OSID)
-
-# vscode-ubuntu: vscode-debian
-
-# vscode-debian:
-# 	bash ../bin/install.sh --download-url="https://update.code.visualstudio.com/latest/linux-deb-x64/$(VSCODE)" --package-type=deb
-
-# # vscode-centos: vscode-redhat
-# # vscode-fedora: vscode-redhat
-
-# # vscode-redhat:
-# # 	make --directory=$(DIR_INSTALL) iu URL="https://update.code.visualstudio.com/latest/linux-deb-x64/$(VSCODE)" FILE="~/tmp/vscode.deb"
-
-# vscode-OSX:
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=visual-studio-code$$(test "$(VSCODE)" == "insider" && echo "-insiders") BREW_SOURCE=cask
-
 vscode-WIN32:
 	make --directory=$(DIR_INSTALL) dld URL="https://update.code.visualstudio.com/latest/win32-x64/$(VSCODE)" FILE="~/Downloads/vscode-$(VSCODE).exe"
 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/vscode-$(VSCODE).exe" PACKAGE_ARGS="/SP- /VERYSILENT /NORESTART"
+
+
+webstorm: webstorm-$(OSFLAG) ## Install JetBrains WebStorm
+
+webstorm-LINUX:
+	sudo snap install webstorm --classic
+
+webstorm-WIN32:
+	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/webide/silent.config"
+	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jetbrains.com/webstorm/download/download-thanks.html" PACKAGE_MATCH="WebStorm.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\WebStorm"
