@@ -10,7 +10,7 @@ DIR_INSTALL = ../.install
 # Actual Action Definitions
 #
 
-GO_VERSION = 1.13.5
+GO_VERSION = 1.14.2
 
 golang: golang-$(OSFLAG) ## Install golang
 	export GOPATH="$$HOME/go"
@@ -22,65 +22,68 @@ golang: golang-$(OSFLAG) ## Install golang
 	# Go Outliner (VS Code Required)
 	go get -u github.com/766b/go-outliner
 
-golang-LINUX:
-	make --directory=$(DIR_INSTALL) dld URL="https://dl.google.com/go/go$(GO_VERSION).linux-amd64.tar.gz" FILE="~/tmp/go-lang.tar.gz"
-	cd ~/tmp && tar -xzf go-lang.tar.gz && sudo mv go /usr/local
-	sudo rm -rf /usr/local/bin/go /usr/local/bin/gofmt
-	sudo ln -s /usr/local/go/bin/go /usr/local/bin/go
-	sudo ln -s /usr/local/go/bin/gofmt /usr/local/bin/gofmt
+# golang-LINUX:
+# 	make --directory=$(DIR_INSTALL) dld URL="https://dl.google.com/go/go$(GO_VERSION).linux-amd64.tar.gz" FILE="~/tmp/go-lang.tar.gz"
+# 	cd ~/tmp && tar -xzf go-lang.tar.gz && sudo mv go /usr/local
+# 	sudo rm -rf /usr/local/bin/go /usr/local/bin/gofmt
+# 	sudo ln -s /usr/local/go/bin/go /usr/local/bin/go
+# 	sudo ln -s /usr/local/go/bin/gofmt /usr/local/bin/gofmt
 
-golang-OSX:
-	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go$(GO_VERSION).darwin-amd64.pkg" FILE="~/tmp/go-lang.pkg"
+# golang-OSX:
+# 	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go$(GO_VERSION).darwin-amd64.pkg" FILE="~/tmp/go-lang.pkg"
 
 golang-WIN32:
-	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go$(GO_VERSION).windows-amd64.msi" FILE="~/tmp/go-lang.msi"
+	make --directory=$(DIR_INSTALL) dld URL="https://dl.google.com/go/go$(GO_VERSION).windows-amd64.msi" FILE="$$$$HOME\Downloads\go-lang.msi"
+	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/go-lang.msi"
 
-# JAVA_VERSION=8
-JAVA_VERSION=11
-JAVA_TYPE=open
-# JAVA_TYPE=oracle
-java: java-$(OSFLAG) ## Install Java
+# # JAVA_VERSION=8
+# JAVA_VERSION=11
+# JAVA_TYPE=open
+# # JAVA_TYPE=oracle
+# java: java-$(OSFLAG) ## Install Java
 
-java-LINUX: java-$(OSID)
-	make --directory=$(DIR_INSTALL) i PACKAGE=maven
+# java-LINUX: java-$(OSID)
+# 	make --directory=$(DIR_INSTALL) i PACKAGE=maven
 
-java-ubuntu: java-debian
-java-debian: java-debian-$(JAVA_TYPE)
+# java-ubuntu: java-debian
+# java-debian: java-debian-$(JAVA_TYPE)
 
-java-debian-open:
-	make --directory=$(DIR_INSTALL) i PACKAGE="openjdk-$(JAVA_VERSION)-jdk openjdk-$(JAVA_VERSION)-jre"
+# java-debian-open:
+# 	make --directory=$(DIR_INSTALL) i PACKAGE="openjdk-$(JAVA_VERSION)-jdk openjdk-$(JAVA_VERSION)-jre"
 
-java-debian-oracle:
-	sudo add-apt-repository ppa:webupd8team/java
+# java-debian-oracle:
+# 	sudo add-apt-repository ppa:webupd8team/java
 
-java-OSX:
+# java-OSX:
 
-java-WIN32:
+# java-WIN32:
 
 
-NODE_VERSION=13
+NODE_VERSION=12.16.3
 nodejs: nodejs-$(OSFLAG) ## Install NodeJs NODE_VERSION=13,12,11,10,8
 
-nodejs-LINUX:
-ifeq ($(OSID),debian)
-	curl -sL https://deb.nodesource.com/setup_$(NODE_VERSION).x | bash -
-	sudo apt-get install -y nodejs
-endif
-ifeq ($(OSID),ubuntu)
-	curl -sL https://deb.nodesource.com/setup_$(NODE_VERSION).x | sudo -E bash -
-	sudo apt-get install -y nodejs
-endif
-ifeq ($(OSID),rhel)
-	curl -sL https://rpm.nodesource.com/setup_$(NODE_VERSION).x | sudo bash -
-endif
+# nodejs-LINUX:
+# ifeq ($(OSID),debian)
+# 	curl -sL https://deb.nodesource.com/setup_$(NODE_VERSION).x | bash -
+# 	sudo apt-get install -y nodejs
+# endif
+# ifeq ($(OSID),ubuntu)
+# 	curl -sL https://deb.nodesource.com/setup_$(NODE_VERSION).x | sudo -E bash -
+# 	sudo apt-get install -y nodejs
+# endif
+# ifeq ($(OSID),rhel)
+# 	curl -sL https://rpm.nodesource.com/setup_$(NODE_VERSION).x | sudo bash -
+# endif
 
-nodejs-OSX:
-	@echo $(NOT_IMPLEMENTED_OSX)
+# nodejs-OSX:
+# 	@echo $(NOT_IMPLEMENTED_OSX)
 
 nodejs-WIN32:
-	make --directory=$(DIR_INSTALL) iu URL="https://nodejs.org/dist/v10.16.1/node-v10.16.1-x64.msi" FILE="~/tmp/node.msi"
+	make --directory=$(DIR_INSTALL) dld URL="https://nodejs.org/dist/v$(NODE_VERSION)/node-v$(NODE_VERSION)-x64.msi" FILE="$$$$HOME\Downloads\node.msi"
+	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/node.msi"
 
 
+PYTHON_VERSION = 3.8.3 # TODO: Might need treatment depending OS
 python: python-$(OSFLAG) ## Install Python
 
 python-LINUX:
@@ -89,11 +92,14 @@ python-LINUX:
 python-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-WIN_PY_VER = 3.7.5
 python-WIN32:
-	make --directory=$(DIR_INSTALL) iu URL="https://www.python.org/ftp/python/$(WIN_PY_VER)/python-$(WIN_PY_VER).exe" FILE="~/tmp/python.exe" IL_WIN_ARGS="/NoCRLCheck /passive InstallAllUsers=1 PrependPath=1 Include_test=0"
+	@echo make --directory=$(DIR_INSTALL) dld URL="https://www.python.org/ftp/python/$(PYTHON_VERSION)/python-$(PYTHON_VERSION).amd64.msi" FILE="$$$$HOME\Downloads\python.msi"
+	@echo make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/python.msi"
+	make --directory=$(DIR_INSTALL) dld URL="https://www.python.org/ftp/python/$(PYTHON_VERSION)/python-$(PYTHON_VERSION)rc1-amd64.exe" FILE="$$$$HOME\Downloads\python.exe"
+	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/python.exe" PACKAGE_ARGS="/passive PrependPath=1 InstallAllUsers=1"
 
 
+RUBY_VERSION = 2.7.1-1
 ruby: ruby-$(OSFLAG) ## Install Ruby
 
 ruby-LINUX:
@@ -103,4 +109,5 @@ ruby-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
 ruby-WIN32:
-	make --directory=$(DIR_INSTALL) iu URL="https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.6.3-1/rubyinstaller-2.6.3-1-x64.exe" FILE="~/tmp/ruby.exe IL_WIN_ARGS="/sp- /silent"
+	make --directory=$(DIR_INSTALL) dld URL="https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-$(RUBY_VERSION)/rubyinstaller-$(RUBY_VERSION)-x64.exe" FILE="$$$$HOME\Downloads\ruby.exe"
+	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/ruby.exe" PACKAGE_ARGS="/SP- /VERYSILENT /SUPPRESSMSGBOXES /NOCANCEL /NORESTART"
