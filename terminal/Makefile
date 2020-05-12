@@ -1,8 +1,10 @@
-include Makefile.template
+include ./Makefile.template
 
 #
 # Actual Action Definitions
 #
+
+DIR_INSTALL = ../.install
 
 
 BASH_CONFIG_FOLDER=.
@@ -29,10 +31,12 @@ conemu-LINUX:
 conemu-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
+#  PACKAGE_ARGS="/p:x64,adm /qr"
 conemu-WIN32:
-	make --directory=$(DIR_INSTALL) iu URL="https://download.fosshub.com/Protected/expiretime=1564737346;badurl=aHR0cHM6Ly93d3cuZm9zc2h1Yi5jb20vQ29uRW11Lmh0bWw=/cc407ff6eb89618cbdb63f8bb0dc7d991a47a0322e073683541f39753ffba2db/5b85860af9ee5a5c3e979f45/5d2b89f7ac7f050a7d238675/ConEmuSetup.190714.exe" FILE="~/tmp/conemu.exe"
+	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.fosshub.com/ConEmu.html" PACKAGE_MATCH="ConEmuSetup.*.exe" PACKAGE_ARGS="/p:x64 /q"
 
 
+CMDER_VERSION = 1.3.14
 cmder: cmder-$(OSFLAG) ## Install cmder
 
 cmder-LINUX:
@@ -42,10 +46,8 @@ cmder-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
 cmder-WIN32:
-	make --directory=$(DIR_INSTALL) dld URL="https://github.com/cmderdev/cmder/releases/download/v1.3.11/cmder.zip" FILE="~/bin/cmder.zip"
+	make --directory=$(DIR_INSTALL) dld URL="https://github.com/cmderdev/cmder/releases/download/v$(CMDER_VERSION)/cmder.zip" FILE="~/bin/cmder.zip"
 	$(POWERSHELL) -Command "Expand-Archive ~/bin/cmder.zip -DestinationPath ~/bin/cmder"
-	make --directory=$(DIR_INSTALL) rm FILE="~/bin/cmder.zip"
-
 
 iterm: iterm-$(OSFLAG) ## Install iterm
 
@@ -73,18 +75,20 @@ guake-WIN32:
 
 hyper: hyper-$(OSFLAG) ## Install hyper
 
-hyper-LINUX: hyper-$(OSID)
+# hyper-LINUX: hyper-$(OSID)
 
-hyper-debian:
-	make --directory=$(DIR_INSTALL) iu URL="https://releases.hyper.is/download/deb" FILE="~/tmp/hyper.deb"
+# hyper-debian:
+# 	make --directory=$(DIR_INSTALL) iu URL="https://releases.hyper.is/download/deb" FILE="~/tmp/hyper.deb"
 
-hyper-ubuntu: hyper-debian
+# hyper-ubuntu: hyper-debian
 
-hyper-redhat:
-	make --directory=$(DIR_INSTALL) iu URL="https://releases.hyper.is/download/rpm" FILE="~/tmp/hyper.rpm"
+# hyper-redhat:
+# 	make --directory=$(DIR_INSTALL) iu URL="https://releases.hyper.is/download/rpm" FILE="~/tmp/hyper.rpm"
 
-hyper-OSX:
-	@echo $(NOT_IMPLEMENTED_OSX)
+# hyper-OSX:
+# 	@echo $(NOT_IMPLEMENTED_OSX)
 
+# TODO: No unknown silent args
 hyper-WIN32:
-	make --directory=$(DIR_INSTALL) iu URL="https://releases.hyper.is/download/win" FILE="~/tmp/hyper.exe"
+	make --directory=$(DIR_INSTALL) dld URL="https://releases.hyper.is/download/win" FILE="$$$$HOME\Downloads\hyper.exe"
+	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/hyper.exe" PACKAGE_ARGS="/S"
