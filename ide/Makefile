@@ -35,7 +35,7 @@ DIR_INSTALL = ../.install
 # 	TIMESTAMP_SECCONDS=$(shell powershell "(New-TimeSpan -Start (Get-Date \"01/01/1970\") -End (Get-Date)).TotalSeconds")
 # endif
 # ifeq (powershell,$(SHELL_IS))
-# 	CURL=powershell -ExecutionPolicy ByPass -File ../.ps/curl.ps1 --url
+# 	CURL=powershell -ExecutionPolicy ByPass -File ../.scripts/curl.ps1 --url
 # endif
 
 # utils-LINUX:

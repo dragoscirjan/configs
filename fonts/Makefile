@@ -35,7 +35,7 @@ endif
 #
 # Detect Shell
 #
-SHELL_IS := 
+SHELL_IS :=
 ifeq ($(SHELL),/bin/bash)
     SHELL_IS = bash
 else ifeq ($(SHELL),/usr/bin/bash)
@@ -129,7 +129,7 @@ firacode-OSX: firacode-dld
 
 firacode-WIN32: firacode-dld
 	$(POWERSHELL) -Command "Expand-Archive -Force ~/tmp/fonts.zip -DestinationPath ~/tmp/fonts"
-	$(POWERSHELL) -File ../.ps/install-font.ps1
+	$(POWERSHELL) -File ../.scripts/install-font.ps1
 
 
 hasklig: mkfont hasklig-$(OSFLAG) ## Install Hasklig Font https://github.com/i-tu/Hasklig
@@ -144,7 +144,7 @@ hasklig-OSX: hasklig-dld fonts-OSX-otf
 
 hasklig-WIN32: hasklig-dld
 	$(POWERSHELL) -Command "Expand-Archive -Force ~/tmp/fonts.zip -DestinationPath ~/tmp/fonts"
-	$(POWERSHELL) -File ../.ps/install-font.ps1 --ext otf
+	$(POWERSHELL) -File ../.scripts/install-font.ps1 --ext otf
 
 
 monoid: mkfont monoid-$(OSFLAG) ## Install Monoid Font https://github.com/larsenwork/monoid
@@ -159,7 +159,7 @@ monoid-LINUX: monoid-dld fonts-LINUX
 monoid-OSX: monoid-dld fonts-OSX
 
 monoid-WIN32: monoid-dld
-	$(POWERSHELL) -File ../.ps/install-font.ps1
+	$(POWERSHELL) -File ../.scripts/install-font.ps1
 
 
 nerd: mkfont nerd-hack-$(OSFLAG) nerd-hasklig-$(OSFLAG) ## Install Nerd https://github.com/ryanoasis/nerd-fonts
@@ -172,7 +172,7 @@ nerd-hack-LINUX: nerd-hack-dld fonts-LINUX
 nerd-hack-OSX: nerd-hack-dld fonts-OSX
 
 nerd-hack-WIN32: nerd-hack-dld
-	$(POWERSHELL) -File ../.ps/install-font.ps1
+	$(POWERSHELL) -File ../.scripts/install-font.ps1
 
 nerd-hasklig-dld:
 	make --directory=$(DIR_INSTALL) dld URL="https://github.com/ryanoasis/nerd-fonts/releases/download/v2.0.0/Hasklig.zip" FILE="~/tmp/fonts.zip"
@@ -183,7 +183,7 @@ nerd-hasklig-OSX: nerd-hasklig-dld fonts-OSX-otf
 
 nerd-hasklig-WIN32: nerd-hasklig-dld
 	$(POWERSHELL) -Command "Expand-Archive -Force ~/tmp/fonts.zip -DestinationPath ~/tmp/fonts"
-	$(POWERSHELL) -File ../.ps/install-font.ps1 --ext otf
+	$(POWERSHELL) -File ../.scripts/install-font.ps1 --ext otf
 
 
 sourcecodepro: mkfont sourcecodepro-$(OSFLAG) ## Install Source Code Pro Font https://github.com/adobe-fonts/source-code-pro
@@ -199,7 +199,7 @@ sourcecodepro-OSX: sourcecodepro-dld
 	@echo $(NOT_IMPLEMENTED_OSX)
 
 sourcecodepro-WIN32: sourcecodepro-dld
-	$(POWERSHELL) -File ../.ps/install-font.ps1
+	$(POWERSHELL) -File ../.scripts/install-font.ps1
 
 
 all: firacode hasklig monoid sourcecodepro ## Install all Fonts

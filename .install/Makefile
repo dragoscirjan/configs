@@ -61,7 +61,7 @@ PACKAGE_ARGS =
 iu: iu-$(OSFLAG) ## Install From URL PACKAGE_URL=... PACKAGE_MATCH=... PACKAGE_ARGS=...
 
 iu-WIN32:
-	$(POWERSHELL) -File ../.ps/install.ps1 --Url "$(PACKAGE_URL)" --FileMatch "$(PACKAGE_MATCH)" --ArgumentList "$(PACKAGE_ARGS)"
+	$(POWERSHELL) -File ./install.ps1 --Url "$(PACKAGE_URL)" --FileMatch "$(PACKAGE_MATCH)" --ArgumentList "$(PACKAGE_ARGS)"
 
 #
 # Install Local Package
@@ -71,7 +71,7 @@ PACKAGE_PATH =
 il: il-$(OSFLAG) ## Install Local Package PACKAGE_PATH=... PACKAGE_ARGS=...
 
 il-WIN32:
-	$(POWERSHELL) -File ../.ps/install.ps1 --File "$(PACKAGE_PATH)" --ArgumentList "$(PACKAGE_ARGS)"
+	$(POWERSHELL) -File ./install.ps1 --File "$(PACKAGE_PATH)" --ArgumentList "$(PACKAGE_ARGS)"
 
 #
 # Install Package
@@ -124,7 +124,7 @@ il-WIN32:
 # 	hdiutil unmount $$HOME/tmp/volume
 
 # il-WIN32-bash:
-# 	$(POWERSHELL) -File ../.ps/install.ps1 --file "$(FILE)" --args "$(IL_WIN_ARGS)"
+# 	$(POWERSHELL) -File ./install.ps1 --file "$(FILE)" --args "$(IL_WIN_ARGS)"
 
 # il-WIN32-powershell: il-WIN32-bash
 

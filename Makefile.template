@@ -90,7 +90,7 @@ req_root-OSX:
 	echo $(NOT_IMPLEMENTED_LINUX)
 
 req_root-WIN32:
-	$(POWERSHELL) -File "../.ps/req_root.ps1"
+	$(POWERSHELL) -File "../.scripts/req_root.ps1"
 
 req_root_not: req_root_not-$(OSFLAG)
 
@@ -101,4 +101,4 @@ req_root_not-OSX:
 	echo $(NOT_IMPLEMENTED_LINUX)
 
 req_root_not-WIN32:
-	$(POWERSHELL) -File "../.ps/req_root_not.ps1"
+	$(POWERSHELL) -File "../.scripts/req_root_not.ps1"
