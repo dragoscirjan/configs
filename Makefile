@@ -28,21 +28,14 @@ terminal: ## Install Terminal Tools
 	make --directory=./terminal conemu cmder iterm
 
 CP_TEMPLATE=cp Makefile.template
-sync-makefile-template:
-	$(CP_TEMPLATE) ./.install
-	$(CP_TEMPLATE) ./ide
-	$(CP_TEMPLATE) ./router-assus
-	$(CP_TEMPLATE) ./docker
-	$(CP_TEMPLATE) ./bin
-	$(CP_TEMPLATE) ./office
-	$(CP_TEMPLATE) ./terminal
-	$(CP_TEMPLATE) ./lang
-	$(CP_TEMPLATE) ./browsers
-	$(CP_TEMPLATE) ./fonts
-	$(CP_TEMPLATE) ./code-templates
-	$(CP_TEMPLATE) ./code-templates/swagger-generator
-	$(CP_TEMPLATE) ./code-templates/php-symfony
-	$(CP_TEMPLATE) ./code-templates/python
-	$(CP_TEMPLATE) ./code-templates/typescript
-	$(CP_TEMPLATE) ./git
-	$(CP_TEMPLATE) ./quemu/macos
+sync-template: sync-template-$(SHELL_IS)
+
+# sync-template-bash:
+
+sync-template-powershell:
+	$(POWERSHELL) -Command '$$mainTemplate = (Get-Location); \
+		$$mainTemplate = "$$MainTemplate\Makefile.template"; \
+		Get-Childitem -Path . -Include *Makefile.template* -File -Recurse -ErrorAction SilentlyContinue | ForEach-Object { \
+			if ($$mainTemplate -ne $$_.FullName) { Copy-Item -Path $$mainTemplate -Destination $$_.FullName -Force } \
+		}'
+
