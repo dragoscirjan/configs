@@ -27,7 +27,6 @@ office: ## Install Office Tools
 terminal: ## Install Terminal Tools
 	make --directory=./terminal conemu cmder iterm
 
-CP_TEMPLATE=cp Makefile.template
 sync-template: sync-template-$(SHELL_IS)
 
 # sync-template-bash:
