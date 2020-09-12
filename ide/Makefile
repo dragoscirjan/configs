@@ -182,9 +182,11 @@ pycharm-ce: pycharm-ce-$(OSFLAG) ## Install JetBrains PyCharm CE
 pycharm-ce-LINUX:
 	sudo snap install pycharm-community --classic
 
+# make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/python/silent.config" FILE="~/Downloads/silent.config"
+# make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=windows&code=PCC" PACKAGE_MATCH="pycharm-community.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\PyCharm-Community"
 pycharm-ce-WIN32:
-	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/python/silent.config" FILE="~/Downloads/silent.config"
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jetbrains.com/pycharm/download/download-thanks.html?platform=windows&code=PCC" PACKAGE_MATCH="pycharm-community.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\PyCharm-Community"
+	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/python/silent.config" FILE="__HOME__/Downloads/silent.config"
+	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jetbrains.com/pycharm/download/" PACKAGE_MATCH="pycharm-community.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\PyCharm-Community"
 
 sublime: sublime-$(OSFLAG) ## Install Sublime Text
 

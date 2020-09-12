@@ -38,8 +38,7 @@ dld-bash:
 	$(CURL) $(CURL_OPTIONS) "$(URL)" --output $(FILE)
 
 dld-powershell:
-	$(POWERSHELL) -Command 'Remove-Item alias:curl; $(CURL) $(CURL_OPTS) "$(URL)" --output "$(FILE)"'
-
+	$(POWERSHELL) -Command 'Remove-Item alias:curl; $(CURL) $(CURL_OPTS) "$(URL)" --output "$(subst __HOME__,$$HOME,$(FILE))"'
 #
 # Install Local Package
 #

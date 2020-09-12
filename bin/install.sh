@@ -195,8 +195,9 @@ if [[ "$DOWNLOAD_GENERIC_URL" != "" ]]; then
     exit 1
   fi
 	echo -e "We will redirect you to \e[36m$DOWNLOAD_GENERIC_URL\e[0m, in order to download the required package. "
-  echo -e "Please save it under \e[36m\$HOME/Downloads\e[0m folder."
-	sleep 5
+  echo -e "Please save it under \e[36m\$HOME/Downloads\e[0m folder and make sure it will contain the folowing string \e[36m$DOWNLOAD_GENERIC_MATCH\e[0m in its name."
+  echo -n "Press any key to continue."
+  read -n 1
 	xdg-open "$DOWNLOAD_GENERIC_URL" || gnome-open "$DOWNLOAD_GENERIC_URL"
   slee 5
   do_check_file_downloaded "$DOWNLOAD_GENERIC_MATCH"

@@ -7,11 +7,15 @@ OSARCH :=
 OSID :=
 ifeq ($(OS),Windows_NT)
 	OSFLAG = WIN32
-	ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
+	UNAME_P = $(shell powershell -ExecutionPolicy ByPass "(Get-WmiObject Win32_OperatingSystem).OSArchitecture")
+	ifeq ($(UNAME_P),64-bit)
 		OSARCH = AMD64
-	endif
-	ifeq ($(PROCESSOR_ARCHITECTURE),x86)
-		OSARCH = IA32
+	else
+		ifeq ($(UNAME_P),32-bit)
+			OSARCH = IA32
+		else
+			OSARCH = ARM
+		endif
 	endif
 else
 	UNAME_S := $(shell uname -s)
