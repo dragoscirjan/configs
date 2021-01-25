@@ -3,12 +3,18 @@ param(
     [String]$output=''
 )
 
+
+if ($output -ne "") {
+  $output = $output -replace "__HOME__",$Env:UserProfile
+  $output = $output -replace "__PROGRAMFILES__",$Env:ProgramFiles
+}
+
 # https://blog.jourdant.me/post/3-ways-to-download-files-with-powershell
 
 # @see https://stackoverflow.com/questions/41618766/powershell-invoke-webrequest-fails-with-ssl-tls-secure-channel
-[Net.ServicePointManager]::SecurityProtocol = 
+[Net.ServicePointManager]::SecurityProtocol =
   [Net.SecurityProtocolType]::Tls12 -bor `
-  [Net.SecurityProtocolType]::Tls11 
+  [Net.SecurityProtocolType]::Tls11
   #-bor `
   #[Net.SecurityProtoolType]::Tls
 

@@ -1,7 +1,13 @@
 "" https://www.youtube.com/watch?v=gnupOrSEikQ
 
+if empty(glob('~/AppData/Local/nvim/plug.vim'))
+  silent !curl -fLo ~/AppData/Local/nvim/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 " Specify a directory for plugins
-call plug#begin('~/.local/share/nvim/plugged')
+call plug#begin('~/.vim/plugged')
 
 " Utils
 Plug 'junegunn/vim-plug'
@@ -23,7 +29,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'airblade/vim-gitgutter'
 
 " Generic Tools
-Plug 'scrooloose/nerdcommenter' " Comment Code	
+Plug 'scrooloose/nerdcommenter' " Comment Code
 Plug 'editorconfig/editorconfig-vim' " Editorconfig
 Plug 'mattn/emmet-vim' " Emmet
 Plug 'wakatime/vim-wakatime' " Wakatime
@@ -31,7 +37,7 @@ Plug 'wakatime/vim-wakatime' " Wakatime
 "
 " Go
 "
-" Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries'}
+Plug 'fatih/vim-go', {'do': ':GoUpdateBinaries'}
 
 "
 " TS
@@ -51,6 +57,15 @@ call plug#end()
 
 " Set IDE Encoding
 set encoding=UTF-8
+if has("macunix") || has('os2')
+  set guifont=Hack\ Nerd\ Font\:12
+else
+    if has('unix')
+      set guifont=Hack\ Nerd\ Font\ 12
+    else " if has('win32')
+      set guifont=Hack\ Nerd\ Font\ 12
+    endif
+endif
 
 " show line numbers
 set number
