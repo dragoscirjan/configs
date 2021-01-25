@@ -27,6 +27,6 @@ office: ## Install Office Tools
 terminal: ## Install Terminal Tools
 	make --directory=./terminal conemu cmder iterm
 
-CP_TEMPLATE=cp Makefile.template 
+CP_TEMPLATE=cp Makefile.template
 sync-makefile-template:
 	find . -mindepth 2 -iname "Makefile.template" | while read f; do cp Makefile.template $$f; done

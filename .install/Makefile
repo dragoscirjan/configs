@@ -55,7 +55,7 @@ dld-powershell:
 
 rm: rm-$(SHELL_IS) ## Remove file
 
-rm-bash: 
+rm-bash:
 	rm -rf "$(FILE)"
 
 rm-powershell:
@@ -111,7 +111,7 @@ il-OSX-bash:
 		| while read app; do echo sudo installer -package $$app -target "/Volumes/Macintosh HD"; done
 	hdiutil unmount $$HOME/tmp/volume
 
-il-WIN32-bash: 
+il-WIN32-bash:
 	$(POWERSHELL) -File ../.ps/install.ps1 --file "$(FILE)" --args "$(IL_WIN_ARGS)"
 
 il-WIN32-powershell: il-WIN32-bash
