@@ -35,3 +35,11 @@ install-OSX:
 install-WINDOWS:
 
 
+install-langs: install-langs-go install-langs-nodejs
+
+install-langs-go:
+	sudo -u jenkins make --directory=../lang golang
+
+install-langs-nodejs:
+	sudo -u jenkins make --directory=../lang node-nvm
+	sudo -u jenkins bash -c "source ~./profile; for v in 11 12 13 14 15; do nvm install $v; done"

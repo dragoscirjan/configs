@@ -10,9 +10,8 @@ DIR_INSTALL = ../.install
 # # Actual Action Definitions
 # #
 
-# GO_VERSION = 1.14.2
+GO_VERSION = 1.15
 
-# golang: golang-$(OSFLAG) ## Install golang
 # 	export GOPATH="$$HOME/go"
 # 	# Go Critic (VS Code Required)
 # 	go get -v github.com/go-lintpack/lintpack/...
@@ -21,13 +20,18 @@ DIR_INSTALL = ../.install
 # 	# go get -v github.com/zmb3/gogetdoc/...
 # 	# Go Outliner (VS Code Required)
 # 	go get -u github.com/766b/go-outliner
+golang: golang-$(OSFLAG) ## Install golang GO_VERSION=1.15,1.12,1.13,1.14
 
-# # golang-LINUX:
-# # 	make --directory=$(DIR_INSTALL) dld URL="https://dl.google.com/go/go$(GO_VERSION).linux-amd64.tar.gz" FILE="~/tmp/go-lang.tar.gz"
-# # 	cd ~/tmp && tar -xzf go-lang.tar.gz && sudo mv go /usr/local
-# # 	sudo rm -rf /usr/local/bin/go /usr/local/bin/gofmt
-# # 	sudo ln -s /usr/local/go/bin/go /usr/local/bin/go
-# # 	sudo ln -s /usr/local/go/bin/gofmt /usr/local/bin/gofmt
+golang-LINUX:
+	@echo "Downloading: https://golang.org$$(curl https://golang.org/dl/ | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'"' '{ print $$4 == "download" ? $$6 : $$4; }')"
+	curl -sSL "https://golang.org$$(curl https://golang.org/dl/ | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'"' '{ print $$4 == "download" ? $$6 : $$4; }')" --output "/tmp/go-lang.tar.gz"
+	sudo rm -rf /usr/local/go
+	cd /tmp && tar -xzf go-lang.tar.gz && sudo mv go /usr/local
+	sudo rm -rf /usr/local/bin/go /usr/local/bin/gofmt
+	sudo ln -s /usr/local/go/bin/go /usr/local/bin/go
+	sudo ln -s /usr/local/go/bin/gofmt /usr/local/bin/gofmt
+	cat ~/.profile | grep "prepare_go" || cat .profile.go >> ~/.profile
+	bash -c "source ~/.profile && go version"
 
 # # golang-OSX:
 # # 	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go$(GO_VERSION).darwin-amd64.pkg" FILE="~/tmp/go-lang.pkg"
@@ -36,6 +40,16 @@ DIR_INSTALL = ../.install
 # 	make --directory=$(DIR_INSTALL) dld URL="https://dl.google.com/go/go$(GO_VERSION).windows-amd64.msi" FILE="$$$$HOME\Downloads\go-lang.msi"
 # 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/go-lang.msi"
 
+golang-add: golang-add-$(OSFLAG)
+
+golang-add-LINUX: golang-add-OSX
+
+golang-add-OSX:
+	VERSION=$$(curl https://golang.org/dl/ | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'go' '{ print $$2 }' | awk -F'.' '{ print $$1"."$$2"."$$3 }'); \
+	echo "Installing go$$VERSION"; \
+	go get golang.org/dl/go$$VERSION; \
+	go$$VERSION download; \
+	go$$VERSION version
 
 # JAVA_VERSION=8
 # JAVA_VERSION=9
@@ -87,12 +101,15 @@ nodejs-WIN32:
 	make --directory=$(DIR_INSTALL) dld URL="https://nodejs.org/dist/v$(NODE_VERSION)/node-v$(NODE_VERSION)-x64.msi" FILE="$$$$HOME\Downloads\node.msi"
 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/node.msi"
 
+#
+# NodeJs with NVM
+#
 
 nodejs-nvm: nodejs-nvm-$(OSFLAG) ## Install NodeJs using (https://nvm.sh) NODE_VERSION=12,15,14,13,11
 
 nodejs-nvm-LINUX:
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-	cat ~/profile | grep "HOME/.nvm" || cat .profile.nvm > ~/.profile
+	cat ~/.profile | grep "HOME/.nvm" || cat .profile.nvm >> ~/.profile
 	bash -c "source ~/.profile && nvm install $(NODE_VERSION)"
 
 nodejs-nvm-OSX:
