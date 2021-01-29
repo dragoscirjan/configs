@@ -64,29 +64,42 @@ pre-java-LINUX:
 # TODO: windows and mac
 
 
-# NODE_VERSION=12.16.3
-# nodejs: nodejs-$(OSFLAG) ## Install NodeJs NODE_VERSION=13,12,11,10,8
+NODE_VERSION=12
+nodejs: nodejs-$(OSFLAG) ## Install NodeJs NODE_VERSION=12,15,14,13,11
 
-# # nodejs-LINUX:
-# # ifeq ($(OSID),debian)
-# # 	curl -sL https://deb.nodesource.com/setup_$(NODE_VERSION).x | bash -
-# # 	sudo apt-get install -y nodejs
-# # endif
-# # ifeq ($(OSID),ubuntu)
-# # 	curl -sL https://deb.nodesource.com/setup_$(NODE_VERSION).x | sudo -E bash -
-# # 	sudo apt-get install -y nodejs
-# # endif
-# # ifeq ($(OSID),rhel)
-# # 	curl -sL https://rpm.nodesource.com/setup_$(NODE_VERSION).x | sudo bash -
-# # endif
+nodejs-LINUX:
+ifeq ($(OSID),debian)
+	curl -sL https://deb.nodesource.com/setup_$(NODE_VERSION).x | bash -
+	sudo apt-get install -y nodejs
+endif
+ifeq ($(OSID),ubuntu)
+	curl -sL https://deb.nodesource.com/setup_$(NODE_VERSION).x | sudo -E bash -
+	sudo apt-get install -y nodejs
+endif
+ifeq ($(OSID),rhel)
+	curl -sL https://rpm.nodesource.com/setup_$(NODE_VERSION).x | sudo bash -
+endif
 
-# # nodejs-OSX:
-# # 	@echo $(NOT_IMPLEMENTED_OSX)
+nodejs-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
 
-# nodejs-WIN32:
-# 	make --directory=$(DIR_INSTALL) dld URL="https://nodejs.org/dist/v$(NODE_VERSION)/node-v$(NODE_VERSION)-x64.msi" FILE="$$$$HOME\Downloads\node.msi"
-# 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/node.msi"
+nodejs-WIN32:
+	make --directory=$(DIR_INSTALL) dld URL="https://nodejs.org/dist/v$(NODE_VERSION)/node-v$(NODE_VERSION)-x64.msi" FILE="$$$$HOME\Downloads\node.msi"
+	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/node.msi"
 
+
+nodejs-nvm: nodejs-nvm-$(OSFLAG) ## Install NodeJs using (https://nvm.sh) NODE_VERSION=12,15,14,13,11
+
+nodejs-nvm-LINUX:
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+	cat ~/profile | grep "HOME/.nvm" || cat .profile.nvm > ~/.profile
+	bash -c "source ~/.profile && nvm install $(NODE_VERSION)"
+
+nodejs-nvm-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+nodejs-nvm-WIN32:
+	@echo $(NOT_IMPLEMENTED_WINDOWS)
 
 # PYTHON_VERSION = 3.8.3 # TODO: Might need treatment depending OS
 # python: python-$(OSFLAG) ## Install Python
