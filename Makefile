@@ -26,21 +26,3 @@ office: ## Install Office Tools
 
 terminal: ## Install Terminal Tools
 	make --directory=./terminal conemu cmder iterm
-
-<<<<<<< HEAD
-CP_TEMPLATE=cp Makefile.template
-sync-makefile-template:
-	find . -mindepth 2 -iname "Makefile.template" | while read f; do cp Makefile.template $$f; done
-=======
-sync-template: sync-template-$(SHELL_IS)
-
-# sync-template-bash:
-
-sync-template-powershell:
-	$(POWERSHELL) -Command '$$mainTemplate = (Get-Location); \
-		$$mainTemplate = "$$MainTemplate\Makefile.template"; \
-		Get-Childitem -Path . -Include *Makefile.template* -File -Recurse -ErrorAction SilentlyContinue | ForEach-Object { \
-			if ($$mainTemplate -ne $$_.FullName) { Copy-Item -Path $$mainTemplate -Destination $$_.FullName -Force } \
-		}'
-
->>>>>>> 8ae4156b993b609ff6937058db1defdbcdb6ae42

@@ -11,6 +11,21 @@ DIR_INSTALL = ../.install
 #
 
 #
+# .NET
+#
+
+dotnet: php-$(OSFLAG) ## Install Ruby
+
+dotnet-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
+
+dotnet-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+dotnet-WIN32:
+	@echo $(NOT_IMPLEMENTED_WINDOWS)
+
+#
 # GoLang
 #
 
@@ -23,15 +38,15 @@ GO_URL = https://golang.org/dl/
 
 GO_FOLDER = /usr/local/go
 
-# 	export GOPATH="$$HOME/go"
-# 	# Go Critic (VS Code Required)
-# 	go get -v github.com/go-lintpack/lintpack/...
-# 	go get -v github.com/go-critic/go-critic/...
-# 	# Go Doc (VS Code Required)
-# 	# go get -v github.com/zmb3/gogetdoc/...
-# 	# Go Outliner (VS Code Required)
-# 	go get -u github.com/766b/go-outliner
 golang: golang-$(OSFLAG) ## Install golang GO_VERSION=1.15,1.12,1.13,1.14
+	export GOPATH="$$HOME/go"
+	# Go Critic (VS Code Required)
+	go get -v github.com/go-lintpack/lintpack/...
+	go get -v github.com/go-critic/go-critic/...
+	# Go Doc (VS Code Required)
+	# go get -v github.com/zmb3/gogetdoc/...
+	# Go Outliner (VS Code Required)
+	go get -u github.com/766b/go-outliner
 
 golang-LINUX: req_root
 	rm -rf /tmp/go-lang.tar.gz
