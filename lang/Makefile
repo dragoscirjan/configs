@@ -6,11 +6,22 @@ include ../Makefile.template
 
 DIR_INSTALL = ../.install
 
-# #
-# # Actual Action Definitions
-# #
+#
+# Actual Action Definitions
+#
+
+#
+# GoLang
+#
 
 GO_VERSION = 1.15
+# GO_VERSION = 1.14
+# GO_VERSION = 1.13
+# GO_VERSION = 1.12
+
+GO_URL = https://golang.org/dl/
+
+GO_FOLDER = /usr/local/go
 
 # 	export GOPATH="$$HOME/go"
 # 	# Go Critic (VS Code Required)
@@ -22,46 +33,59 @@ GO_VERSION = 1.15
 # 	go get -u github.com/766b/go-outliner
 golang: golang-$(OSFLAG) ## Install golang GO_VERSION=1.15,1.12,1.13,1.14
 
-golang-LINUX:
-	@echo "Downloading: https://golang.org$$(curl https://golang.org/dl/ | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'"' '{ print $$4 == "download" ? $$6 : $$4; }')"
-	curl -sSL "https://golang.org$$(curl https://golang.org/dl/ | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'"' '{ print $$4 == "download" ? $$6 : $$4; }')" --output "/tmp/go-lang.tar.gz"
-	sudo rm -rf /usr/local/go
+golang-LINUX: req_root
+	rm -rf /tmp/go-lang.tar.gz
+	curl -sSL "https://golang.org$$(curl -sSL $(GO_URL) | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'"' '{ print $$4 == "download" ? $$6 : $$4; }')" --output "/tmp/go-lang.tar.gz"
+	rm -rf $(GO_FOLDER)
 	cd /tmp && tar -xzf go-lang.tar.gz && sudo mv go /usr/local
 	sudo rm -rf /usr/local/bin/go /usr/local/bin/gofmt
-	sudo ln -s /usr/local/go/bin/go /usr/local/bin/go
-	sudo ln -s /usr/local/go/bin/gofmt /usr/local/bin/gofmt
+	sudo ln -s $(GO_FOLDER)/bin/go /usr/local/bin/go
+	sudo ln -s $(GO_FOLDER)/bin/gofmt /usr/local/bin/gofmt
 	cat ~/.profile | grep "prepare_go" || cat .profile.go >> ~/.profile
 	bash -c "source ~/.profile && go version"
 
-# # golang-OSX:
-# # 	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go$(GO_VERSION).darwin-amd64.pkg" FILE="~/tmp/go-lang.pkg"
+# 	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go$(GO_VERSION).darwin-amd64.pkg" FILE="~/tmp/go-lang.pkg"
+golang-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
 
-# golang-WIN32:
 # 	make --directory=$(DIR_INSTALL) dld URL="https://dl.google.com/go/go$(GO_VERSION).windows-amd64.msi" FILE="$$$$HOME\Downloads\go-lang.msi"
 # 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/go-lang.msi"
+golang-WIN32:
+	@echo $(NOT_IMPLEMENTED_WINDOWS)
+
 
 golang-add: golang-add-$(OSFLAG)
 
 golang-add-LINUX: golang-add-OSX
 
 golang-add-OSX:
-	VERSION=$$(curl https://golang.org/dl/ | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'go' '{ print $$2 }' | awk -F'.' '{ print $$1"."$$2"."$$3 }'); \
+	VERSION=$$(curl $(GO_URL) | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'go' '{ print $$2 }' | awk -F'.' '{ print $$1"."$$2"."$$3 }'); \
 	echo "Installing go$$VERSION"; \
 	go get golang.org/dl/go$$VERSION; \
 	go$$VERSION download; \
 	go$$VERSION version
 
-# JAVA_VERSION=8
-# JAVA_VERSION=9
-# JAVA_VERSION=10
-# JAVA_VERSION=11
-# JAVA_VERSION=12
-# JAVA_VERSION=13
-# JAVA_VERSION=14
+golang-add-WIN32:
+	@echo $(NOT_IMPLEMENTED_WINDOWS)
+
+#
+# Java
+#
+
 JAVA_VERSION=15
+# JAVA_VERSION=14
+# JAVA_VERSION=13
+# JAVA_VERSION=12
+# JAVA_VERSION=11
+# JAVA_VERSION=10
+# JAVA_VERSION=9
+# JAVA_VERSION=8
+
 JAVA_TYPE=open
 # JAVA_TYPE=oracle
+
 JAVA_FOLDER=/opt/java
+
 java: java-$(OSFLAG) ## Install Java JAVA_VERSION=15,8,9,10,11,12,13,14 JAVA_TYPE=open,oracle JAVA_FOLDER=/opt/java
 
 java-LINUX: pre-java-LINUX java-$(JAVA_TYPE)-LINUX
@@ -74,6 +98,12 @@ java-oracle-LINUX:
 
 pre-java-LINUX:
 	sudo mkdir -p $(JAVA_FOLDER)
+
+java-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+java-WIN32:
+	@echo $(NOT_IMPLEMENTED_WINDOWS)
 
 # TODO: windows and mac
 
@@ -97,9 +127,10 @@ endif
 nodejs-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
+# 	make --directory=$(DIR_INSTALL) dld URL="https://nodejs.org/dist/v$(NODE_VERSION)/node-v$(NODE_VERSION)-x64.msi" FILE="$$$$HOME\Downloads\node.msi"
+# 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/node.msi"
 nodejs-WIN32:
-	make --directory=$(DIR_INSTALL) dld URL="https://nodejs.org/dist/v$(NODE_VERSION)/node-v$(NODE_VERSION)-x64.msi" FILE="$$$$HOME\Downloads\node.msi"
-	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/node.msi"
+	@echo $(NOT_IMPLEMENTED_WINDOWS)
 
 #
 # NodeJs with NVM
@@ -118,12 +149,27 @@ nodejs-nvm-OSX:
 nodejs-nvm-WIN32:
 	@echo $(NOT_IMPLEMENTED_WINDOWS)
 
-PYTHON_VERSION = 3.9
+#
+# Python
+#
+
+PY_VERSION = 3.9
+# PY_VERSION = 3.8
+# PY_VERSION = 3.7
+# PY_VERSION = 3.6
+# PY_VERSION = 3.5
+
 # PY_CONFIGURE_OPTS = --enable-optimizations
 PY_CONFIGURE_OPTS =
-python: req_root python-$(OSFLAG) ## Install Python PYTHON_VERSION=3.9,3.5,3.6,3.7,3.8
+
+PY_FOLDER = /opt/python
+
+PY_URL = https://www.python.org/ftp/python
+
+python: req_root python-$(OSFLAG) ## Install Python PY_VERSION=3.9,3.5,3.6,3.7,3.8
 
 python-LINUX: python-LINUX-$(OSID)
+	curl https://bootstrap.pypa.io/get-pip.py | $(PY_FOLDER)/Python-$(PY_VERSION)/python
 
 python-LINUX-ubuntu: python-LINUX-debian
 
@@ -131,35 +177,58 @@ python-LINUX-debian:
 	apt-get install -y build-essential checkinstall
 	apt-get install -y libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev
 	mkdir -p /opt/python
-	VERSION=$$(curl -sSL https://www.python.org/ftp/python | grep $(PYTHON_VERSION) | sort -nr | head -n2 | tail -n1 | awk -F '"' '{print $$2}' | awk -F'/' '{ print $$1 }'); \
-		cd /opt/python; \
-		rm -rf Python-$$VERSION.tgz; \
-		curl -sSL "https://www.python.org/ftp/python/$$VERSION/Python-$$VERSION.tgz" --output "/opt/python/Python-$$VERSION.tgz"; \
+	VERSION=$$(curl -sSL $(PY_URL) | grep $(PY_VERSION) | awk -F '"' '{ print $$2 }' | awk -F'/' '{ print $$1 }' | sort -nr | head -n1); \
+		cd $(PY_FOLDER); \
+		rm -rf Python-$$VERSION*; \
+		curl -sSL "$(PY_URL)/$$VERSION/Python-$$VERSION.tgz" --output "$(PY_FOLDER)/Python-$$VERSION.tgz"; \
 		tar -xzf Python-$$VERSION.tgz; \
 		cd Python-$$VERSION; \
 		./configure $(PY_CONFIGURE_OPTS); \
-		make
+		make; \
+		cd ..; \
+		rm -rf Python-$(PY_VERSION); \
+		ln -s Python-$$VERSION Python-$(PY_VERSION)
 
+python-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
 
-# python-OSX:
-# 	@echo $(NOT_IMPLEMENTED_OSX)
-
-# python-WIN32:
-# 	@echo make --directory=$(DIR_INSTALL) dld URL="https://www.python.org/ftp/python/$(PYTHON_VERSION)/python-$(PYTHON_VERSION).amd64.msi" FILE="$$$$HOME\Downloads\python.msi"
+# 	@echo make --directory=$(DIR_INSTALL) dld URL="https://www.python.org/ftp/python/$(PY_VERSION)/python-$(PY_VERSION).amd64.msi" FILE="$$$$HOME\Downloads\python.msi"
 # 	@echo make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/python.msi"
-# 	make --directory=$(DIR_INSTALL) dld URL="https://www.python.org/ftp/python/$(PYTHON_VERSION)/python-$(PYTHON_VERSION)rc1-amd64.exe" FILE="$$$$HOME\Downloads\python.exe"
+# 	make --directory=$(DIR_INSTALL) dld URL="https://www.python.org/ftp/python/$(PY_VERSION)/python-$(PY_VERSION)rc1-amd64.exe" FILE="$$$$HOME\Downloads\python.exe"
 # 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/python.exe" PACKAGE_ARGS="/passive PrependPath=1 InstallAllUsers=1"
+python-WIN32:
+	@echo $(NOT_IMPLEMENTED_WINDOWS)
+
+#
+# Php
+#
+
+php: php-$(OSFLAG) ## Install Ruby
+
+php-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
+
+php-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+php-WIN32:
+	@echo $(NOT_IMPLEMENTED_WINDOWS)
 
 
-# RUBY_VERSION = 2.7.1-1
-# ruby: ruby-$(OSFLAG) ## Install Ruby
+#
+# Ruby
+#
 
-# ruby-LINUX:
-# 	@echo $(NOT_IMPLEMENTED_LINUX)
+RUBY_VERSION = 2.7.1-1
+ruby: ruby-$(OSFLAG) ## Install Ruby
 
-# ruby-OSX:
-# 	@echo $(NOT_IMPLEMENTED_OSX)
+ruby-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
 
-# ruby-WIN32:
+ruby-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
 # 	make --directory=$(DIR_INSTALL) dld URL="https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-$(RUBY_VERSION)/rubyinstaller-$(RUBY_VERSION)-x64.exe" FILE="$$$$HOME\Downloads\ruby.exe"
 # 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/ruby.exe" PACKAGE_ARGS="/SP- /VERYSILENT /SUPPRESSMSGBOXES /NOCANCEL /NORESTART"
+ruby-WIN32:
+	@echo $(NOT_IMPLEMENTED_WINDOWS)
