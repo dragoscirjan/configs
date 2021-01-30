@@ -118,11 +118,28 @@ nodejs-nvm-OSX:
 nodejs-nvm-WIN32:
 	@echo $(NOT_IMPLEMENTED_WINDOWS)
 
-# PYTHON_VERSION = 3.8.3 # TODO: Might need treatment depending OS
-# python: python-$(OSFLAG) ## Install Python
+PYTHON_VERSION = 3.9
+# PY_CONFIGURE_OPTS = --enable-optimizations
+PY_CONFIGURE_OPTS =
+python: req_root python-$(OSFLAG) ## Install Python PYTHON_VERSION=3.9,3.5,3.6,3.7,3.8
 
-# python-LINUX:
-# 	@echo $(NOT_IMPLEMENTED_LINUX)
+python-LINUX: python-LINUX-$(OSID)
+
+python-LINUX-ubuntu: python-LINUX-debian
+
+python-LINUX-debian:
+	apt-get install -y build-essential checkinstall
+	apt-get install -y libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev
+	mkdir -p /opt/python
+	VERSION=$$(curl -sSL https://www.python.org/ftp/python | grep $(PYTHON_VERSION) | sort -nr | head -n2 | tail -n1 | awk -F '"' '{print $$2}' | awk -F'/' '{ print $$1 }'); \
+		cd /opt/python; \
+		rm -rf Python-$$VERSION.tgz; \
+		curl -sSL "https://www.python.org/ftp/python/$$VERSION/Python-$$VERSION.tgz" --output "/opt/python/Python-$$VERSION.tgz"; \
+		tar -xzf Python-$$VERSION.tgz; \
+		cd Python-$$VERSION; \
+		./configure $(PY_CONFIGURE_OPTS); \
+		make
+
 
 # python-OSX:
 # 	@echo $(NOT_IMPLEMENTED_OSX)
