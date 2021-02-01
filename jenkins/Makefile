@@ -11,6 +11,7 @@ MAKE_LANG = make --directory=../lang
 RUN_AS_JENKINS = sudo -u jenkins
 
 JENKINS_MAKE_LANG = $(RUN_AS_JENKINS) $(MAKE_LANG)
+JENKINS_SUDO_MAKE_LANG = $(RUN_AS_JENKINS) sudo $(MAKE_LANG)
 
 #
 # Actual Action Definitions
@@ -57,6 +58,6 @@ install-langs-nodejs: req_root ## Install NodeJs(NVM) 4 Jenkins
 
 install-langs-python: req_root ## Install Python 4 Jenkins
 	for ver in 3.5 3.6 3.7 3.8 3.9; do \
-		$(JENKINS_MAKE_LANG) python PY_VERSION=$$ver; \
+		$(JENKINS_SUDO_MAKE_LANG) python PY_VERSION=$$ver; \
 		done
 
