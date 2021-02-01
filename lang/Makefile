@@ -48,7 +48,7 @@ golang: golang-$(OSFLAG) ## Install golang GO_VERSION=1.15,1.12,1.13,1.14
 	# Go Outliner (VS Code Required)
 	go get -u github.com/766b/go-outliner
 
-golang-LINUX: req_root
+golang-LINUX: req_root golang-LINUX-debian
 	rm -rf /tmp/go-lang.tar.gz
 	curl -sSL "https://golang.org$$(curl -sSL $(GO_URL) | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'"' '{ print $$4 == "download" ? $$6 : $$4; }')" --output "/tmp/go-lang.tar.gz"
 	rm -rf $(GO_FOLDER)
@@ -58,6 +58,12 @@ golang-LINUX: req_root
 	ln -s $(GO_FOLDER)/bin/gofmt /usr/local/bin/gofmt
 	cat ~/.profile | grep "prepare_go" || cat .profile.go >> ~/.profile
 	bash -c "source ~/.profile && go version"
+
+golang-LINUX-ubuntu: golang-LINUX-debian
+
+golang-LINUX-debian:
+	apt-get update
+	apt-get install -y build-essential make
 
 # 	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go$(GO_VERSION).darwin-amd64.pkg" FILE="~/tmp/go-lang.pkg"
 golang-OSX:
