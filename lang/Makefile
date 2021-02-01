@@ -1,14 +1,11 @@
 include ../Makefile.template
+include ./Makefile.template
 
 #
 # ENV
 #
 
 DIR_INSTALL = ../.install
-
-
-# PROFILE_FILE = ~/.profile
-PROFILE_FILE = ~/.bashrc
 
 #
 # Actual Action Definitions
@@ -168,13 +165,20 @@ nodejs-nvm: nodejs-nvm-$(OSFLAG) ## Install NodeJs using (https://nvm.sh) NODE_V
 nodejs-nvm-LINUX:
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
 	cat $(PROFILE_FILE) | grep "HOME/.nvm" || cat .profile.nvm >> $(PROFILE_FILE)
-	bash -c "source $(PROFILE_FILE) && nvm install $(NODE_VERSION)"
+	make nodejs-nvm-add
 
 nodejs-nvm-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
 nodejs-nvm-WIN32:
 	@echo $(NOT_IMPLEMENTED_WINDOWS)
+
+nodejs-nvm-add: nodejs-nvm-add-$(OSFLAG) ## Nodejs (nvm) add version NODE_VERSION=12,15,14,13,11
+
+nodejs-nvm-add-LINUX: nodejs-nvm-add-OSX
+
+nodejs-nvm-add-OSX:
+	bash -c "source $(PROFILE_FILE) && nvm install $(NODE_VERSION)"
 
 #
 # Python
