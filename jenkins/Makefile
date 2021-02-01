@@ -6,6 +6,8 @@ include ../Makefile.template
 
 DIR_INSTALL = ../.install
 
+MAKE_LANG = make --directory=../lang
+
 #
 # Actual Action Definitions
 #
@@ -37,18 +39,18 @@ install-WINDOWS:
 
 install-langs: install-langs-go install-langs-nodejs install-langs-python ## Install Langs 4 Jenkins
 
-install-langs-go: ## Install Go 4 Jenkins
-	sudo make --directory=../lang golang GO_VERSION=1.15
+install-langs-go: req_root ## Install Go 4 Jenkins
+	$(MAKE_LANG) golang GO_VERSION=1.15
 	for ver in 1.12 1.13 1.14; do \
-		sudo -u jenkins make golang-add GO_VERSION=$$ver; \
+		sudo -u jenkins $(MAKE_LANG) golang-add GO_VERSION=$$ver; \
 		done
 
-install-langs-nodejs: ## Install NodeJs(NVM) 4 Jenkins
-	sudo -u jenkins make --directory=../lang node-nvm
+install-langs-nodejs: req_root ## Install NodeJs(NVM) 4 Jenkins
+	sudo -u jenkins $(MAKE_LANG) node-nvm
 	sudo -u jenkins bash -c "source ~./profile; for v in 11 12 13 14 15; do nvm install \\$$v; done"
 
 install-langs-python: req_root ## Install Python 4 Jenkins
 	for ver in 3.5 3.6 3.7 3.8 3.9; do \
-		sudo -u jenkins make --directory=../lang python PY_VERSION=$$ver; \
+		sudo -u jenkins $(MAKE_LANG) python PY_VERSION=$$ver; \
 		done
 
