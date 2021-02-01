@@ -6,6 +6,10 @@ include ../Makefile.template
 
 DIR_INSTALL = ../.install
 
+
+# PROFILE_FILE = ~/.profile
+PROFILE_FILE = ~/.bashrc
+
 #
 # Actual Action Definitions
 #
@@ -59,8 +63,8 @@ golang-LINUX: req_root_not golang-LINUX-debian
 	sudo rm -rf /usr/local/bin/go /usr/local/bin/gofmt
 	sudo ln -s $(GO_FOLDER)/bin/go /usr/local/bin/go
 	sudo ln -s $(GO_FOLDER)/bin/gofmt /usr/local/bin/gofmt
-	cat ~/.profile | grep "prepare_go" || cat .profile.go >> ~/.profile
-	bash -c "source ~/.profile && go version"
+	cat $(PROFILE_FILE) | grep "prepare_go" || cat .profile.go >> $(PROFILE_FILE)
+	bash -c "source $(PROFILE_FILE) && go version"
 
 golang-LINUX-ubuntu: golang-LINUX-debian
 
@@ -86,7 +90,7 @@ golang-add-OSX:
 	VERSION=$$(curl $(GO_URL) | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'go' '{ print $$2 }' | awk -F'.' '{ print $$1"."$$2"."$$3 }'); \
 	echo "Installing go$$VERSION"; \
 	go get golang.org/dl/go$$VERSION; \
-	bash -c "source ~/.profile; go$$VERSION download; go$$VERSION version"
+	bash -c "source $(PROFILE_FILE); go$$VERSION download; go$$VERSION version"
 
 golang-add-WIN32:
 	@echo $(NOT_IMPLEMENTED_WINDOWS)
@@ -163,8 +167,8 @@ nodejs-nvm: nodejs-nvm-$(OSFLAG) ## Install NodeJs using (https://nvm.sh) NODE_V
 
 nodejs-nvm-LINUX:
 	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-	cat ~/.profile | grep "HOME/.nvm" || cat .profile.nvm >> ~/.profile
-	bash -c "source ~/.profile && nvm install $(NODE_VERSION)"
+	cat $(PROFILE_FILE) | grep "HOME/.nvm" || cat .profile.nvm >> $(PROFILE_FILE)
+	bash -c "source $(PROFILE_FILE) && nvm install $(NODE_VERSION)"
 
 nodejs-nvm-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
