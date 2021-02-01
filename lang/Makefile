@@ -75,7 +75,7 @@ golang-WIN32:
 	@echo $(NOT_IMPLEMENTED_WINDOWS)
 
 
-golang-add: golang-add-$(OSFLAG)
+golang-add: golang-add-$(OSFLAG) ## Add golang GO_VERSION=1.15,1.12,1.13,1.14
 
 golang-add-LINUX: golang-add-OSX
 
