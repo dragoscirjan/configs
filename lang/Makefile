@@ -220,8 +220,8 @@ python-LINUX-debian:
 		rm -rf Python-$(PY_VERSION); \
 		ln -s Python-$$VERSION Python-$(PY_VERSION); \
 		\
-		rm -rf /usr/local/bin/python-c$(PY_VERSION}); \
-		ln -s $(PY_FOLDER)/Python-$(PY_VERSION)/python /usr/local/bin/python-c$(PY_VERSION})
+		rm -rf /usr/local/bin/python-c$(PY_VERSION); \
+		ln -s $(PY_FOLDER)/Python-$(PY_VERSION)/python /usr/local/bin/python-c$(PY_VERSION)
 
 python-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
