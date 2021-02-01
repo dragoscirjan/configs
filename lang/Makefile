@@ -193,9 +193,9 @@ PY_FOLDER = /opt/python
 
 PY_URL = https://www.python.org/ftp/python
 
-python: req_root python-$(OSFLAG) ## Install Python PY_VERSION=3.9,3.5,3.6,3.7,3.8
+python: python-$(OSFLAG) ## Install Python PY_VERSION=3.9,3.5,3.6,3.7,3.8
 
-python-LINUX: python-LINUX-$(OSID)
+python-LINUX: req_root python-LINUX-$(OSID)
 	curl https://bootstrap.pypa.io/get-pip.py | $(PY_FOLDER)/Python-$(PY_VERSION)/python
 
 python-LINUX-ubuntu: python-LINUX-debian
@@ -203,18 +203,25 @@ python-LINUX-ubuntu: python-LINUX-debian
 python-LINUX-debian:
 	apt-get install -y build-essential checkinstall
 	apt-get install -y libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev
+
 	mkdir -p /opt/python
 	VERSION=$$(curl -sSL $(PY_URL) | grep $(PY_VERSION) | awk -F '"' '{ print $$2 }' | awk -F'/' '{ print $$1 }' | sort -nr | head -n1); \
 		cd $(PY_FOLDER); \
+		\
 		rm -rf Python-$$VERSION*; \
 		curl -sSL "$(PY_URL)/$$VERSION/Python-$$VERSION.tgz" --output "$(PY_FOLDER)/Python-$$VERSION.tgz"; \
 		tar -xzf Python-$$VERSION.tgz; \
+		\
 		cd Python-$$VERSION; \
 		./configure $(PY_CONFIGURE_OPTS); \
 		make; \
 		cd ..; \
+		\
 		rm -rf Python-$(PY_VERSION); \
-		ln -s Python-$$VERSION Python-$(PY_VERSION)
+		ln -s Python-$$VERSION Python-$(PY_VERSION); \
+		\
+		rm -rf /usr/local/bin/python-c$(PY_VERSION}); \
+		ln -s $(PY_FOLDER)/Python-$(PY_VERSION)/python /usr/local/bin/python-c$(PY_VERSION})
 
 python-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
