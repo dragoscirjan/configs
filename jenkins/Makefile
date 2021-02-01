@@ -14,7 +14,7 @@ DIR_INSTALL = ../.install
 # Use to sync plugins between Jenkins instances
 install: install-$(OSFLAG) ## Install Jenkins
 
-install-LINUX: install-LINUX-$(OSID)
+install-LINUX: req_root install-LINUX-$(OSID)
 
 install-LINUX-ubuntu: install-LINUX-debian
 
@@ -22,10 +22,10 @@ install-LINUX-ubuntu: install-LINUX-debian
 # TODO: 1. Install Installation Manager Tool CLI
 # TODO: 2. Run the installed above to sync modules
 install-LINUX-debian:
-	sudo wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
-	echo "deb https://pkg.jenkins.io/debian-stable binary/" | sudo tee /etc/apt/sources.list.d/jenkins.list
-	sudo apt-get update
-	sudo apt-get install jenkins -y
+	wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | apt-key add -
+	echo "deb https://pkg.jenkins.io/debian-stable binary/" | tee /etc/apt/sources.list.d/jenkins.list
+	apt-get update
+	apt-get install jenkins -y
 
 	@echo "Admin Password is:"
 	@cat /var/lib/jenkins/secrets/initialAdminPassword
@@ -38,13 +38,16 @@ install-WINDOWS:
 install-langs: install-langs-go install-langs-nodejs install-langs-python
 
 install-langs-go:
-	sudo -u jenkins make --directory=../lang golang
+	sudo make --directory=../lang golang GO_VERSION=1.15
+	for ver in 1.12 1.13 1.14; do \
+		sudo -u jenkins make golang-add GO_VERSION=$$ver; \
+		done
 
 install-langs-nodejs:
 	sudo -u jenkins make --directory=../lang node-nvm
 	sudo -u jenkins bash -c "source ~./profile; for v in 11 12 13 14 15; do nvm install \\$$v; done"
 
-install-langs-python:
+install-langs-python: req_root
 	for ver in 3.5 3.6 3.7 3.8 3.9; do \
 		sudo -u jenkins make --directory=../lang python PY_VERSION=$$ver; \
 		done
