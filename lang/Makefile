@@ -83,8 +83,7 @@ golang-add-OSX:
 	VERSION=$$(curl $(GO_URL) | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'go' '{ print $$2 }' | awk -F'.' '{ print $$1"."$$2"."$$3 }'); \
 	echo "Installing go$$VERSION"; \
 	go get golang.org/dl/go$$VERSION; \
-	go$$VERSION download; \
-	go$$VERSION version
+	bash -c 'source ~.profile; go$$VERSION download; go$$VERSION version'
 
 golang-add-WIN32:
 	@echo $(NOT_IMPLEMENTED_WINDOWS)
