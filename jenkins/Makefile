@@ -8,6 +8,10 @@ DIR_INSTALL = ../.install
 
 MAKE_LANG = make --directory=../lang
 
+RUN_AS_JENKINS = sudo -u jenkins
+
+JENKINS_MAKE_LANG = $(RUN_AS_JENKINS) $(MAKE_LANG)
+
 #
 # Actual Action Definitions
 #
@@ -40,17 +44,17 @@ install-WINDOWS:
 install-langs: install-langs-go install-langs-nodejs install-langs-python ## Install Langs 4 Jenkins
 
 install-langs-go: req_root ## Install Go 4 Jenkins
-	$(MAKE_LANG) golang GO_VERSION=1.15
+	$(JENKINS_MAKE_LANG) golang GO_VERSION=1.15
 	for ver in 1.12 1.13 1.14; do \
-		sudo -u jenkins $(MAKE_LANG) golang-add GO_VERSION=$$ver; \
+		$(JENKINS_MAKE_LANG) golang-add GO_VERSION=$$ver; \
 		done
 
 install-langs-nodejs: req_root ## Install NodeJs(NVM) 4 Jenkins
-	sudo -u jenkins $(MAKE_LANG) node-nvm
-	sudo -u jenkins bash -c "source ~./profile; for v in 11 12 13 14 15; do nvm install \\$$v; done"
+	$(JENKINS_MAKE_LANG) node-nvm
+	$(RUN_AS_JENKINS) bash -c "source ~./profile; for v in 11 12 13 14 15; do nvm install \\$$v; done"
 
 install-langs-python: req_root ## Install Python 4 Jenkins
 	for ver in 3.5 3.6 3.7 3.8 3.9; do \
-		sudo -u jenkins $(MAKE_LANG) python PY_VERSION=$$ver; \
+		$(JENKINS_MAKE_LANG) python PY_VERSION=$$ver; \
 		done
 
