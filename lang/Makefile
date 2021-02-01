@@ -1,11 +1,12 @@
 include ../Makefile.template
-include ./Makefile.template
-
 #
 # ENV
 #
 
 DIR_INSTALL = ../.install
+
+# PROFILE_FILE = ~/.profile
+PROFILE_FILE = ~/.bashrc
 
 #
 # Actual Action Definitions

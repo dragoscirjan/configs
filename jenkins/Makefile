@@ -13,9 +13,6 @@ RUN_AS_JENKINS = sudo -u jenkins
 JENKINS_MAKE_LANG = $(RUN_AS_JENKINS) $(MAKE_LANG)
 JENKINS_SUDO_MAKE_LANG = $(RUN_AS_JENKINS) sudo $(MAKE_LANG)
 
-# PROFILE_FILE = ~/.profile
-PROFILE_FILE = ~/.bashrc
-
 #
 # Actual Action Definitions
 #
