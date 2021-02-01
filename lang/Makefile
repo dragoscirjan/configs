@@ -52,10 +52,10 @@ golang-LINUX: req_root
 	rm -rf /tmp/go-lang.tar.gz
 	curl -sSL "https://golang.org$$(curl -sSL $(GO_URL) | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'"' '{ print $$4 == "download" ? $$6 : $$4; }')" --output "/tmp/go-lang.tar.gz"
 	rm -rf $(GO_FOLDER)
-	cd /tmp && tar -xzf go-lang.tar.gz && sudo mv go /usr/local
-	sudo rm -rf /usr/local/bin/go /usr/local/bin/gofmt
-	sudo ln -s $(GO_FOLDER)/bin/go /usr/local/bin/go
-	sudo ln -s $(GO_FOLDER)/bin/gofmt /usr/local/bin/gofmt
+	cd /tmp && tar -xzf go-lang.tar.gz && rm /tmp/go-lang.tar.gz && sudo mv go /usr/local
+	rm -rf /usr/local/bin/go /usr/local/bin/gofmt
+	ln -s $(GO_FOLDER)/bin/go /usr/local/bin/go
+	ln -s $(GO_FOLDER)/bin/gofmt /usr/local/bin/gofmt
 	cat ~/.profile | grep "prepare_go" || cat .profile.go >> ~/.profile
 	bash -c "source ~/.profile && go version"
 

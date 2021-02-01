@@ -88,7 +88,7 @@ NOT_IMPLEMENTED_WINDOWS = "Not implemented under Windows"
 req_root: req_root-$(OSFLAG)
 
 req_root-LINUX:
-	echo $(NOT_IMPLEMENTED_LINUX)
+	@bash -c 'if [[ "$(whoami)" == "root" ]]; then echo "Must run command as root."; exit 1; fi'
 
 req_root-OSX:
 	echo $(NOT_IMPLEMENTED_LINUX)
@@ -99,7 +99,7 @@ req_root-WIN32:
 req_root_not: req_root_not-$(OSFLAG)
 
 req_root_not-LINUX:
-	echo $(NOT_IMPLEMENTED_LINUX)
+	@bash -c '[[ "$(whoami)" == "root" ]] && ( echo "Must run command as your normal user." && exit 1 )'
 
 req_root_not-OSX:
 	echo $(NOT_IMPLEMENTED_LINUX)
