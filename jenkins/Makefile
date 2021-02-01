@@ -58,6 +58,6 @@ install-langs-nodejs: req_root ## Install NodeJs(NVM) 4 Jenkins
 
 install-langs-python: req_root ## Install Python 4 Jenkins
 	for ver in 3.5 3.6 3.7 3.8 3.9; do \
-		echo $(JENKINS_SUDO_MAKE_LANG) python PY_VERSION=$$ver; \
+		$(JENKINS_SUDO_MAKE_LANG) python PY_VERSION=$$ver; \
 		done
 
