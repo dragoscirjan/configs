@@ -22,14 +22,27 @@ iu-LINUX:
 iu-WIN32:
 	$(POWERSHELL) -File ./echo.ps1 --Url "$(PACKAGE_URL)" --FileMatch "$(PACKAGE_MATCH)" --ArgumentList "$(PACKAGE_ARGS)"
 
-#
-# echo Local Package
-#
+essential: essential-$(OSFLAG) ## Install Essential Stuff
 
-PACKAGE_PATH =
-il: il-$(OSFLAG) ## echo Local Package PACKAGE_PATH=... PACKAGE_ARGS=...
+essential-LINUX: req_root essential-LINUX-$(OSID)
 
-il-WIN32:
-	$(POWERSHELL) -File ./echo.ps1 --File "$(PACKAGE_PATH)" --ArgumentList "$(PACKAGE_ARGS)"
+essential-LINUX-ubuntu: essential-LINUX-debian
+essential-LINUX-debian:
+	apt-get update
+	which curl || apt-get install -y curl
+	which git || apt-get install -y git
+	which vim || apt-get install -y vim
+	which make || apt-get install -y build-essential make
+	which gcc || apt-get install -y build-essential make
+
+# #
+# # echo Local Package
+# #
+
+# PACKAGE_PATH =
+# il: il-$(OSFLAG) ## echo Local Package PACKAGE_PATH=... PACKAGE_ARGS=...
+
+# il-WIN32:
+# 	$(POWERSHELL) -File ./echo.ps1 --File "$(PACKAGE_PATH)" --ArgumentList "$(PACKAGE_ARGS)"
 
 

@@ -17,9 +17,12 @@ JENKINS_SUDO_MAKE_LANG = $(RUN_AS_JENKINS) sudo $(MAKE_LANG)
 # Actual Action Definitions
 #
 
+pre-install:
+	make --directory=$(DIR_INSTALL) essential
+
 # @see https://www.jenkins.io/projects/gsoc/2019/plugin-installation-manager-tool-cli/
 # Use to sync plugins between Jenkins instances
-install: install-$(OSFLAG) ## Install Jenkins
+install: pre-install install-$(OSFLAG) ## Install Jenkins
 
 install-LINUX: req_root install-LINUX-$(OSID)
 
