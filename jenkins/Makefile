@@ -51,7 +51,7 @@ install-WINDOWS:
 install-langs: install-langs-$(OSFLAG) ## Install Langs 4 Jenkins
 
 install-langs-LINUX:
-	$(MK) install-langs--go
+	$(SMK) install-langs--go
 	$(SMK) install-langs--nodejs
 	$(SMK) install-langs--python
 
