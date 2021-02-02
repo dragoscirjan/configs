@@ -77,6 +77,9 @@ POWERSHELL=powershell -ExecutionPolicy ByPass
 # ENV
 #
 
+MK = make
+SMK = sudo make
+
 NOT_IMPLEMENTED_LINUX = "Not implemented under Linux"
 NOT_IMPLEMENTED_OSX = "Not implemented under OSX"
 NOT_IMPLEMENTED_WINDOWS = "Not implemented under Windows"

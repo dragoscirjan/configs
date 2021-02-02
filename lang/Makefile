@@ -41,7 +41,7 @@ GO_URL = https://golang.org/dl/
 GO_FOLDER = /usr/local/go
 
 pre-golang:
-	make --directory=$(DIR_INSTALL) essential
+	$(SMK) --directory=$(DIR_INSTALL) essential
 
 golang: pre-golang golang-$(OSFLAG) ## Install golang GO_VERSION=1.15,1.12,1.13,1.14
 	export GOPATH="$$HOME/go"

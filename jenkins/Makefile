@@ -18,7 +18,7 @@ JENKINS_SUDO_MAKE_LANG = $(RUN_AS_JENKINS) sudo $(MAKE_LANG)
 #
 
 pre-install:
-	make --directory=$(DIR_INSTALL) essential
+	$(SMK) --directory=$(DIR_INSTALL) essential
 
 # @see https://www.jenkins.io/projects/gsoc/2019/plugin-installation-manager-tool-cli/
 # Use to sync plugins between Jenkins instances
@@ -48,21 +48,32 @@ install-OSX:
 install-WINDOWS:
 
 
-install-langs: install-langs-go install-langs-nodejs install-langs-python ## Install Langs 4 Jenkins
+install-langs: install-langs-$(OSFLAG) ## Install Langs 4 Jenkins
 
-install-langs-go: req_root ## Install Go 4 Jenkins
+install-langs-LINUX:
+	$(MK) install-langs--go
+	$(SMK) install-langs--nodejs
+	$(SMK) install-langs--python
+
+install-langs--go: install-langs--go-$(OSFLAG)  ## Install Go 4 Jenkins
+
+install-langs-LINUX: req_root
 	$(JENKINS_MAKE_LANG) golang GO_VERSION=1.15
 	for ver in 1.12 1.13 1.14; do \
 		$(JENKINS_MAKE_LANG) golang-add GO_VERSION=$$ver; \
 		done
 
-install-langs-nodejs: req_root ## Install NodeJs(NVM) 4 Jenkins
+install-langs--nodejs: install-langs--nodejs-$(OSFLAG) ## Install NodeJs(NVM) 4 Jenkins
+
+install-langs--nodejs-LINUX: req_root
 	$(JENKINS_MAKE_LANG) nodejs-nvm
 	for ver in 11 13 14 15; do \
 		$(JENKINS_MAKE_LANG) nodejs-nvm-add NODE_VERSION=$$ver; \
 		done
 
-install-langs-python: req_root ## Install Python 4 Jenkins
+install-langs--python: install-langs--python-$(OSFLAG) ## Install Python 4 Jenkins
+
+install-langs--python-LINUX: req_root
 	for ver in 3.5 3.6 3.7 3.8 3.9; do \
 		$(JENKINS_SUDO_MAKE_LANG) python PY_VERSION=$$ver; \
 		done
