@@ -32,6 +32,7 @@ install-LINUX-debian:
 	wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | apt-key add -
 	echo "deb https://pkg.jenkins.io/debian-stable binary/" | tee /etc/apt/sources.list.d/jenkins.list
 	apt-get update
+	java -version | grep "11." || apt-get install -y openjdk-11-jdk openjdk-11-jre
 	apt-get install jenkins -y
 
 	@echo "Admin Password is:"

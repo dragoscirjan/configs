@@ -65,6 +65,7 @@ qemu-system-x86_64 \
   -device usb-mouse \
   -display default \
   -device ich9-ahci,id=sata \
+  -boot order=c,menu=on \
   "${qemuArgs[@]}"
 
 # qemu-system-x86_64 \
