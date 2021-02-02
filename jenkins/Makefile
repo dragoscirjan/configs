@@ -38,7 +38,7 @@ install-LINUX-debian:
 	@echo "Admin Password is:"
 	@cat /var/lib/jenkins/secrets/initialAdminPassword
 
-	sudo cat /etc/sudoers | grep jenkins || sudo echo "username     ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+	sudo cat /etc/sudoers | grep jenkins || sudo echo "jenkins     ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 install-OSX:
 
