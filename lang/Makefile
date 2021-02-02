@@ -40,7 +40,10 @@ GO_URL = https://golang.org/dl/
 
 GO_FOLDER = /usr/local/go
 
-golang: golang-$(OSFLAG) ## Install golang GO_VERSION=1.15,1.12,1.13,1.14
+pre-golang:
+	make --directory=$(DIR_INSTALL) essential
+
+golang: pre-golang golang-$(OSFLAG) ## Install golang GO_VERSION=1.15,1.12,1.13,1.14
 	export GOPATH="$$HOME/go"
 	# Go Critic (VS Code Required)
 	go get -v github.com/go-lintpack/lintpack/...
@@ -50,7 +53,7 @@ golang: golang-$(OSFLAG) ## Install golang GO_VERSION=1.15,1.12,1.13,1.14
 	# Go Outliner (VS Code Required)
 	go get -u github.com/766b/go-outliner
 
-golang-LINUX: req_root_not golang-LINUX-debian
+golang-LINUX: req_root_not
 	rm -rf /tmp/go-lang.tar.gz
 	curl -sSL "https://golang.org$$(curl -sSL $(GO_URL) | grep $(GO_VERSION) | grep linux-amd64.tar.gz | head -n1 | awk -F'"' '{ print $$4 == "download" ? $$6 : $$4; }')" --output "/tmp/go-lang.tar.gz"
 	sudo rm -rf $(GO_FOLDER)
@@ -63,12 +66,6 @@ golang-LINUX: req_root_not golang-LINUX-debian
 	sudo ln -s $(GO_FOLDER)/bin/gofmt /usr/local/bin/gofmt
 	cat $(PROFILE_FILE) | grep "prepare_go" || cat .profile.go >> $(PROFILE_FILE)
 	bash -c "source $(PROFILE_FILE) && go version"
-
-golang-LINUX-ubuntu: golang-LINUX-debian
-
-golang-LINUX-debian:
-	sudo apt-get update
-	sudo apt-get install -y build-essential make
 
 # 	make --directory=$(DIR_INSTALL) iu URL="https://dl.google.com/go/go$(GO_VERSION).darwin-amd64.pkg" FILE="~/tmp/go-lang.pkg"
 golang-OSX:
