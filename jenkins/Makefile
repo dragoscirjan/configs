@@ -57,7 +57,7 @@ install-langs-LINUX:
 
 install-langs--go: install-langs--go-$(OSFLAG)  ## Install Go 4 Jenkins
 
-install-langs-LINUX: req_root
+install-langs--go-LINUX: req_root
 	$(JENKINS_MAKE_LANG) golang GO_VERSION=1.15
 	for ver in 1.12 1.13 1.14; do \
 		$(JENKINS_MAKE_LANG) golang-add GO_VERSION=$$ver; \
