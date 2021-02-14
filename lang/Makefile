@@ -169,7 +169,16 @@ nodejs-nvm-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
 nodejs-nvm-WIN32:
-	@echo $(NOT_IMPLEMENTED_WINDOWS)
+	$(POWERSHELL) -Command "\
+		if ((New-Object System.Net.WebClient).DownloadString('https://github.com/coreybutler/nvm-windows/releases') \
+			-match '<a href="(.*nvm-setup.zip)' -eq $$True) { \
+			Invoke-WebRequest -Uri \"https://github.com$$($$Matches[1].Substring(1))\" -OutFile $$HOME/Downloads/nvm-setup.zip; \
+			Expand-Archive -Path $$HOME/Downloads/nvm-setup.zip -DestinationPath $$HOME/Downloads -Force; \
+			Set-Location $$HOME\Downloads; \
+			Start-Process -FilePath .\nvm-setup.exe -ArgumentList '/SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES' -Wait; \
+			Write-Host \"NVM Installed. Open a new console and run 'nvm version'\" -ForegroundColor Green; \
+			}"
+
 
 nodejs-nvm-add: nodejs-nvm-add-$(OSFLAG) ## Nodejs (nvm) add version NODE_VERSION=12,15,14,13,11
 
@@ -177,6 +186,9 @@ nodejs-nvm-add-LINUX: nodejs-nvm-add-OSX
 
 nodejs-nvm-add-OSX:
 	bash -c "source $(PROFILE_FILE) && nvm install $(NODE_VERSION)"
+
+nodejs-nvm-add-WIN32:
+	$(POWERSHELL) -File .\nvm-add.ps1 -NodeVersion $(NODE_VERSION)
 
 #
 # Python

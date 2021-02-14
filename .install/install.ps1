@@ -9,6 +9,14 @@ param(
     [String]$ArgumentList=""
 )
 
+echo "File: $File"
+echo "Url: $Url"
+echo "FileMatch: $FileMatch"
+echo "FileMatchRetries: $FileMatchRetries"
+echo "WaitBetweenAttempts: $WaitBetweenAttempts"
+echo "Message: $Message"
+echo "ArgumentList: $ArgumentList"
+
 Function Pause($Message = "Press any key to continue...")
 {
    # Check if running in PowerShell ISE
