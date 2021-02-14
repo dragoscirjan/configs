@@ -40,18 +40,16 @@ GO_URL = https://golang.org/dl/
 
 GO_FOLDER = /usr/local/go
 
-pre-golang:
+pre-golang: pre-golang-$(OSFLAG)
+
+pre-golang-LINUX:
 	$(SMK) --directory=$(DIR_INSTALL) essential
 
+pre-golang-OSX:
+
+pre-golang-WIN32:
+
 golang: pre-golang golang-$(OSFLAG) ## Install golang GO_VERSION=1.15,1.12,1.13,1.14
-	export GOPATH="$$HOME/go"
-	# Go Critic (VS Code Required)
-	go get -v github.com/go-lintpack/lintpack/...
-	go get -v github.com/go-critic/go-critic/...
-	# Go Doc (VS Code Required)
-	# go get -v github.com/zmb3/gogetdoc/...
-	# Go Outliner (VS Code Required)
-	go get -u github.com/766b/go-outliner
 
 golang-LINUX: req_root_not
 	rm -rf /tmp/go-lang.tar.gz
@@ -71,11 +69,9 @@ golang-LINUX: req_root_not
 golang-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-# 	make --directory=$(DIR_INSTALL) dld URL="https://dl.google.com/go/go$(GO_VERSION).windows-amd64.msi" FILE="$$$$HOME\Downloads\go-lang.msi"
 # 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/go-lang.msi"
 golang-WIN32:
-	@echo $(NOT_IMPLEMENTED_WINDOWS)
-
+	$(POWERSHELL) -File .\install-golang.ps1 -GoVersion $(GO_VERSION)
 
 golang-add: golang-add-$(OSFLAG) ## Add golang GO_VERSION=1.15,1.12,1.13,1.14
 
@@ -149,10 +145,14 @@ endif
 nodejs-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-# 	make --directory=$(DIR_INSTALL) dld URL="https://nodejs.org/dist/v$(NODE_VERSION)/node-v$(NODE_VERSION)-x64.msi" FILE="$$$$HOME\Downloads\node.msi"
 # 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/node.msi"
 nodejs-WIN32:
-	@echo $(NOT_IMPLEMENTED_WINDOWS)
+	$(POWERSHELL) -Command "\
+		if ((New-Object System.Net.WebClient).DownloadString('https://nodejs.org/download/release/latest-v$(NODE_VERSION).x') \
+			-match '<a href=\"(.*.msi)\"' -eq $$True) { \
+			../.install/install.ps1 -Uri "https://nodejs.org/download/release/latest-v$(NODE_VERSION).x/$$($$Matches[1])" \
+				-File $$HOME/Downloads/node-setup.msi -ArgumentList '/quiet /passive /norestart'; \
+		}"
 
 #
 # NodeJs with NVM
@@ -171,13 +171,13 @@ nodejs-nvm-OSX:
 nodejs-nvm-WIN32:
 	$(POWERSHELL) -Command "\
 		if ((New-Object System.Net.WebClient).DownloadString('https://github.com/coreybutler/nvm-windows/releases') \
-			-match '<a href="(.*nvm-setup.zip)' -eq $$True) { \
-			Invoke-WebRequest -Uri \"https://github.com$$($$Matches[1].Substring(1))\" -OutFile $$HOME/Downloads/nvm-setup.zip; \
+			-match '<a href=\"(.*nvm-setup.zip)' -eq $$True) { \
+			Invoke-WebRequest -Uri \"https://github.com/$$($$Matches[1].Substring(1))\" -OutFile $$HOME/Downloads/nvm-setup.zip; \
 			Expand-Archive -Path $$HOME/Downloads/nvm-setup.zip -DestinationPath $$HOME/Downloads -Force; \
 			Set-Location $$HOME\Downloads; \
 			Start-Process -FilePath .\nvm-setup.exe -ArgumentList '/SP- /VERYSILENT /NORESTART /SUPPRESSMSGBOXES' -Wait; \
 			Write-Host \"NVM Installed. Open a new console and run 'nvm version'\" -ForegroundColor Green; \
-			}"
+		}"
 
 
 nodejs-nvm-add: nodejs-nvm-add-$(OSFLAG) ## Nodejs (nvm) add version NODE_VERSION=12,15,14,13,11
@@ -240,12 +240,8 @@ python-LINUX-debian:
 python-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-# 	@echo make --directory=$(DIR_INSTALL) dld URL="https://www.python.org/ftp/python/$(PY_VERSION)/python-$(PY_VERSION).amd64.msi" FILE="$$$$HOME\Downloads\python.msi"
-# 	@echo make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/python.msi"
-# 	make --directory=$(DIR_INSTALL) dld URL="https://www.python.org/ftp/python/$(PY_VERSION)/python-$(PY_VERSION)rc1-amd64.exe" FILE="$$$$HOME\Downloads\python.exe"
-# 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/python.exe" PACKAGE_ARGS="/passive PrependPath=1 InstallAllUsers=1"
 python-WIN32:
-	@echo $(NOT_IMPLEMENTED_WINDOWS)
+	$(POWERSHELL) -File .\install-python.ps1 -PyVersion $(PY_VERSION)
 
 #
 # Php
