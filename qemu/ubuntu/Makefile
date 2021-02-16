@@ -25,7 +25,7 @@ run: ## Run project
 		cd $(QEMU_DIR)/ubuntu; \
 		sudo bash $$cwd/basic.sh --disk "$(UBUNTU_DISK)" --iso "$(UBUNTU_ISO)"
 
-run-local: ## Run project
+run-local: ## Run project UBUNTU_ISO=~/.qemu/ubuntu/ubuntu.iso
 	make run UBUNTU_DISK=/dev/disk/by-id/wwn-0x5001b448b8779485-part1
 
 clean: ## Clear project

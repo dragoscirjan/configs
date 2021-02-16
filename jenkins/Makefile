@@ -13,6 +13,8 @@ RUN_AS_JENKINS = sudo -u jenkins
 JENKINS_MAKE_LANG = $(RUN_AS_JENKINS) $(MAKE_LANG)
 JENKINS_SUDO_MAKE_LANG = $(RUN_AS_JENKINS) sudo $(MAKE_LANG)
 
+JENKINS_EMAIL = dragos.cirjan+jenkins@gmail.com
+
 #
 # Actual Action Definitions
 #
@@ -42,6 +44,8 @@ install-LINUX-debian:
 	@cat /var/lib/jenkins/secrets/initialAdminPassword
 
 	sudo cat /etc/sudoers | grep jenkins || sudo echo "jenkins     ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+	which ssh-keygen && $(RUN_AS_JENKINS) bash -c 'ssh-keygen -t ed25519 -b 4096 -C "$(JENKINS_EMAIL)" -f "$$HOME/.ssh/id_ed25519" -P ""'
 
 install-OSX:
 
