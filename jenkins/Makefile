@@ -20,7 +20,7 @@ JENKINS_EMAIL = dragos.cirjan+jenkins@gmail.com
 #
 
 pre-install:
-	$(SMK) --directory=$(DIR_INSTALL) essential
+	$(MK) --directory=$(DIR_INSTALL) essential
 
 # @see https://www.jenkins.io/projects/gsoc/2019/plugin-installation-manager-tool-cli/
 # Use to sync plugins between Jenkins instances
@@ -40,16 +40,14 @@ install-LINUX-debian:
 	java -version | grep "11." || apt-get install -y openjdk-11-jdk openjdk-11-jre
 	apt-get install jenkins -y
 
-	@echo "Admin Password is:"
-	@cat /var/lib/jenkins/secrets/initialAdminPassword
-
 	sudo cat /etc/sudoers | grep jenkins || sudo echo "jenkins     ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 	which ssh-keygen && $(RUN_AS_JENKINS) bash -c 'ssh-keygen -t ed25519 -b 4096 -C "$(JENKINS_EMAIL)" -f "$$HOME/.ssh/id_ed25519" -P ""'
 
 install-OSX:
 
-install-WINDOWS:
+install-WIN32: req_root
+	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jenkins.io/download/thank-you-downloading-windows-installer-stable/" PACKAGE_MATCH="jenkins.msi" PACKAGE_ARGS="/norestart"
 
 
 install-langs: install-langs-$(OSFLAG) ## Install Langs 4 Jenkins
@@ -67,6 +65,7 @@ install-langs--go-LINUX: req_root
 		$(JENKINS_MAKE_LANG) golang-add GO_VERSION=$$ver; \
 		done
 
+
 install-langs--nodejs: install-langs--nodejs-$(OSFLAG) ## Install NodeJs(NVM) 4 Jenkins
 
 install-langs--nodejs-LINUX: req_root
@@ -74,6 +73,7 @@ install-langs--nodejs-LINUX: req_root
 	for ver in 11 13 14 15; do \
 		$(JENKINS_MAKE_LANG) nodejs-nvm-add NODE_VERSION=$$ver; \
 		done
+
 
 install-langs--python: install-langs--python-$(OSFLAG) ## Install Python 4 Jenkins
 

@@ -9,6 +9,14 @@ param(
     [String]$ArgumentList=""
 )
 
+echo "File: $File"
+echo "Url: $Url"
+echo "FileMatch: $FileMatch"
+echo "FileMatchRetries: $FileMatchRetries"
+echo "WaitBetweenAttempts: $WaitBetweenAttempts"
+echo "Message: $Message"
+echo "ArgumentList: $ArgumentList"
+
 Function Pause($Message = "Press any key to continue...")
 {
    # Check if running in PowerShell ISE
@@ -121,28 +129,34 @@ Function WaitAndInstall
 if ($Url -ne "")
 {
 
-  if ($FileMatch -eq "") {
-    Write-Output -ForegroundColor Red "Please either mention --FileMatch as arguments."
-    exit 1
+  if ($File -eq "") {
+    if ($FileMatch -eq "") {
+      Write-Output -ForegroundColor Red "Please mention -FileMatch as arguments."
+      exit 1
+    }
+
+    Write-Host -ForegroundColor Green "You will be redirected to this url: $Url."
+    Write-Host -ForegroundColor Green "Please download the file to ~/Downloads and rename it to contain the following string: $FileMatch"
+    if ($Message -ne "") {
+      Write-Host -ForegroundColor Green $Message
+    }
+    Write-Host ""
+
+    Pause
+    Write-Host ""
+
+    Start "$Url"
+
+    Pause -Message "Press any key to continue after installer is downloaded..."
+    Write-Host ""
+
+    WaitAndInstall -FileMatch $FileMatch -ArgumentList $ArgumentList -Retries $FileMatchRetries -Sleep $WaitBetweenAttempts
+  } else {
+    # Invoke-WebRequest -Uri $Url -OutFile $File
+    $File = Resolve-Path -Path $File
+
+    DoInstall -File $File -ArgumentList $ArgumentList
   }
-
-  Write-Host -ForegroundColor Green "You will be redirected to this url: $Url."
-  Write-Host -ForegroundColor Green "Please download the file to ~/Downloads and rename it to contain the following string: $FileMatch"
-  if ($Message -ne "") {
-    Write-Host -ForegroundColor Green $Message
-  }
-  Write-Host ""
-
-  Pause
-  Write-Host ""
-
-  Start "$Url"
-
-  Pause -Message "Press any key to continue after installer is downloaded..."
-  Write-Host ""
-
-  WaitAndInstall -FileMatch $FileMatch -ArgumentList $ArgumentList -Retries $FileMatchRetries -Sleep $WaitBetweenAttempts
-
 } else {
   if ($File -ne "") {
     $File = Resolve-Path -Path $File
