@@ -7,6 +7,9 @@
 ### Requirements
 
 * https://git-scm.com/downloads
+  * Checkout as-is, commit Unix-style line endings
+  * Enable symbolic-links
+  * Enable experimental support for pseudo consoles
 * http://gnuwin32.sourceforge.net/packages/make.htm
 
 ### iTerm

@@ -20,7 +20,7 @@ iu-LINUX:
 	bash ./echo.sh --url "$(PACKAGE_URL)" --file-match "$(PACKAGE_MATCH)" --argument-list "$(PACKAGE_ARGS)" --destination-path "$(PACKAGE_DESTINATION)"
 
 iu-WIN32:
-	$(POWERSHELL) -File ./install.ps1 -Url "$(PACKAGE_URL)" -File $(PACKAGE_FILE) -FileMatch "$(PACKAGE_MATCH)" -ArgumentList "$(PACKAGE_ARGS)"
+	$(POWERSHELL) -File ./install.ps1 -Url "$(PACKAGE_URL)" -File "$(PACKAGE_FILE)" -FileMatch "$(PACKAGE_MATCH)" -ArgumentList "$(PACKAGE_ARGS)"
 
 essential: essential-$(OSFLAG) ## Install Essential Stuff
 
