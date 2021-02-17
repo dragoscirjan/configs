@@ -1,52 +1,34 @@
-include Makefile.template
+include ../../Makefile.template
+include ../Makefile.qemu.template
 
-DIR_INSTALL = ../.install
+DIR_INSTALL = ../../.install
 
-# #
-# # Actual Action Definitions
-# # @see https://passthroughpo.st/new-and-improved-mac-os-tutorial-part-1-the-basics/
-# # @see https://github.com/foxlet/macOS-Simple-KVM/issues?utf8=%E2%9C%93&q=is%3Aissue+partition
-# # @see https://github.com/kholia/OSX-KVM
-# #
+#
+# Actual Action Definitions
+# @see https://passthroughpo.st/new-and-improved-mac-os-tutorial-part-1-the-basics/
+# @see https://github.com/foxlet/macOS-Simple-KVM/issues?utf8=%E2%9C%93&q=is%3Aissue+partition
+# @see https://github.com/kholia/OSX-KVM
+#
 
-# QEMU_DIR = ~/.qemu
+WINDOWS_URL = https://www.microsoft.com/ro-ro/software-download/windows10ISO
 
-# MAC_VERSION = catalina
-# # MAC_VERSION = mojave
-# # MAC_VERSION = high-sierra
+init: ## Initialize project
+	mkdir -p $(QEMU_DIR)
+	mkdir -p $(QEMU_DIR)/windows
+# 	bash ./jumpstart.sh -u $(UBUNTU_VERSION) -d "$(QEMU_DIR)/windows"
+	echo "Download and save the Windows ISO under $(QEMU_DIR)/windows/windows.iso"
+	xdg-open "$(WINDOWS_URL)" || gnome-open "$(WINDOWS_URL)"
 
-# MAC_VERSION_COMMAND = bash ./jumpstart.sh --$(MAC_VERSION)
-# # MAC_VERSION_COMMAND = echo "Skipping jumpstart."
+WINDOWS_DISK =
+WINDOWS_ISO =
 
-# MAC_DRIVE ?= MyDisk.qcow2
+run: ## Run project
+	cwd=$$(pwd); \
+		cd $(QEMU_DIR)/windows; \
+		sudo bash $$cwd/basic.sh --disk "$(WINDOWS_DISK)" --iso "$(WINDOWS_ISO)"
 
-# ifeq ($(MAC_DRIVE),MyDisk.qcow2)
-# MAC_DRIVE_COMMAND = qemu-img create -f qcow2 MyDisk.qcow2 64G
-# # MAC_DRIVE_COMMAND2 = echo "    -drive id=SystemDisk,if=none,file=MyDisk.qcow2 \\" >> basic.sh
-# else
-# MAC_DRIVE_COMMAND = echo "Skipping drive creation command. Will used user created file."
-# # MAC_DRIVE_COMMAND2 = echo "    -drive id=SystemDisk,if=none,file=$(MAC_DRIVE) \\" >> basic.sh
-# endif
+run-local: ## Run project WINDOWS_ISO=~/.qemu/windows/windows.iso
+	make run WINDOWS_DISK=/dev/disk/by-id/wwn-0x5001b448b8779485-part2
 
-# init: ## Initialize project
-# 	mkdir -p $(QEMU_DIR)
-
-# 	cd $(QEMU_DIR) \
-# 		&& [ -d macOS-Simple-KVM ] \
-# 		|| git clone https://github.com/foxlet/macOS-Simple-KVM
-
-# 	cd $(QEMU_DIR)/macOS-Simple-KVM \
-# 		&& git pull \
-# 		&& $(MAC_VERSION_COMMAND) \
-# 		&& $(MAC_DRIVE_COMMAND) \
-# 		&& echo "    -drive id=SystemDisk,if=none,file=$(MAC_DRIVE) \\" >> basic.sh \
-# 		&& echo "    -device ide-hd,bus=sata.4,drive=SystemDisk \\" >> basic.sh \
-# 		&& sed -e "s|-m 2G|-m 10G|g" -i basic.sh \
-# 		&& sed -e "s|-smp 4,cores=2|-smp cores=2,threads=2,sockets=1|g" -i basic.sh
-
-# run: ## Run project
-# 	cd $(QEMU_DIR)/macOS-Simple-KVM \
-# 		&& sudo bash basic.sh
-
-# clean: ## Clear project
-# 	rm -rf $(QEMU_DIR)/macOS-Simple-KVM
+clean: ## Clear project
+	rm -rf $(QEMU_DIR)/windows
