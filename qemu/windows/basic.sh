@@ -10,6 +10,8 @@ RAM_SIZE=4G
 
 CPU_CORES=1
 
+MAC_ADDRESS=$(printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)))
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -53,6 +55,10 @@ if [[ "$disk" == "" ]]; then
 fi
 qemuArgs+=(-drive id=SystemDisk,format=raw,if=none,file=$DISK)
 qemuArgs+=(-device ide-hd,bus=sata.2,drive=SystemDisk)
+
+# https://www.linux-kvm.org/page/Networking
+# qemuArgs+=(-netdev user,id=user.0 -device e1000,netdev=user.0)
+qemuArgs+=(-device e1000,netdev=net0,mac=$MAC_ADDRESS -netdev tap,id=net0)
 
 qemu-system-x86_64 \
   -enable-kvm \

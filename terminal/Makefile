@@ -9,11 +9,14 @@ DIR_INSTALL = ../.install
 
 BASH_CONFIG_FOLDER=.
 bash: bash-$(OSFLAG) ## Configure bash
+	cat ~/.bash_profile | grep ssh-j-linux || echo "alias ssh-j-linux='ssh dragosc@192.168.98.60'" >> ~/.bash_profile
 
 bash-LINUX:
 ifeq (bash,$(SHELL_IS))
-	cp $(BASH_CONFIG_FOLDER)/bash_profile ~/.bash_profile.$(shell date +%s) || true
-	cat ./bash_profile > ~/.bash_profile && source ~/.bash_profile
+	cp ~/.bash_aliases ~/.bash_aliases.$(shell date +%s) || true
+	cat ./bash_aliases > ~/.bash_aliases && source ~/.bash_aliases
+# 	cp $(BASH_CONFIG_FOLDER)/bash_profile ~/.bash_profile.$(shell date +%s) || true
+# 	cat ./bash_profile > ~/.bash_profile && source ~/.bash_profile
 else
 	echo $(SHELL)
 	@echo "You're not using bash as shell interface."
