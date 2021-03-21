@@ -1,9 +1,5 @@
 #! /bin/bash
 
-# systemctl status systemd-resolved | grep "Active: active" \
-#   && ( \
-#     systemctl disable systemd-resolved.service \
-#     && systemctl stop systemd-resolved \
-#   )
+netstat -tlpna | grep 53 | grep systemd && bash ./remove-systemd-resolved.sh
 
 docker-compose -f docker-compose.yml up -d
