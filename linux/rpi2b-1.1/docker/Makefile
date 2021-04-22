@@ -5,6 +5,7 @@ include ../../../Makefile.template
 #
 
 install: ## Install Docker
+	which docker || \
 	sudo apt install -y docker docker.io docker-compose
 
 uninstall: ## Uninstall Docker
