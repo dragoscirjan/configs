@@ -5,14 +5,11 @@ include ../../Makefile.template
 
 install: ## Install cURL
 	which curl || \
-		(which apt && sudo apt install -y curl) || \
-		(which apt-get && sudo apt-get install -y curl)
-
+	$(PACKAGE_INSTALL) curl
 
 uninstall: ## Uninstall cURL
 	which curl && \
-		(which apt && sudo apt remove --purge -y curl) || \
-		(which apt-get && sudo apt-get remove --purge -y curl)
+	$(PACKAGE_REMOVE) curl
 
 test: ## Test Docker
 	curl https://google.com

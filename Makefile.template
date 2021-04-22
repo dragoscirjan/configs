@@ -38,8 +38,21 @@ else
 	endif
 endif
 
+CAT_RELEASE = cat /etc/*-release
+
+IS_UBUNTU = $(CAT_RELEASE) | egrep "ID(_LIKE)?=ubuntu"
+IS_DEBIAN = $(CAT_RELEASE) | egrep "ID(_LIKE)?=debian"
+
+ifneq ($(shell $(IS_DEBIAN)),)
+	PACKAGE_INSTALL = sudo apt-get install -y
+	PACKAGE_REMOVE = sudo apt-get remove -y --purge
+else
+# ...
+endif
+
 #
 # Detect Shell
+# TODO: deprecate shell
 #
 SHELL_IS :=
 ifeq ($(SHELL),/bin/bash)

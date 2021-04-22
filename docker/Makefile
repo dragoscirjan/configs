@@ -10,6 +10,15 @@ install--LINUX:
 	cd ../linux/curl && make install
 	curl -sSL https://get.docker.com | sudo bash
 
+	base="https://github.com/docker/compose/releases/download/1.29.1" \
+	&& sudo curl -L "$$base/docker-compose-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-compose \
+	&& sudo chmod +x /usr/local/bin/docker-compose
+
+	base=https://github.com/docker/machine/releases/download/v0.16.0 \
+	&& sudo curl -L "$$base/docker-machine-$$(uname -s)-$$(uname -m)" -o /usr/local/bin/docker-machine \
+	&& sudo chmod +x /usr/local/bin/docker-machine
+
+
 install--OSX:
 	@echo TODO:
 
@@ -20,10 +29,10 @@ uninstall: uninstall--$(OSFLAG) ## Uninstall Docker
 
 uninstall--LINUX:
 	which docker && \
-	DOCKER_PACKAGES=$$(dpkg -l | grep docker | awk -F' ' '{ print $$2 }') && \
-	echo $$DOCKER_PACKAGES && \
-	(which apt && sudo apt remove --purge $$DOCKER_PACKAGES) || \
-	(which apt-get && sudo apt-get remove --purge $$DOCKER_PACKAGES)
+	$(PACKAGE_REMOVE) $$(dpkg -l | grep docker | awk -F' ' '{ print $$2 }')
+
+	which docker-compose && sudo rm -rf /usr/local/bin/docker-compose
+	which docker-machine && sudo rm -rf /usr/local/bin/docker-machine
 
 uninstall--OSX:
 	@echo TODO:
