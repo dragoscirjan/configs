@@ -1,10 +1,10 @@
 #!/bin/bash
 set -ex
 
-ISO=
+# ISO=
 
-DISK=
-DISK_SIZE=5G
+# DISK=
+# DISK_SIZE=5G
 
 RAM_SIZE=16G
 
@@ -13,7 +13,7 @@ CPU_CORES=1
 MAC_ADDRESS=$(printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)))
 
 VGA_DRIVER=virtio
-VGA_DRIVER=qxl
+# VGA_DRIVER=qxl
 
 [ -f ./bios.bin ] \
   || ( cp /usr/share/OVMF/OVMF_CODE.fd ./bios.bin \
@@ -85,7 +85,7 @@ else
 fi
 
 # MACHINE=q35,accel=kvm
-MACHINE=pc-q35-4.0
+MACHINE=pc,accel=kvm
 
 qemu-system-x86_64 \
   -enable-kvm \
@@ -99,7 +99,6 @@ qemu-system-x86_64 \
   -display default \
   -enable-kvm \
   -cpu host,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
-  -machine type=pc,accel=kvm \
   "${qemuArgs[@]}"
 
 # -device ich9-ahci,id=sata \

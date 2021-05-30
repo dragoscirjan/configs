@@ -13,7 +13,7 @@ CPU_CORES=1
 MAC_ADDRESS=$(printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)))
 
 VGA_DRIVER=virtio
-VGA_DRIVER=qxl
+# VGA_DRIVER=qxl
 
 # [ -f ./bios.bin ] \
 #   || ( cp /usr/share/OVMF/OVMF_CODE.fd ./bios.bin \
