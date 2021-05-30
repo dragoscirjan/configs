@@ -1,22 +1,22 @@
-include Makefile.template
+include ../Makefile.template
 
 #
 # Actual Action Definitions
 #
 
-generic: norootcheck generic-$(OSID) ## Install Generic Utils
+generic: req_root_not generic-$(OSID) ## Install Generic Utils
 
 generic-debian:
 	# http://ubuntuhandbook.org/index.php/2019/03/display-cpu-memory-network-usage-in-ubuntu-18-04-panel/
-	sudo apt-get install gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0
+	sudo apt-get install gir1.2-gtop-2.0 gir1.2-clutter-1.0
 
 	cp ~/.bash_aliases ~/.bash_aliases.$(shell date +%s) || true
-	cat ./bash_aliases > ~/.bash_aliases && source ~/.bash_aliases
+	cat ./bash_aliases > ~/.bash_aliases #&& source ~/.bash_aliases
 
 generic-ubuntu: generic-debian
 
 # https://medium.com/@pwaterz/how-to-dual-boot-windows-10-and-ubuntu-18-04-on-the-15-inch-dell-xps-9570-with-nvidia-1050ti-gpu-4b9a2901493d
-xps15-9570: norootcheck generic ## Install Utils for XPS15 9570
+xps15-9570: req_root_not generic ## Install Utils for XPS15 9570
 	# Video Card
 # 	make --directoru=../.install i PACKAGE="curl"
 # 	sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/JackHack96/dell-xps-9570-ubuntu-respin/master/xps-tweaks.sh)"

@@ -31,9 +31,10 @@ essential-LINUX-debian:
 	apt-get update
 	which curl || sudo apt-get install -y curl
 	which git || sudo apt-get install -y git
+	which git || sudo apt-get install -y jq
 	which vim || sudo apt-get install -y vim
-	which make || sudo apt-get install -y build-essential make
-	which gcc || sudo apt-get install -y build-essential make
+	which make || sudo apt-get install -y make
+	which gcc || sudo apt-get install -y build-essential
 
 essential-WIN32:
 	echo 'essential windows'

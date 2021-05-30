@@ -1,4 +1,4 @@
-include ./Makefile.template
+include ../Makefile.template
 
 #
 # Actual Action Definitions
@@ -20,7 +20,7 @@ all: chrome edge firefox opera vivaldi ## Install all browsers (without dev vers
 chrome: chrome-$(OSFLAG) ## Install Google Chrome Browser
 
 # chrome-LINUX:
-# 	xdg-open https://www.google.com/chrome/ || gnome-open https://www.google.com/chrome/
+# 	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.google.com/chrome/" PACKAGE_MATCH="ChromeSetup.exe" PACKAGE_ARGS="/silent /install"
 
 # chrome-OSX:
 # 	make --directory=$(DIR_INSTALL) i PACKAGE=google-chrome BREW_SOURCE=cask
