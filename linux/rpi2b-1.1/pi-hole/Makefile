@@ -10,4 +10,4 @@ install: ## Install Requirements
 	$(PACKAGE_INSTALL) net-tools
 
 run: ## Run Pi-Hole
-	bash ./init.sh
+	sudo bash ./init.sh

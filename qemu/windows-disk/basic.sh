@@ -44,8 +44,6 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
-      *)    # unknown option
-      ;;
       -v|--vga)
       VGA_DRIVER="$2"
       shift # past argument

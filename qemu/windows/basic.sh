@@ -12,6 +12,13 @@ CPU_CORES=1
 
 MAC_ADDRESS=$(printf 'DE:AD:BE:EF:%02X:%02X\n' $((RANDOM%256)) $((RANDOM%256)))
 
+VGA_DRIVER=virtio
+VGA_DRIVER=qxl
+
+# [ -f ./bios.bin ] \
+#   || ( cp /usr/share/OVMF/OVMF_CODE.fd ./bios.bin \
+#     && chmod 555 ./bios.bin )
+
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
   key="$1"
@@ -37,6 +44,11 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
+      -v|--vga)
+      VGA_DRIVER="$2"
+      shift # past argument
+      shift # past value
+      ;;
       *)    # unknown option
       POSITIONAL+=("$1") # save it in an array for later
       shift # past argument
@@ -45,13 +57,12 @@ while [[ $# -gt 0 ]]; do
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-
 qemuArgs=()
 
 [[ -f "$ISO" ]] && qemuArgs+=(-cdrom $ISO)
 
-if [[ "$disk" == "" ]]; then
-  [[ ! -f ubuntu.qcow ]] && qemu-img create -f qcow2 ubuntu.qcow $DISK_SIZE
+if [[ "$DISK" == "" ]]; then
+  [[ ! -f windows.qcow ]] && qemu-img create -f qcow2 windows.qcow $DISK_SIZE
 fi
 qemuArgs+=(-drive id=SystemDisk,format=raw,if=none,file=$DISK)
 qemuArgs+=(-device ide-hd,bus=sata.2,drive=SystemDisk)
@@ -60,12 +71,27 @@ qemuArgs+=(-device ide-hd,bus=sata.2,drive=SystemDisk)
 # qemuArgs+=(-netdev user,id=user.0 -device e1000,netdev=user.0)
 qemuArgs+=(-device e1000,netdev=net0,mac=$MAC_ADDRESS -netdev tap,id=net0)
 
+if [[ "$VGA_DRIVER" == "virtio" ]]; then
+  qemuArgs+=(-vga virtio)
+else
+  if [[ "$VGA_DRIVER" == "qxl" ]]; then
+    qemuArgs+=(-vga qxl)
+    qemuArgs+=(-global qxl-vga.ram_size=134217728)
+    qemuArgs+=(-global qxl-vga.vram_size=134217728)
+    qemuArgs+=(-global qxl-vga.vgamem_mb=32)
+  else
+    echo "Only 'virtio' and 'qxl' are supported for now."
+  fi
+fi
+
+MACHINE=q35,accel=kvm
+# MACHINE=pc-q35-4.0
+
 qemu-system-x86_64 \
   -enable-kvm \
   -m $RAM_SIZE \
-  -machine q35,accel=kvm \
+  -machine $MACHINE \
   -smp cores=$CPU_CORES,threads=$CPU_CORES,sockets=1 \
-  -vga virtio \
   -usb \
   -device usb-kbd \
   -device usb-mouse \
