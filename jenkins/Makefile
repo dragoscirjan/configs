@@ -82,3 +82,13 @@ install-langs--python-LINUX: req_root
 		$(JENKINS_SUDO_MAKE_LANG) python PY_VERSION=$$ver; \
 		done
 
+install-sonar: install-sonar-$(OSFLAG)
+
+install-sonar-MACOS:
+	echo ""
+
+install-sonar-LINUX:
+	echo ""
+
+install-sonar-WINDOWS:
+	echo ""

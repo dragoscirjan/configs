@@ -12,11 +12,64 @@ PROFILE_FILE = ~/.bashrc
 # Actual Action Definitions
 #
 
+
+CLANG_VERSION=12
+# CLANG_VERSION=11
+
+CLANG_FOLDER=$$HOME/lib/clang
+
+clang: clang-$(OSFLAG) ## Install LLVM CLang CLANG_VERSION=11,12
+
+clang-LINUX:
+	clang_version=$$(/bin/bash -c ". ../version_utils.sh && fill_version $(CLANG_VERSION)") \
+		&& echo $$clang_version \
+		&& base="https://github.com/llvm/llvm-project/releases/download" \
+		&& ubuntu_version=$$(cat /etc/*-release | grep VERSION_ID= | awk -F'"' '{print $$2}') \
+		&& base=$$base/llvmorg-$$clang_version \
+		&& base=$$base/clang+llvm-$$clang_version-x86_64-linux-gnu-ubuntu-$$ubuntu_version.tar.xz \
+		&& mkdir -p $(CLANG_FOLDER) \
+		&& cd $(CLANG_FOLDER) \
+		&& curl -SL "$$base" --output ./clang.txz \
+		&& tar -xf ./clang.txz
+	make clang-chversion
+
+clang-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+clang-WIN32:
+	@echo $(NOT_IMPLEMENTED_WINDOWS)
+
+clang-chversion: clang-chversion-$(OSFLAG) ## Change used version of CLang CLANG_VERSION=11,12
+
+clang-chversion-LINUX:
+	clang_version=$$(/bin/bash -c ". ../version_utils.sh && fill_version $(CLANG_VERSION)") \
+		&& cd $(CLANG_FOLDER) \
+		&& local_path=$$(find . -mindepth 1 -maxdepth 1 -type d -iname "clang+llvm-$$clang_version*") \
+		&& real_path=$$(realpath "$(CLANG_FOLDER)/$$local_path") \
+		&& ( \
+			grep CLANG_PATH $$HOME/.bashrc > /dev/null \
+			|| ( echo "CLANG_PATH=$$real_path" >> $$HOME/.bashrc \
+				&& echo "export PATH=\$$PATH:\$$CLANG_PATH/bin" >> $$HOME/.bashrc ) \
+		) \
+		&& ( \
+			grep CLANG_PATH $$HOME/.bashrc > /dev/null \
+			&& sed -i "s|CLANG_PATH=.\+|CLANG_PATH=$$real_path|g" $$HOME/.bashrc \
+		)
+	@echo "The folowing were added to $$HOME/.bashrc"
+	@grep CLANG_PATH $$HOME/.bashrc
+	@echo "Don't forget to 'source $$HOME/.bashrc' "
+
+clang-chversion-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+clang-chversion-WIN32:
+	@echo $(NOT_IMPLEMENTED_WINDOWS)
+
 #
 # .NET
 #
 
-dotnet: php-$(OSFLAG) ## Install Ruby
+dotnet: dotnet-$(OSFLAG) ## Install .NET
 
 dotnet-LINUX:
 	@echo $(NOT_IMPLEMENTED_LINUX)
