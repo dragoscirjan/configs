@@ -31,7 +31,7 @@ clang-LINUX:
 		&& cd $(CLANG_FOLDER) \
 		&& curl -SL "$$base" --output ./clang.txz \
 		&& tar -xf ./clang.txz
-	make clang-chversion
+	[ "$$(whoami)" != "root" ] && make clang-chversion
 
 clang-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
@@ -39,7 +39,7 @@ clang-OSX:
 clang-WIN32:
 	@echo $(NOT_IMPLEMENTED_WINDOWS)
 
-clang-chversion: clang-chversion-$(OSFLAG) ## Change used version of CLang CLANG_VERSION=11,12
+clang-chversion: req_root_not clang-chversion-$(OSFLAG) ## Change used version of CLang CLANG_VERSION=11,12
 
 clang-chversion-LINUX:
 	clang_version=$$(/bin/bash -c ". ../version_utils.sh && fill_version $(CLANG_VERSION)") \
