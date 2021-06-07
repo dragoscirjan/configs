@@ -22,7 +22,6 @@ clang: clang-$(OSFLAG) ## Install LLVM CLang CLANG_VERSION=11,12
 
 clang-LINUX:
 	clang_version=$$(/bin/bash -c ". ../version_utils.sh && fill_version $(CLANG_VERSION)") \
-		&& echo $$clang_version \
 		&& base="https://github.com/llvm/llvm-project/releases/download" \
 		&& ubuntu_version=$$(cat /etc/*-release | grep VERSION_ID= | awk -F'"' '{print $$2}') \
 		&& base=$$base/llvmorg-$$clang_version \
@@ -30,7 +29,8 @@ clang-LINUX:
 		&& mkdir -p $(CLANG_FOLDER) \
 		&& cd $(CLANG_FOLDER) \
 		&& curl -SL "$$base" --output ./clang.txz \
-		&& tar -xf ./clang.txz
+		&& tar -xf ./clang.txz \
+		&& rm ./clang.txz
 	[ "$$(whoami)" != "root" ] && make clang-chversion
 
 clang-OSX:
