@@ -256,22 +256,17 @@ PY_VERSION = 3.9
 # PY_CONFIGURE_OPTS = --enable-optimizations
 PY_CONFIGURE_OPTS =
 
-PY_FOLDER = /opt/python
+PY_FOLDER = $$HOME/lib/python
 
 PY_URL = https://www.python.org/ftp/python
 
 python: python-$(OSFLAG) ## Install Python PY_VERSION=3.9,3.5,3.6,3.7,3.8
 
-python-LINUX: req_root python-LINUX-$(OSID)
-	curl https://bootstrap.pypa.io/get-pip.py | $(PY_FOLDER)/Python-$(PY_VERSION)/python
+python-LINUX:
+	sudo make --directory=$(DIR_INSTALL) essential
+	sudo apt-get install -y checkinstall libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev
 
-python-LINUX-ubuntu: python-LINUX-debian
-
-python-LINUX-debian:
-	apt-get install -y build-essential checkinstall
-	apt-get install -y libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev
-
-	mkdir -p /opt/python
+	mkdir -p $(PY_FOLDER)
 	VERSION=$$(curl -sSL $(PY_URL) | grep $(PY_VERSION) | awk -F '"' '{ print $$2 }' | awk -F'/' '{ print $$1 }' | sort -nr | head -n1); \
 		cd $(PY_FOLDER); \
 		\
@@ -282,13 +277,8 @@ python-LINUX-debian:
 		cd Python-$$VERSION; \
 		./configure $(PY_CONFIGURE_OPTS); \
 		make; \
-		cd ..; \
-		\
-		rm -rf Python-$(PY_VERSION); \
-		ln -s Python-$$VERSION Python-$(PY_VERSION); \
-		\
-		rm -rf /usr/local/bin/python-c$(PY_VERSION); \
-		ln -s $(PY_FOLDER)/Python-$(PY_VERSION)/python /usr/local/bin/python-c$(PY_VERSION)
+		curl https://bootstrap.pypa.io/get-pip.py | $(PY_FOLDER)/Python-$$VERSION/python
+
 
 python-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
