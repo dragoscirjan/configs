@@ -24,21 +24,26 @@ else
 	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/atom.exe"
 endif
 
+clion: ## Install JetBrains CLion
+	make jetbrains JETBRAINS_IDE=clion
+
 IDEA=community
+# IDEA=educational
 # IDEA=ultimate
-idea: req_root_not idea-$(OSFLAG) ## Install JetBrains idea IDEA
+idea: ## Install JetBrains Intellij IDEA IDEA=community|ultimate
+	make jetbrains JETBRAINS_IDE=intellij-idea-$(IDEA)
 
-idea-LINUX:
-	sudo snap install intellij-idea-$(IDEA) --classic
+jetbrains: req_root_not jetbrains-$(OSFLAG)
 
-goland: req_root_not goland-$(OSFLAG) ## Install JetBrains GoLand
+jetbrains-LINUX:
+	sudo snap install $(JETBRAINS_IDE) --classic
 
-goland-LINUX:
-	sudo snap install goland --classic
+goland: ## Install JetBrains GoLand
+	make jetbrains JETBRAINS_IDE=goland
 
-goland-WIN32:
-	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/go/silent.config" FILE="~/Downloads/silent.config"
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="goland-2020.1.1.exe" PACKAGE_MATCH="goland.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\GoLand"
+# goland-WIN32:
+# 	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/go/silent.config" FILE="~/Downloads/silent.config"
+# 	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="goland-2020.1.1.exe" PACKAGE_MATCH="goland.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\GoLand"
 
 
 NEO_CONFIG_PATH=~/.config/nvm
@@ -63,22 +68,21 @@ neovim-WIN32:
 	make neovim-postinstall
 	# sed -e "s|~/.local/share|~/AppData/Local|g" -i $(NEO_CONFIG_PATH)/init.vim
 
-phpstorm: phpstorm-$(OSFLAG) ## Install JetBrains PhpStorm
+phpstorm: ## Install JetBrains PhpStorm
+	make jetbrains JETBRAINS_IDE=phpstorm
 
-phpstorm-LINUX:
-	sudo snap install phpstorm --classic
+# phpstorm-LINUX:
+# 	sudo snap install phpstorm --classic
 
-phpstorm-WIN32:
-	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/webide/silent.config"
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jetbrains.com/phpstorm/download/download-thanks.html" PACKAGE_MATCH="PhpStorm.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\PhpStorm"
+# phpstorm-WIN32:
+# 	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/webide/silent.config"
+# 	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.jetbrains.com/phpstorm/download/download-thanks.html" PACKAGE_MATCH="PhpStorm.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\PhpStorm"
 
 
 PYCHARM=community
 # PYCHARM=professional
-pycharm: pycharm-$(OSFLAG) ## Install JetBrains PyCharm PYCHARM=community|professional
-
-pycharm-LINUX:
-	sudo snap install pycharm-$(PYCHARM) --classic
+pycharm: ## Install JetBrains PyCharm PYCHARM=community|professional
+	make jetbrains JETBRAINS_IDE=pycharm-$(PYCHARM)
 
 # pycharm-WIN32:
 # 	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/python/silent.config" FILE="~/Downloads/silent.config"
@@ -110,7 +114,7 @@ vim: vim-$(OSFLAG) ## Install VIM
 # 	@$(POWERSHELL) -Command "Write-Host -ForegroundColor Red '$(NOT_IMPLEMENTED_WINDOWS). Not supported.'"
 # 	@exit 1
 
-vim-LINUX: req_root_not 
+vim-LINUX: req_root_not
 	sudo make --directory=$(DIR_INSTALL) essential
 	sudo apt-get install -y vim
 	cp .vimrc ~/.vimrc
@@ -126,14 +130,15 @@ vscode-WIN32:
 vscode-LINUX:
 ifeq ($(VSCODE),insiders)
 	sudo snap install code-insiders --classic
-else	
+else
 	sudo snap install code --classic
 endif
 
-webstorm: webstorm-$(OSFLAG) ## Install JetBrains WebStorm
+webstorm: ## Install JetBrains WebStorm
+	make jetbrains JETBRAINS_IDE=webstorm
 
-webstorm-LINUX:
-	sudo snap install webstorm --classic
+# webstorm-LINUX:
+# 	sudo snap install webstorm --classic
 
 # webstorm-WIN32:
 # 	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/webide/silent.config"
