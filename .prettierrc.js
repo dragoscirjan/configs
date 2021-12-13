@@ -11,6 +11,20 @@ module.exports = {
         singleQuote: false,
       },
     },
+    {
+      files: '*.json5',
+      options: {
+        parser: 'json5',
+        singleQuote: false,
+      },
+    },
+    {
+      files: '*.ts,tsx',
+      options: {
+        parser: 'typescript',
+        singleQuote: false,
+      },
+    },
   ],
   parser: 'babel',
   printWidth: 120,

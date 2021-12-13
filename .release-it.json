@@ -1,5 +1,11 @@
 {
   "plugins": {
+    "git": {
+      "commitMessage": "chore: release v-${version}"
+    },
+    "npm": {
+      "publish": false
+    },
     "@release-it/conventional-changelog": {
       "preset": "angular",
       "infile": "CHANGELOG.md"

@@ -1,5 +1,7 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-npm run ca && npm run test
-npm run ca && npm run test
+./node_modules/.bin/lerna run --concurrency 1 --stream ca --since HEAD --exclude-dependents
+./node_modules/.bin/lerna run --concurrency 1 --stream test --since HEAD --exclude-dependents
+
+git add -u
