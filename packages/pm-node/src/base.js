@@ -1,14 +1,25 @@
 const base = require('@dragoscirjan/configs-shell-run');
 
-const {fetch, status, json} = require('@dragoscirjan/configs-fetch');
-const {verbose, warn} = require('@dragoscirjan/configs-logger');
+const {fetch, json, status} = require('@dragoscirjan/configs-fetch');
+
+const defaultOptions = {
+  ...base.defaultOptions,
+  args: [],
+  command: 'install',
+  pm: 'npm',
+};
 
 const headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
 };
 
-const latestVerNpms = async (packages = []) => {
+const latestVerNpms = async (packages = [], options = {}) => {
+  const {verbose} = {
+    ...defaultOptions,
+    ...options,
+  }.logger;
+
   verbose(`Interrogating https://api.npms.io for ${JSON.stringify(packages)} versions`);
   return fetch(`https://api.npms.io/v2/package/mget`, {
     method: 'POST',
@@ -35,7 +46,12 @@ const parseNpmjsData = (info) => {
   };
 };
 
-const latestVerNpmjs = async (packages = []) => {
+const latestVerNpmjs = async (packages = [], options = {}) => {
+  const {verbose} = {
+    ...defaultOptions,
+    ...options,
+  }.logger;
+
   verbose(`Interrogating https://registry.npmjs.org for ${JSON.stringify(packages)} versions`);
   return Promise.all(
     packages.map((p) =>
@@ -49,15 +65,21 @@ const latestVerNpmjs = async (packages = []) => {
   );
 };
 
-const latestVersions = async (packages = []) => {
+const latestVersions = async (packages = [], options = {}) => {
+  const {verbose, warn} = {
+    ...defaultOptions,
+    ...options,
+  }.logger;
+
   verbose(`Interrogating ${JSON.stringify(packages)} versions`);
   let versions = [];
   try {
-    versions = await latestVerNpms(packages);
+    versions = await latestVerNpms(packages, options);
   } catch (e) {
     warn('Could not interrogate https://api.npms.io; turning to https://registry.npmjs.org');
-    versions = await latestVerNpmjs(packages);
+    versions = await latestVerNpmjs(packages, options);
   }
+
   return Object.keys(versions).map((key) => `${key}@${versions[key]}`);
 };
 
@@ -67,7 +89,11 @@ const latestVersions = async (packages = []) => {
  * @param {*} workingDirectory
  * @param {*} command
  */
-module.exports = async (packages = [], workingDirectory = process.cwd(), command = 'install') => {
+module.exports = async (packages = [], options = {}) => {
+  const {command, pm, args} = {
+    ...defaultOptions,
+    ...options,
+  };
   const versionedPackages = [];
   let unversionedPackages = [];
 
@@ -78,7 +104,18 @@ module.exports = async (packages = [], workingDirectory = process.cwd(), command
       unversionedPackages.push(p);
     }
   }
-  unversionedPackages = await latestVersions(unversionedPackages);
+  unversionedPackages = await latestVersions(unversionedPackages, options);
 
-  return base(command, [...versionedPackages, ...unversionedPackages], workingDirectory);
+  // console.log(
+  //   pm,
+  //   [command, ...args, ...versionedPackages, ...unversionedPackages].filter((a) => a),
+  //   options,
+  // );
+  return base(
+    pm,
+    [command, ...args, ...versionedPackages, ...unversionedPackages].filter((a) => a),
+    options,
+  );
 };
+
+module.exports.defaultOptions = defaultOptions;

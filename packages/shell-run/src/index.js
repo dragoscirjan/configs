@@ -1,35 +1,16 @@
 const {spawn} = require('child_process');
+const logger = require('@dragoscirjan/configs-logger');
 
-/**
- *
- * @param {string[]} command
- * @param {string[]} args
- * @param {string} workingDirectory
- * @returns {Promise<number>}
- */
-module.exports = async (
-  command,
-  args = [],
-  options = {
-    workingDirectory: process.cwd(),
-    dryRun: false,
-    catchOutput: false,
-  },
-) => {
-  // console.log(command, args, options);
-  const {workingDirectory, dryRun, catchOutput} = options;
+const defaultOptions = {
+  catchOutput: false,
+  dryRun: false,
+  logger,
+  workingDirectory: process.cwd(),
+};
 
+const pspawn = (command, args, spawnOptions, catchOutput) => {
   let stderr = '';
   let stdout = '';
-
-  const spawnOptions = {
-    cwd: workingDirectory,
-    ...(!catchOutput ? {stdio: 'inherit'} : {}),
-  };
-
-  if (dryRun) {
-    return [command, ...args].join(' ');
-  }
 
   return new Promise((resolve, reject) => {
     const child = spawn(command, [...args], spawnOptions)
@@ -46,3 +27,32 @@ module.exports = async (
     }
   });
 };
+
+/**
+ *
+ * @param {string[]} command
+ * @param {string[]} args
+ * @param {string} workingDirectory
+ * @returns {Promise<number>}
+ */
+module.exports = async (command, args = [], options = {}) => {
+  const {workingDirectory, dryRun, catchOutput} = {
+    ...defaultOptions,
+    ...options,
+  };
+
+  console.log(command, args, workingDirectory, dryRun, catchOutput);
+
+  const spawnOptions = {
+    cwd: workingDirectory,
+    ...(!catchOutput ? {stdio: 'inherit'} : {}),
+  };
+
+  if (dryRun) {
+    return [command, ...args].join(' ');
+  }
+
+  return pspawn(command, args, spawnOptions, catchOutput);
+};
+
+module.exports.defaultOptions = defaultOptions;

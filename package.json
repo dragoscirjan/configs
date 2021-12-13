@@ -5,14 +5,14 @@
   "main": ".babelrc.js",
   "scripts": {
     "build": "lerna run build",
-    "ca": "lerna run ca",
+    "ca": "lerna run --concurrency 1 --stream ca --since HEAD --exclude-dependents",
     "cleanup": "rimraf {packages/**/,./}{.nyc_output,coverage,node_modules,package-lock.json,yarn.lock}",
     "bootstrap": "lerna bootstrap --loglevel debug",
     "lint": "lerna run lint",
     "prepare": "husky install",
     "prettier": "lerna run prettier",
     "release": "lerna publish",
-    "test": "lerna run test",
+    "test": "lerna run --concurrency 1 --stream test --since HEAD --exclude-dependents",
     "version": "lerna publish"
   },
   "repository": {

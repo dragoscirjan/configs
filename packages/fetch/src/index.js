@@ -1,20 +1,22 @@
-if (typeof fetch === 'undefined') {
-  const fetch = require('node-fetch');
-}
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-const json = (response) => response.json();
+const json = (res) => res.json();
 
-const text = (response) => response.text();
+const text = (res) => res.text();
 
-const status = (min, max) => (response) => {
-  if (typeof max === 'number') {
-    if (response.status < min || response.status > max) {
-      throw new Error(`Invalid status ${response.status}; required between ${min} and ${max}`);
-    }
+const status = (min, max) => (res) => {
+  if ((typeof max === 'number' && res.status < min) || res.status > max) {
+    throw new Error(`Invalid status ${res.status}; required between ${min} and ${max}`);
   }
-  if (response.status !== min) {
-    throw new Error(`Invalid status ${response.status}; expected ${min}`);
+  if (res.status !== min) {
+    throw new Error(`Invalid status ${res.status}; expected ${min}`);
   }
+  return res;
 };
 
-module.exports = {fetch, json, status, text};
+module.exports = {
+  fetch,
+  json,
+  status,
+  text,
+};

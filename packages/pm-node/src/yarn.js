@@ -1,8 +1,9 @@
 const base = require('./base');
 
-module.exports = async (packages = [], workingDirectory = process.cwd(), args = []) =>
-  base(
-    packages,
-    workingDirectory,
-    ['yarn', packages.length > 0 ? 'add' : 'install', ...args].filter((c) => c),
-  );
+module.exports = async (packages = [], options = {}) =>
+  base(packages, {
+    ...base.defaultOptions,
+    ...options,
+    command: packages.length > 0 ? 'add' : 'install',
+    pm: 'yarn',
+  });

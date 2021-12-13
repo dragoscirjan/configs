@@ -1,3 +1,4 @@
+const path = require('path');
 const winston = require('winston');
 
 const logger = winston.createLogger({
@@ -13,6 +14,13 @@ const logger = winston.createLogger({
     // new winston.transports.File({filename: 'error.log', level: 'error'}),
     // new winston.transports.File({filename: 'combined.log'}),
   ],
+});
+
+logger.silent = winston.createLogger({
+  level: 'debug',
+  format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
+  defaultMeta: {service: 'user-service'},
+  transports: [new winston.transports.File({filename: path.join(process.env.TEMP || '/tmp', 'combined.log')})],
 });
 
 // //
