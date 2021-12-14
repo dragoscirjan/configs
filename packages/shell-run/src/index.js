@@ -36,12 +36,17 @@ const pspawn = (command, args, spawnOptions, catchOutput) => {
  * @returns {Promise<number>}
  */
 module.exports = async (command, args = [], options = {}) => {
-  const {workingDirectory, dryRun, catchOutput} = {
+  const {
+    catchOutput,
+    dryRun,
+    logger: {debug},
+    workingDirectory,
+  } = {
     ...defaultOptions,
     ...options,
   };
 
-  console.log(command, args, workingDirectory, dryRun, catchOutput);
+  debug(`${command} ${args.join(' ')} ; #${JSON.stringify(options)}`);
 
   const spawnOptions = {
     cwd: workingDirectory,

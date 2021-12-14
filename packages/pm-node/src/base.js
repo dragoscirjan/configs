@@ -106,11 +106,6 @@ module.exports = async (packages = [], options = {}) => {
   }
   unversionedPackages = await latestVersions(unversionedPackages, options);
 
-  // console.log(
-  //   pm,
-  //   [command, ...args, ...versionedPackages, ...unversionedPackages].filter((a) => a),
-  //   options,
-  // );
   return base(
     pm,
     [command, ...args, ...versionedPackages, ...unversionedPackages].filter((a) => a),

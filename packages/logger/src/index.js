@@ -2,9 +2,8 @@ const path = require('path');
 const winston = require('winston');
 
 const logger = winston.createLogger({
-  level: 'debug',
+  level: process.env.LOG_LEVEL || 'info',
   format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
-  defaultMeta: {service: 'user-service'},
   transports: [
     new winston.transports.Console(),
     // //
@@ -16,12 +15,12 @@ const logger = winston.createLogger({
   ],
 });
 
-logger.silent = winston.createLogger({
-  level: 'debug',
-  format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
-  defaultMeta: {service: 'user-service'},
-  transports: [new winston.transports.File({filename: path.join(process.env.TEMP || '/tmp', 'combined.log')})],
-});
+// logger.silent = winston.createLogger({
+//   level: 'debug',
+//   format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
+//   defaultMeta: {service: 'user-service'},
+//   transports: [new winston.transports.File({filename: path.join(process.env.TEMP || '/tmp', 'combined.log')})],
+// });
 
 // //
 // // If we're not in production then log to the `console` with the format:
