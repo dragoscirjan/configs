@@ -1,0 +1,67 @@
+{
+  "name": "@dragoscirjan/configs-pm-os",
+  "version": "0.0.1",
+  "description": "Node Project Template",
+  "main": "src/index.js",
+  "scripts": {
+    "ca:lint": "npm run prettier && npm run lint",
+    "ca:quality": "npm run jscpd && npm run depcruise",
+    "ca:security": "npm run license-check && (npm audit || yarn audit --groups=dependencies)",
+    "ca": "npm run ca:lint && npm run ca:quality && npm run ca:security",
+    "depcruise": "depcruise --config ../../.dependency-cruiser.js src",
+    "doc:watch": "nodemon --exec 'npm run doc'",
+    "docs": "documentation build src/** -f html -o docs; documentation build src/** -f json -o docs.json",
+    "jscpd:html": "npm run jscpd -- --reporters html",
+    "jscpd": "jscpd --config ../../.jscpd.json ./src --blame",
+    "license-check": "license-checker --production --json --failOn='AGPL AGPL 1.0; AGPL 3.0; CDDL or GPLv2 with exceptions; CNRI Python GPL Compatible; Eclipse 1.0; Eclipse 2.0; GPL; GPL 1.0; GPL 2.0; GPL 2.0 Autoconf; GPL 2.0 Bison; GPL 2.0 Classpath; GPL 2.0 Font; GPL 2.0 GCC; GPL 3.0; GPL 3.0 Autoconf; GPL 3.0 GCC; GPLv2 with XebiaLabs FLOSS License Exception; LGPL; LGPL 2.0; LGPL 2.1; LGPL 3.0; Suspected Eclipse 1.0; Suspected Eclipse 2.0'",
+    "lint": "eslint --config ../../.eslintrc.js --fix ./{src,test}/**/*.{js,jsx}",
+    "predocs": "rimraf docs",
+    "prerelease": "npm run build",
+    "prettier": "prettier --config ../../.prettierrc.js --write \"{,!(.nyc_output|coverage)/**/}*.{js,json,jsx}\"",
+    "release": "release-it --config ../../.release-it.json --ci",
+    "sonar": "sonar-scanner",
+    "test:junit": "npm run test -- --reporter mocha-junit-reporter --reporter-options mochaFile=.junit.xml",
+    "test:single": "cross-env NODE_ENV=test nyc --reporter=html --reporter=lcov --reporter=text --extension .js mocha --forbid-only",
+    "test:watch": "npm run test -- --watch",
+    "test": "npm run test:single -- './test/**/*.test.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/templ-project/node-lerna.git"
+  },
+  "author": "Dragos Cirjan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/templ-project/node-lerna/issues"
+  },
+  "homepage": "https://github.com/templ-project/node-lerna#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^15.0.0",
+    "@commitlint/config-conventional": "^15.0.0",
+    "@jscpd/badge-reporter": "^3.4.1",
+    "@release-it/conventional-changelog": "^3.3.0",
+    "cross-env": "^7.0.3",
+    "dependency-cruiser": "^11.0.0",
+    "docsify-cli": "^4.4.3",
+    "documentation": "^13.2.5",
+    "enquirer": "^2.3.6",
+    "eslint": "^8.4.1",
+    "jscpd": "^3.4.2",
+    "lerna": "^4.0.0",
+    "license-checker": "^25.0.1",
+    "mocha": "^9.1.3",
+    "nodemon": "^2.0.15",
+    "nyc": "^15.1.0",
+    "prettier": "^2.5.1",
+    "release-it": "^14.11.8",
+    "rimraf": "^3.0.2",
+    "sonarqube-scanner": "^2.8.1",
+    "typescript": "^4.5.3"
+  },
+  "dependencies": {
+    "@dragoscirjan/configs-fetch": "0.0.1",
+    "@dragoscirjan/configs-shell-run": "0.0.1",
+    "@inquirer/password": "0.0.16-alpha.0",
+    "promise.any": "^2.0.2"
+  }
+}
