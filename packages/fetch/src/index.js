@@ -1,3 +1,7 @@
+const {createWriteStream} = require('fs');
+const {pipeline} = require('stream');
+const {promisify} = require('util');
+
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const json = (res) => res.json();
@@ -14,9 +18,12 @@ const status = (min, max) => (res) => {
   return res;
 };
 
+const toFile = (destinationPath) => (res) => promisify(pipeline)(res.body, createWriteStream(destinationPath));
+
 module.exports = {
   fetch,
   json,
   status,
   text,
+  toFile,
 };
