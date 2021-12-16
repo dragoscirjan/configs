@@ -5,6 +5,6 @@ module.exports = (packages = [], options = {}) =>
     args: ['-y', '-f'],
     command: 'install',
     pm: 'apt-get',
-    requireRoot: true,
+    sudo: true,
     ...options,
   });

@@ -5,6 +5,6 @@ module.exports = (packages = [], options = {}) =>
     args: ['-i'],
     command: '',
     pm: 'dpkg',
-    requireRoot: true,
+    sudo: true,
     ...options,
   });

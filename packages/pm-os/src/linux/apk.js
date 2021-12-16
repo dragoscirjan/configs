@@ -5,6 +5,6 @@ module.exports = (packages = [], options = {}) =>
     args: [],
     command: 'add',
     pm: 'apk',
-    requireRoot: true,
+    sudo: true,
     ...options,
   });

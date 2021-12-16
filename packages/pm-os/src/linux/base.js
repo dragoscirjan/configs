@@ -1,6 +1,5 @@
 'use strict';
 
-const password = require('@inquirer/password');
 const {spawn} = require('child_process');
 const any = require('promise.any');
 
@@ -16,39 +15,20 @@ const defaultOptions = {
   command: 'install',
   pm: 'apt',
   pwd: '',
-  requireRoot: true,
+  sudo: true,
 };
 
 module.exports = async (packages = [], options = {}) => {
-  const {args, command, pm, pwd, requireRoot} = {
+  options = {
     ...defaultOptions,
     ...options,
   };
+  const {args, command, pm} = options;
 
-  if (requireRoot || password) {
-    if (pwd) {
-      answer = pwd;
-    }
-    if (!answer) {
-      answer = await password({
-        message: 'Please provide root password',
-        mask: '*',
-        name: 'password',
-        type: 'password',
-      });
-    }
-
-    // const hiddenAnswer = answer;
-    const hiddenAnswer = '********';
-
-    return base(
-      'sh',
-      ['-c', `echo "${answer}" | sudo -S bash -c "${pm} ${command} ${args.join(' ')} ${packages.join(' ')}"`],
-      options,
-    );
-  }
-  return base(packages, options);
+  return base(pm, [command, ...args, ...packages], options);
 };
+
+module.exports.defaultOptions = defaultOptions;
 
 const managers = {
   apk: 'apk',

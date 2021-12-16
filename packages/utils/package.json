@@ -1,6 +1,6 @@
 {
-  "name": "@dragoscirjan/configs-shell-run",
-  "version": "0.0.1",
+  "name": "@dragoscirjan/configs-utils",
+  "version": "0.0.1-dev.0",
   "description": "Node Project Template",
   "main": "src/index.js",
   "scripts": {
@@ -59,7 +59,7 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
-    "@dragoscirjan/configs-logger": "0.0.1",
-    "@inquirer/password": "0.0.16-alpha.0"
+    "@dragoscirjan/configs-pm-os": "0.0.1",
+    "@dragoscirjan/configs-shell-run": "0.0.1"
   }
 }

@@ -5,8 +5,8 @@ module.exports = (packages = [], options = {}) =>
     args: ['-n'],
     command: 'install',
     pm: 'zypper',
-    requireRoot: true,
+    sudo: true,
     ...options,
   });
 
-module.exports = (packages = []) => base('zypper', ['-n', 'install', ...packages], {requireRoot: true});
+module.exports = (packages = []) => base('zypper', ['-n', 'install', ...packages], {sudo: true});

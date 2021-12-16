@@ -5,8 +5,8 @@ module.exports = (packages = [], options = {}) =>
     args: ['-p'],
     command: '',
     pm: 'nix-shell',
-    requireRoot: true,
+    sudo: true,
     ...options,
   });
 
-module.exports = (packages = []) => base('', ['-p', ...packages], {requireRoot: true});
+module.exports = (packages = []) => base('', ['-p', ...packages], {sudo: true});

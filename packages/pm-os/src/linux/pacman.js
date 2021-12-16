@@ -5,6 +5,6 @@ module.exports = (packages = [], options = {}) =>
     args: ['-S', '--noconfirm'],
     command: '',
     pm: 'pacman',
-    requireRoot: true,
+    sudo: true,
     ...options,
   });

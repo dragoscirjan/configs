@@ -5,6 +5,6 @@ module.exports = (packages = [], options = {}) =>
     args: ['-y', '-f'],
     command: 'install',
     pm: 'yum',
-    requireRoot: true,
+    sudo: true,
     ...options,
   });

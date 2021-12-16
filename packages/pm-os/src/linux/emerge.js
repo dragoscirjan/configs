@@ -5,6 +5,6 @@ module.exports = (packages = [], options = {}) =>
     args: [],
     command: '',
     pm: 'emerge',
-    requireRoot: true,
+    sudo: true,
     ...options,
   });

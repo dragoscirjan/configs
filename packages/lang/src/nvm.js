@@ -26,7 +26,9 @@ module.exports = async (options = {}) => {
 
       await shell('bash', ['-c', `. ${nvmSh}; nvm --version`], options);
       await shell('bash', ['-c', `. ${nvmSh}; nvm install ${version}`], options);
-      return shell('bash', ['-c', `. ${nvmSh}; nvm use ${version}`], options);
+      await shell('bash', ['-c', `. ${nvmSh}; nvm use ${version}`], options);
+      await shell('bash', ['-c', `. ${nvmSh}; node --version`], options);
+      return shell('bash', ['-c', `. ${nvmSh}; npm --version`], options);
     },
   });
 };
