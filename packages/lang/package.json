@@ -59,6 +59,7 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
+    "@dragoscirjan/configs-fetch": "0.0.1",
     "@dragoscirjan/configs-pm-os": "0.0.1",
     "@dragoscirjan/configs-shell-run": "0.0.1"
   }

@@ -1,10 +1,20 @@
 const base = require('@dragoscirjan/configs-pm-os/src/linux/base');
 const {http, platforms} = require('@dragoscirjan/configs-pm-os');
+const {fetch, status, text, toFile} = require('@dragoscirjan/configs-fetch');
 const shell = require('@dragoscirjan/configs-shell-run');
 
 const darwin = () => {
   error('We do not support individual NodeJs install on MacOS. Please refer to nvm installer');
   return 1;
+};
+
+const downloadWindowsInstaller = async () => {
+  return fetch('https://github.com/coreybutler/nvm-windows/releases')
+    .then(status(200))
+    .then((x) => {
+      console.log(x);
+      return x;
+    });
 };
 
 const windows = (options) => {
@@ -16,7 +26,6 @@ const windows = (options) => {
   //     versionChunk = `latest-v${version}.x`;
   //   }
   // }
-  error('Did not write the windows version yet. Please contribute');
 };
 
 /**
@@ -53,7 +62,7 @@ module.exports = async (options = {}) => {
   }
 
   if (process.platform === platforms.Darwin) {
-    return darwin();
+    return darwin(options);
   }
 
   const distro = await base.distro();
