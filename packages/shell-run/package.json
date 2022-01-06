@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Node Project Template",
   "main": "src/index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "ca:lint": "npm run prettier && npm run lint",
     "ca:quality": "npm run jscpd && npm run depcruise",
@@ -60,6 +61,7 @@
   },
   "dependencies": {
     "@dragoscirjan/configs-logger": "0.0.1",
-    "@inquirer/password": "0.0.16-alpha.0"
+    "@inquirer/password": "0.0.16-alpha.0",
+    "@types/winston": "^2.4.4"
   }
 }

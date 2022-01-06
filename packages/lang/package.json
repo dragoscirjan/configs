@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Node Project Template",
   "main": "src/index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "ca:lint": "npm run prettier && npm run lint",
     "ca:quality": "npm run jscpd && npm run depcruise",
@@ -61,6 +62,7 @@
   "dependencies": {
     "@dragoscirjan/configs-fetch": "0.0.1",
     "@dragoscirjan/configs-pm-os": "0.0.1",
-    "@dragoscirjan/configs-shell-run": "0.0.1"
+    "@dragoscirjan/configs-shell-run": "0.0.1",
+    "semver": "^7.3.5"
   }
 }

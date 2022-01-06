@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Node Project Template",
   "main": "src/index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "ca:lint": "npm run prettier && npm run lint",
     "ca:quality": "npm run jscpd && npm run depcruise",
@@ -36,6 +37,7 @@
     "@commitlint/config-conventional": "^15.0.0",
     "@jscpd/badge-reporter": "^3.4.1",
     "@release-it/conventional-changelog": "^3.3.0",
+    "@types/winston": "^2.4.4",
     "cross-env": "^7.0.3",
     "dependency-cruiser": "^11.0.0",
     "docsify-cli": "^4.4.3",

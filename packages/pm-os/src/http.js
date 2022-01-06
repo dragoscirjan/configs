@@ -12,12 +12,15 @@ const defaultOptions = {
 
 /**
  *
- * @param {[string, callback|regexp?]} package
+ * @param {string | [string, callback|regexp?]} package
  * @param {*} options
  * @returns
  */
 module.exports = async (package, options = {}) => {
   const {callback} = options;
+  if (typeof package === 'string') {
+    package = [package];
+  }
 
   const stringUrl =
     package.length > 1

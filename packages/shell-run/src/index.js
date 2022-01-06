@@ -5,6 +5,9 @@ const logger = require('@dragoscirjan/configs-logger');
 
 let answer = '';
 
+/**
+ * @type {Shell.Options}
+ */
 const defaultOptions = {
   catchOutput: false,
   dryRun: false,
@@ -70,8 +73,6 @@ const wrapSudo = async (command, args = [], options = {}) => {
 
   await sudoPassword(options.sudoPwd);
 
-  console.log(dryRunCmd);
-
   return {args: ['-c', `echo "${answer}" | sudo -S bash -c "${dryRunCmd}"`], command: 'sh'};
 };
 
@@ -79,15 +80,21 @@ const wrapSudo = async (command, args = [], options = {}) => {
  *
  * @param {string[]} command
  * @param {string[]} args
- * @param {string} workingDirectory
- * @returns {Promise<number>}
+ * @param {Shell.Options} workingDirectory
+ * @returns {Promise<Shell.Result>}
  */
 const base = async (command, args = [], options = {}) => {
   options = {
     ...defaultOptions,
     ...options,
   };
-  const {dryRun, sudo} = options;
+  const {
+    dryRun,
+    sudo,
+    logger: {debug},
+  } = options;
+
+  debug(`dryRun: ${dryRun}; sudo: ${sudo}`);
 
   ({args, command} = sudo ? await wrapSudo(command, args, options) : {args, command});
 
