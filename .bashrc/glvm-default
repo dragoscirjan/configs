@@ -1,0 +1,16 @@
+
+
+# mkdir -p "$GLVM_ROOT/logs" > /dev/null 2>&1
+# mkdir -p "$GLVM_ROOT/gos" > /dev/null 2>&1
+# mkdir -p "$GLVM_ROOT/archive" > /dev/null 2>&1
+# mkdir -p "$GLVM_ROOT/archive/package" > /dev/null 2>&1
+# mkdir -p "$GLVM_ROOT/environments" > /dev/null 2>&1
+
+export GLVM_VERSION=$(cat "$GLVM_ROOT/VERSION")
+# export PATH="$GLVM_ROOT/bin:$PATH"
+
+# [ -f "$GLVM_ROOT/environments/default" ] && . "$GLVM_ROOT/environments/default"
+# . "$GLVM_ROOT/scripts/env/gvm"
+
+. "$GLVM_ROOT/.bashrc/env/glvm"
+

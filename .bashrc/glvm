@@ -1,0 +1,2 @@
+export GLVM_ROOT=/home/dragosc/Workspace/configs
+. $GLVM_ROOT/.bashrc/glvm-default
