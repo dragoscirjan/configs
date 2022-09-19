@@ -25,7 +25,7 @@ git-WIN32:
 gitkraken: gitkraken-$(OSFLAG) ## Install GitKraken
 
 gitkraken-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+	snap install --classic gitkraken
 
 gitkraken-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
