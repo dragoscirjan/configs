@@ -1,0 +1,6 @@
+all:
+  hosts:
+    east:
+      ansible_host: 192.168.86.94
+    west:
+      ansible_host: 192.168.86.92

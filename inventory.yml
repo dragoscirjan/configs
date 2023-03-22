@@ -1,0 +1,10 @@
+all:
+  hosts:
+    dell-xps-work:
+      ansible_host: 192.168.86.94
+    dell-xps-mine:
+      ansible_host: 192.168.86.92
+localhost:
+  hosts:
+    localhost:
+      ansible_host: 127.0.0.1

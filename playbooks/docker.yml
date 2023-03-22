@@ -1,0 +1,28 @@
+---
+# Playbook to install Docker
+
+- name: Install Docker
+  hosts: all
+  become: true
+  tasks:
+    - name: Install dependencies
+      package:
+        name: curl
+        state: present
+
+    - name: Get Docker script
+      shell: |
+        set -ex
+        curl -fsSL https://get.docker.com -o get-docker.sh
+
+    - name: Install Docker
+      shell: |
+        set -ex
+        sh get-docker.sh
+
+    - name: Verify Docker installation
+      shell: docker version
+      register: docker_version
+    - name: Show Docker version
+      debug:
+        var: docker_version.stdout_lines

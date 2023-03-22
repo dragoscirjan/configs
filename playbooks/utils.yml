@@ -1,0 +1,68 @@
+---
+- name: Install make, build-essential, netstat, git, jq, yq
+  hosts: all
+  become: true
+  tasks:
+    - name: Install dependencies
+      package:
+        name: build-essential
+        state: present
+      when: "'Debian' in ansible_os_family or 'Ubuntu' in ansible_os_family"
+
+    - name: Install dependencies
+      package:
+        name: "gcc, make"
+        state: present
+      when: "'RedHat' in ansible_os_family or 'Fedora' in ansible_os_family"
+
+    - name: Install dependencies
+      package:
+        name: "gcc, make, net-tools"
+        state: present
+      when: "'Manjaro' in ansible_os_family"
+
+    - name: Install dependencies
+      package:
+        name: "gcc, make, net-tools"
+        state: present
+      when: "'Gentoo' in ansible_os_family"
+
+    - name: Install git
+      package:
+        name: git
+        state: present
+
+    - name: Install jq
+      package:
+        name: jq
+        state: present
+
+    - name: Install yq
+      shell: |
+        set -ex
+        arch=$(dpkg --print-architecture)
+        if [ $arch == *"arm64"* ] || [ $arch == *"aarch64"* ]; then
+          curl -L -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_arm64
+        else
+          if [ $arch == *"armv"* ] || [ $arch == *"armh"* ]; then
+            curl -L -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_arm
+          else
+            curl -L -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.30.8/yq_linux_amd64
+          fi
+        fi
+        chmod +x /usr/local/bin/yq
+      when: "'Debian' in ansible_os_family or 'Ubuntu' in ansible_os_family"
+
+    - name: Verify yq installation
+      shell: yq --version
+      register: yq_version
+    - name: Show yq version
+      debug:
+        var: yq_version.stdout_lines
+
+    - name: Verify jq installation
+      shell: jq --version
+      register: jq_version
+    - name: Show jq version
+      debug:
+        var: jq_version.stdout_lines

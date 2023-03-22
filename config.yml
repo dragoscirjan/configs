@@ -1,0 +1,3 @@
+---
+prometheus:
+  gateway_url: http://192.168.86.94:9091
