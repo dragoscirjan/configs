@@ -8,113 +8,98 @@ POWERSHELL=powershell -ExecutionPolicy ByPass
 
 DIR_INSTALL = ../.install
 
-mktmp:
-ifeq (bash,$(SHELL_IS))
-	mkdir -p $$HOME/tmp
-else
-	$(POWERSHELL) "New-Item -Force -Path $$HOME -Name tmp -ItemType directory"
-endif
+default: ## Install default browsers (without dev versions)
+	make brave
+	make chrome
+	make firefox
 
-all: chrome edge firefox opera vivaldi ## Install all browsers (without dev versions)
+BROWSER_NAME=
+browser-LINUX:
+	snap install $(BROWSER_NAME)
+
+browser-OSX:
+	brew install $(BROWSER_NAME)
+
+browser-WIN32:
+	choco upgrade -y $(BROWSER_NAME)
+
+# --------------------------------------------------------------------------------------
+
+brave: BROWSER_NAME=brave ## Install Brave Browser https://brave.com/
+brave: brave-$(OSFLAG)
+
+brave-LINUX: browser-LINUX
+
+brave-OSX:  browser-OSX
+
+brave-WIN32: browser-WIN32
+
 
 chrome: chrome-$(OSFLAG) ## Install Google Chrome Browser
 
-# chrome-LINUX:
-# 	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.google.com/chrome/" PACKAGE_MATCH="ChromeSetup.exe" PACKAGE_ARGS="/silent /install"
+chrome-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
 
-# chrome-OSX:
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=google-chrome BREW_SOURCE=cask
+chrome-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
 
-chrome-WIN32:
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.google.com/chrome/" PACKAGE_MATCH="ChromeSetup.exe" PACKAGE_ARGS="/silent /install"
+chrome-WIN32: BROWSER_NAME=googlechrome
+chrome-WIN32: browser-WIN32
 
 
-chromium: chromium-$(OSFLAG) ## Install Chromium Browser
+chromium: chromium-$(OSFLAG) ## Install Google Chrome Browser
 
-# chromium-LINUX:
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=chromium-browser BREW_SOURCE
+chromium-LINUX: BROWSER_NAME=chromium
+chromium-LINUX: browser-LINUX
 
-# chromium-OSX:
-# 	@echo "$(NOT_IMPLEMENTED_OSX)"
+chromium-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
 
-chromium-WIN32:
-	$(POWERSHELL) -File .\chromium-install.ps1
+chromium-WIN32: 
+	@echo $(NOT_IMPLEMENTED_WIN32)
 
 
 edge: edge-$(OSFLAG) ## Install Edge Browser EDGE=edge,insider
 
-edge-WIN32:
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.microsoft.com/en-us/edge" PACKAGE_MATCH="MicrosoftEdgeSetup.exe" PACKAGE_ARGS="/silent /install"
+edge-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
+
+edge-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+edge-WIN32: BROWSER_NAME=microsoft-edge
+edge-WIN32: browser-WIN32
 
 
-FIREFOX=firefox
-firefox: firefox-$(OSFLAG)-$(FIREFOX) ## Install Firefox Browser FIREFOX=firefox,aurora
+firefox: BROWSER_NAME=firefox ## Install Firefox Browser https://www.mozilla.org/en-US/firefox/new/
+firefox: firefox-$(OSFLAG)
 
-# firefox-LINUX-firefox:
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=firefox BREW_SOURCE=cask
+firefox-LINUX: browser-LINUX
 
-# firefox-LINUX-aurora:
-# 	make --directory=$(DIR_INSTALL) dld URL="https://download-installer.cdn.mozilla.net/pub/devedition/releases/69.0b11/linux-x86_64/en-US/firefox-69.0b11.tar.bz2" FILE="~/bin/firefox.tar.bz2"
-# 	cd ~/bin && tar -xjvf firefox.tar.bz2 && ln -s ./firefox/firefox ./firefox-aurora
+firefox-OSX:  browser-OSX
 
-# firefox-OSX-firefox:
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=firefox BREW_SOURCE=cask
-
-# firefox-OSX-aurora:
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=firefox-developer-edition BREW_SOURCE=cask
-
-firefox-WIN32-firefox:
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://download.mozilla.org/?product=firefox-stub&os=win&lang=en-US" PACKAGE_MATCH="Firefox.*Installer.exe" PACKAGE_ARGS="/S"
-
-firefox-WIN32-aurora:
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://download.mozilla.org/?product=firefox-devedition-stub&os=win&lang=en-US" PACKAGE_MATCH="Firefox.*Installer.exe" PACKAGE_ARGS="/S"
+firefox-WIN32: browser-WIN32
 
 
-OPERA=opera
-opera: opera-$(OSFLAG)-$(OPERA) ## Install Opera Browser OPERA=opera,neon
+opera: BROWSER_NAME=opera ## Install Firefox Browser https://www.mozilla.org/en-US/firefox/new/
+opera: opera-$(OSFLAG)
 
-# opera-LINUX-opera: opera-$(OSID)-$(OPERA)
+opera-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
 
-# opera-ubuntu-opera: opera-debian-opera
+opera-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
 
-# opera-debian-opera:
-# 	make --directory=$(DIR_INSTALL) iu URL="https://download3.operacdn.com/pub/opera/desktop/65.0.3467.69/linux/opera-stable_65.0.3467.69_amd64.deb" FILE="~/tmp/opera.deb"
-
-# opera-LINUX-neon:
-# 	echo $(NOT_IMPLEMENTED_LINUX)
-
-# opera-OSX-opera:
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=opera BREW_SOURCE=cask
-
-# opera-OSX-neon:
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=opera-neon BREW_SOURCE=cask
-
-opera-WIN32-opera:
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.opera.com/computer/thanks?ni=stable&os=windows" PACKAGE_MATCH="OperaSetup.exe" PACKAGE_ARGS="/silent /norestart /launchopera 0"
-
-opera-WIN32-neon:
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.opera.com/computer/thanks?ni=stable_neon&os=windows" PACKAGE_MATCH="OperaNeonSetup.exe" PACKAGE_ARGS="/silent /norestart /launchoperaneon 0"
+opera-WIN32: browser-WIN32
 
 
-tor: tor-$(OSFLAG) ## Install Tor Browser
+vivaldi: BROWSER_NAME=vivaldi ## Install Firefox Browser https://www.mozilla.org/en-US/firefox/new/
+vivaldi: vivaldi-$(OSFLAG)
 
-tor-WIN32:
-	# TODO: Should find a way to install somewhere else than desktop
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.torproject.org/download/" PACKAGE_MATCH="torbrowser-install.*.exe" PACKAGE_ARGS="/S"
-	#/INI=$(shell powershell -Command "(Get-Location).Path")\tor.ini"
+vivaldi-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
 
+vivaldi-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
 
-vivaldi: vivaldi-$(OSFLAG) ## Install Vivaldi Browser
-
-# vivaldi-LINUX: vivaldi-$(OSID)
-
-# vivaldi-ubuntu: vivaldi-debian
-
-# vivaldi-debian:
-# 	make --directory=$(DIR_INSTALL) iu URL="https://downloads.vivaldi.com/stable/vivaldi-stable_2.6.1566.49-1_amd64.deb" FILE="~/tmp/vivaldi.deb"
-
-# vivaldi-OSX:
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=vivaldi BREW_SOURCE=cask
-
-vivaldi-WIN32:
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://vivaldi.com/" PACKAGE_MATCH="Vivaldi.*.exe" PACKAGE_ARGS="--vivaldi-silent --do-not-launch-chrome --vivaldi-update"
+vivaldi-WIN32: browser-WIN32

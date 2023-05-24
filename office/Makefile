@@ -1,41 +1,46 @@
-include ./Makefile.template
+include ../Makefile.template
 
 #
 # Actual Action Definitions
 #
 
+POWERSHELL=powershell -ExecutionPolicy ByPass
+
 DIR_INSTALL = ../.install
 
-libreoffice: libreoffice-$(OSFLAG) ## Install Libre Office
+default: ## Install default Office App (WPS Office)
+	make wpsoffice
 
-# libreoffice-LINUX:
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=libreoffice
+APP_NAME=
+app-LINUX:
+	snap install $(APP_NAME)
 
-# libreoffice-OSX:
-# 	@echo $(NOT_IMPLEMENTED_OSX)
+app-OSX:
+	brew install $(APP_NAME)
 
-LIBRE_VERSION = 6.4.3
-libreoffice-WIN32:
-	make --directory=$(DIR_INSTALL) dld URL="https://www.libreoffice.org/donate/dl/win-x86_64/$(LIBRE_VERSION)/en-US/LibreOffice_$(LIBRE_VERSION)_Win_x64.msi" FILE="$$$$HOME\Downloads\libre-office.msi"
-	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/libre-office.msi"
+app-WIN32:
+	choco upgrade -y $(APP_NAME)
+
+# --------------------------------------------------------------------------------------
 
 
-wpsoffice: wpsoffice-$(OSFLAG) ## Install WPS Office
+libreoffice: libreoffice-$(OSFLAG) ## Install Discord
+libreoffice-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
 
-# http://wps-community.org/downloads
-wpsoffice-LINUX: wpsoffice-$(OSID)
+libreoffice-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
 
-# wpsoffice-ubuntu: wpsoffice-debian
+libreoffice-WIN32: APP_NAME=libreoffice
+libreoffice-WIN32: app-WIN32
 
-# wpsoffice-debian:
-# 	make --directory=$(DIR_INSTALL) iu URL="http://kdl.cc.ksosoft.com/wps-community/download/8722/wps-office_11.1.0.8722_amd64.deb" FILE="~/tmp/wps-office.deb"
 
-# # wpsoffice-redhat:
-# # 	make --directory=$(DIR_INSTALL) iu URL="http://kdl.cc.ksosoft.com/wps-community/download/8722/wps-office-11.1.0.8722-1.x86_64.rpm" FILE="~/tmp/wps-office.rpm"
+wpsoffice: wpsoffice-$(OSFLAG) ## Install Ferdium
+wpsoffice-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
 
-# wpsoffice-OSX:
-# 	@echo $(NOT_IMPLEMENTED_OSX)
+wpsoffice-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
 
-# TODO: Doesn't accept knonwn args yet
-wpsoffice-WIN32:
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://www.wps.com/" PACKAGE_MATCH="wps_office_inst.exe" PACKAGE_ARGS="/S /ACCEPTEULA=1"
+wpsoffice-WIN32: APP_NAME=wps-office-free
+wpsoffice-WIN32: app-WIN32

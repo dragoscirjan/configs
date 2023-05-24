@@ -38,17 +38,17 @@ else
 	endif
 endif
 
-CAT_RELEASE = cat /etc/*-release
+# CAT_RELEASE = cat /etc/*-release
 
-IS_UBUNTU = $(CAT_RELEASE) | egrep "ID(_LIKE)?=ubuntu"
-IS_DEBIAN = $(CAT_RELEASE) | egrep "ID(_LIKE)?=debian"
+# IS_UBUNTU = $(CAT_RELEASE) | egrep "ID(_LIKE)?=ubuntu"
+# IS_DEBIAN = $(CAT_RELEASE) | egrep "ID(_LIKE)?=debian"
 
-ifneq ($(shell $(IS_DEBIAN)),)
-	PACKAGE_INSTALL = sudo apt-get install -y
-	PACKAGE_REMOVE = sudo apt-get remove -y --purge
-else
-# ...
-endif
+# ifneq ($(shell $(IS_DEBIAN)),)
+# 	PACKAGE_INSTALL = sudo apt-get install -y
+# 	PACKAGE_REMOVE = sudo apt-get remove -y --purge
+# else
+# # ...
+# endif
 
 #
 # Detect Shell
@@ -122,3 +122,14 @@ req_root_not-OSX:
 
 req_root_not-WIN32:
 	$(POWERSHELL) -File "../.scripts/req_root_not.ps1"
+
+APP_NAME=
+APP_ARGS=
+app-LINUX:
+	snap install $(APP_NAME) $(APP_ARGS)
+
+app-OSX:
+	brew install $(APP_NAME) $(APP_ARGS)
+
+app-WIN32:
+	choco upgrade -y $(APP_NAME) $(APP_ARGS)
