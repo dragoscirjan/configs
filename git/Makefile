@@ -1,37 +1,28 @@
-include Makefile.template
+include ../Makefile.template
 
-DIR_INSTALL = ../.install
+# --------------------------------------------------------------------------------------
 
-#
-# Actual Action Definitions
-#
+default: ## Install default Git Tools (Git, Github Cli, GitKraken)
+	make cli
+	make gitkraken
 
-git: git-$(OSFLAG) ## Install Git
+cli:  ## Install default Cli Git Tools (Git, Github Cli)
+	make git
+	make github-cli
+
+git: ## Install git (https://git-scm.com/)
+	make app-$(OSFLAG) APP_NAME=git
+
 	git config --global color.ui auto
 	git config --global core.autocrlf false
 	git config --global core.eol lf
 	git config --global push.default matching
 
-git-LINUX:
-	make --director=$(DIR_INSTALL) i PACKAGE=git
+github-cli: APP_NAME=gh
+github-cli: app-$(OSFLAG) ## Install GitKraken (https://cli.github.com/)
 
-git-OSX:
-	@echo $(NOT_IMPLEMENTED_OSX)
+github-desktop: APP_NAME=github-desktop
+github-desktop: app-$(OSFLAG) ## Install GitKraken (https://desktop.github.com/)
 
-git-WIN32:
-	# TODO: Find a list of arguments to fit your way of working
-	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="https://git-scm.com/download/win" PACKAGE_MATCH="Git.*.exe"
-	#PACKAGE_ARGS="/VERYSILENT /NORESTART /NOCANCEL /SP- /NOCLOSEAPPLICATIONS /NORESTARTAPPLICATIONS /COMPONENTS=\"icons,ext\reg\shellhere,assoc,assoc_sh\""
-
-
-gitkraken: gitkraken-$(OSFLAG) ## Install GitKraken
-
-gitkraken-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
-
-gitkraken-OSX:
-	@echo $(NOT_IMPLEMENTED_OSX)
-
-gitkraken-WIN32:
-	$(POWERSHELL) -Command 'make --directory=$(DIR_INSTALL) dld URL="https://release.gitkraken.com/win64/GitKrakenSetup.exe" FILE="$$HOME\Downloads\GitKrakenSetup.exe"'
-	make --directory=$(DIR_INSTALL) il PACKAGE_PATH="~/Downloads/GitKrakenSetup.exe" PACKAGE_ARGS="/VERYSILENT /NORESTART /NOCANCEL /SP- /NOCLOSEAPPLICATIONS /NORESTARTAPPLICATIONS"
+gitkraken: APP_NAME=gitkraken
+gitkraken: app-$(OSFLAG) ## Install GitKraken (https://www.gitkraken.com/)
