@@ -97,6 +97,10 @@ NOT_IMPLEMENTED_LINUX = "Not implemented under Linux"
 NOT_IMPLEMENTED_OSX = "Not implemented under OSX"
 NOT_IMPLEMENTED_WINDOWS = "Not implemented under Windows"
 
+NOT_SUPPORTED_LINUX = "Not supported under Linux; please install manualy"
+NOT_SUPPORTED_OSX = "Not supported under OSX; please install manualy"
+NOT_SUPPORTED_WINDOWS = "Not supported under Windows; please install manualy"
+
 #
 # Actual Action Definitions
 #
@@ -126,7 +130,7 @@ req_root_not-WIN32:
 APP_NAME=
 APP_ARGS=
 app-LINUX:
-	snap install $(APP_NAME) $(APP_ARGS)
+	snap install $(APP_NAME) $(APP_ARGS) || apt-get install -y $(APP_NAME) $(APP_ARGS)
 
 app-OSX:
 	brew install $(APP_NAME) $(APP_ARGS)

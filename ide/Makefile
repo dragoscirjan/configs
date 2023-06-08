@@ -18,29 +18,20 @@ default: ## Install default IDEs (CLion, Fleet, GoLand, IntelliJ IDEA, PyCharm, 
 	make vscode
 	make vscode-insiders
 
-IDE_NAME=
-ide-LINUX:
-	snap install $(IDE_NAME)
-
-ide-OSX:
-	brew install $(IDE_NAME)
-
-ide-WIN32:
-	choco upgrade -y $(IDE_NAME)
-
 # --------------------------------------------------------------------------------------
 
 
 clion: clion-$(OSFLAG) ## Install JetBrains CLion https://www.jetbrains.com/clion/
 
-clion-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+clion-LINUX: APP_NAME=clion
+clion-LINUX: APP_ARGS=--classic
+clion-LINUX: app-LINUX
 
 clion-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-clion-WIN32: IDE_NAME=clion-ide
-clion-WIN32: ide-WIN32
+clion-WIN32: APP_NAME=clion-ide
+clion-WIN32: app-WIN32
 
 
 fleet: fleet-$(OSFLAG) ## Install JetBrains GoLand https://www.jetbrains.com/fleet/
@@ -57,38 +48,41 @@ fleet-WIN32:
 
 goland: goland-$(OSFLAG) ## Install JetBrains GoLand https://www.jetbrains.com/goland/
 
-goland-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+goland-LINUX: APP_NAME=goland
+goland-LINUX: APP_ARGS=--classic
+goland-LINUX: app-LINUX
 
 goland-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-goland-WIN32: IDE_NAME=goland
-goland-WIN32: ide-WIN32
+goland-WIN32: APP_NAME=goland
+goland-WIN32: app-WIN32
 
 
 idea: idea-$(OSFLAG) ## Install JetBrains IntelliJ IDEA https://www.jetbrains.com/idea/
 
-idea-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+idea-LINUX: APP_NAME=intellij-idea-ultimate
+idea-LINUX: APP_ARGS=--classic
+idea-LINUX: app-LINUX
 
 idea-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-idea-WIN32: IDE_NAME=intellijidea-ultimate
-idea-WIN32: ide-WIN32
+idea-WIN32: APP_NAME=intellijidea-ultimate
+idea-WIN32: app-WIN32
 
 
 idea-community: idea-community-$(OSFLAG) ## Install JetBrains IntelliJ IDEA https://www.jetbrains.com/idea/
 
-idea-community-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+idea-community-LINUX: APP_NAME=intellij-idea-community
+idea-community-LINUX: APP_ARGS=--classic
+idea-community-LINUX: app-LINUX
 
 idea-community-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-idea-community-WIN32: IDE_NAME=intellijidea-community
-idea-community-WIN32: ide-WIN32
+idea-community-WIN32: APP_NAME=intellijidea-community
+idea-community-WIN32: app-WIN32
 
 
 jetbrains-toolbox: jetbrains-toolbox-$(OSFLAG) ## Install JetBrains Toolbox https://www.jetbrains.com/toolbox-app/
@@ -99,68 +93,70 @@ jetbrains-toolbox-LINUX:
 jetbrains-toolbox-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-jetbrains-toolbox-WIN32: IDE_NAME=intellijidea-community
-jetbrains-toolbox-WIN32: ide-WIN32
+jetbrains-toolbox-WIN32: APP_NAME=intellijidea-community
+jetbrains-toolbox-WIN32: app-WIN32
 
 
+phpstorm: APP_NAME=phpstorm
 phpstorm: phpstorm-$(OSFLAG) ## Install JetBrains GoLand https://www.jetbrains.com/phpstorm/
 
-phpstorm-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+phpstorm-LINUX: APP_ARGS=--classic
+phpstorm-LINUX: app-LINUX
 
 phpstorm-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-phpstorm-WIN32: IDE_NAME=phpstorm
-phpstorm-WIN32: ide-WIN32
+phpstorm-WIN32: app-WIN32
 
 
+pycharm: APP_NAME=pycharm-professional
 pycharm: pycharm-$(OSFLAG) ## Install JetBrains PyCharm https://www.jetbrains.com/pycharm/
 
-pycharm-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+pycharm-LINUX: APP_ARGS=--classic
+pycharm-LINUX: app-LINUX
 
 pycharm-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-pycharm-WIN32: IDE_NAME=pycharm-professional
-pycharm-WIN32: ide-WIN32
+pycharm-WIN32: app-WIN32
 
 
+pycharm-community: APP_NAME=pycharm-community
 pycharm-community: pycharm-community-$(OSFLAG) ## Install IntelliJ GoLand https://www.jetbrains.com/pycharm/
 
-pycharm-community-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+pycharm-community-LINUX: APP_ARGS=--classic
+pycharm-community-LINUX: app-LINUX
 
 pycharm-community-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-pycharm-community-WIN32: IDE_NAME=PyCharm-community
-pycharm-community-WIN32: ide-WIN32
+pycharm-community-WIN32: app-WIN32
 
 
+rider: APP_NAME=rider
 rider: rider-$(OSFLAG) ## Install JetBrains Rider https://www.jetbrains.com/rider/
 
-rider-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+rider-LINUX: APP_ARGS=--classic
+rider-LINUX: app-LINUX
 
 rider-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-rider-WIN32: IDE_NAME=jetbrains-rider
-rider-WIN32: ide-WIN32
+rider-WIN32: APP_NAME=jetbrains-$(APP_NAME)
+rider-WIN32: app-WIN32
 
 
 sublime: sublime-$(OSFLAG) ## Install Sublime Text https://www.sublimetext.com/
 
-sublime-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+sublime-LINUX: APP_NAME=sublime-text
+sublime-LINUX: APP_ARGS=--classic
+sublime-LINUX: app-LINUX
 
 sublime-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-sublime-WIN32: IDE_NAME=sublimetext4
-sublime-WIN32: ide-WIN32
+sublime-WIN32: APP_NAME=sublimetext4
+sublime-WIN32: app-WIN32
 
 
 visual-studio: visual-studio-$(OSFLAG) ## Install Visual Studio (Installer) https://visualstudio.microsoft.com/
@@ -171,8 +167,8 @@ visual-studio-LINUX:
 visual-studio-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-visual-studio-WIN32: IDE_NAME=visualstudio-installer
-visual-studio-WIN32: ide-WIN32
+visual-studio-WIN32: APP_NAME=visualstudio-installer
+visual-studio-WIN32: app-WIN32
 
 
 visual-studio-community: visual-studio-community-$(OSFLAG) ## Install Visual Studio (Installer) https://visualstudio.microsoft.com/
@@ -183,44 +179,46 @@ visual-studio-community-LINUX:
 visual-studio-community-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-visual-studio-community-WIN32: IDE_NAME=visualstudio2022community
-visual-studio-community-WIN32: ide-WIN32
+visual-studio-community-WIN32: APP_NAME=visualstudio2022community
+visual-studio-community-WIN32: app-WIN32
 
 
 vscode: vscode-$(OSFLAG) ## Install Visual Studio Code https://code.visualstudio.com/
 
-vscode-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+vscode-LINUX: APP_NAME=code
+vscode-LINUX: APP_ARGS=--classic
+vscode-LINUX: app-LINUX
 
 vscode-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-vscode-WIN32: IDE_NAME=vscode
-vscode-WIN32: ide-WIN32
+vscode-WIN32: APP_NAME=vscode
+vscode-WIN32: app-WIN32
 
 
 vscode-insiders: vscode-insiders-$(OSFLAG) ## Install Visual Studio Code (Insiders) https://code.visualstudio.com/
 
-vscode-insiders-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+vscode-insiders-LINUX: APP_NAME=code-insiders
+vscode-insiders-LINUX: APP_ARGS=--classic
+vscode-insiders-LINUX: app-LINUX
 
 vscode-insiders-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-vscode-insiders-WIN32: IDE_NAME=vscode-insiders
-vscode-insiders-WIN32: ide-WIN32
+vscode-insiders-WIN32: APP_NAME=vscode-insiders
+vscode-insiders-WIN32: app-WIN32
 
 
+webstorm: APP_NAME=webstorm
 webstorm: webstorm-$(OSFLAG) ## Install JetBrains WebStorm https://www.jetbrains.com/webstorm/
 
-webstorm-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+webstorm-LINUX: APP_ARGS=--classic
+webstorm-LINUX: app-LINUX
 
 webstorm-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-webstorm-WIN32: IDE_NAME=WebStorm
-webstorm-WIN32: ide-WIN32
+webstorm-WIN32: app-WIN32
 
 
 

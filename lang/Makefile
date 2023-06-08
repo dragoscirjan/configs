@@ -1,28 +1,34 @@
 include ../Makefile.template
 
+default: ## Install default Language Interpretors (NodeJs)
+	make node
+
 # --------------------------------------------------------------------------------------
 
 node: node-$(OSFLAG) ## Install NodeJs NVM
 
 node-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 
 node-OSX:
-	@echo $(NOT_IMPLEMENTED_OSX)
+	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 
+node-WIN32: APP_NAME=nvm
+node-WIN32: app-WIN32
 # node-WIN32: COMMAND="$$downloadUrl = 'https://github.com/coreybutler/nvm-windows/releases/download/1.1.11/nvm-setup.exe'; "
 # node-WIN32: COMMAND+="$$outputPath = 'C:\nvm-setup.exe';"
 # node-WIN32: COMMAND+="$$webClient = New-Object System.Net.WebClient;"
 # node-WIN32: COMMAND+="$$webClient.DownloadFile($$downloadUrl, $$outputPath); Start-Process -FilePath $$outputPath -Wait; "
 # node-WIN32: 
 # 	@powershell.exe -Command "$(COMMAND)"
-
-node-WIN32: APP_NAME=nvm
-node-WIN32: app-WIN32
 # node-WIN32:
 # ifneq ($(NODE_VERSION),)
 # 	 powershell -Command "C:\ProgramData\nvm\nvm.exe install $(NODE_VERSION)"
 # endif
+
+# TODO: go, java, python, ruby, rust, groovy
+
+
 
 # #
 # # ENV

@@ -22,7 +22,21 @@ github-cli: APP_NAME=gh
 github-cli: app-$(OSFLAG) ## Install GitKraken (https://cli.github.com/)
 
 github-desktop: APP_NAME=github-desktop
-github-desktop: app-$(OSFLAG) ## Install GitKraken (https://desktop.github.com/)
+github-desktop: github-desktop-$(OSFLAG) ## Install GitKraken (https://desktop.github.com/)
+
+github-desktop-LINUX: APP_NAME=github-gui
+github-desktop-LINUX: app-LINUX
+
+github-desktop-OSX: app-OSX
+
+github-desktop-WIN32: app-WIN32
 
 gitkraken: APP_NAME=gitkraken
-gitkraken: app-$(OSFLAG) ## Install GitKraken (https://www.gitkraken.com/)
+gitkraken: gitkraken-$(OSFLAG) ## Install GitKraken (https://www.gitkraken.com/)
+
+gitkraken-LINUX: APP_ARGS=--classic
+gitkraken-LINUX: app-LINUX
+
+gitkraken-OSX: app-OSX
+
+gitkraken-WIN32: app-WIN32

@@ -13,44 +13,34 @@ default: ## Install default browsers (without dev versions)
 	make chrome
 	make firefox
 
-BROWSER_NAME=
-browser-LINUX:
-	snap install $(BROWSER_NAME)
-
-browser-OSX:
-	brew install $(BROWSER_NAME)
-
-browser-WIN32:
-	choco upgrade -y $(BROWSER_NAME)
-
 # --------------------------------------------------------------------------------------
 
-brave: BROWSER_NAME=brave ## Install Brave Browser https://brave.com/
+brave: APP_NAME=brave ## Install Brave Browser https://brave.com/
 brave: brave-$(OSFLAG)
 
-brave-LINUX: browser-LINUX
+brave-LINUX: app-LINUX
 
-brave-OSX:  browser-OSX
+brave-OSX:  app-OSX
 
-brave-WIN32: browser-WIN32
+brave-WIN32: app-WIN32
 
 
 chrome: chrome-$(OSFLAG) ## Install Google Chrome Browser
 
 chrome-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+	@echo $(NOT_SUPPORTED_LINUX)
 
 chrome-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-chrome-WIN32: BROWSER_NAME=googlechrome
-chrome-WIN32: browser-WIN32
+chrome-WIN32: APP_NAME=googlechrome
+chrome-WIN32: app-WIN32
 
 
 chromium: chromium-$(OSFLAG) ## Install Google Chrome Browser
 
-chromium-LINUX: BROWSER_NAME=chromium
-chromium-LINUX: browser-LINUX
+chromium-LINUX: APP_NAME=chromium
+chromium-LINUX: app-LINUX
 
 chromium-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
@@ -61,45 +51,44 @@ chromium-WIN32:
 
 edge: edge-$(OSFLAG) ## Install Edge Browser EDGE=edge,insider
 
-edge-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+edge-LINUX: APP_NAME=test-edge-only APP_ARGS=--edge
+edge-LINUX: app-LINUX
 
 edge-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-edge-WIN32: BROWSER_NAME=microsoft-edge
-edge-WIN32: browser-WIN32
+edge-WIN32: APP_NAME=edge
+edge-WIN32: app-WIN32
 
 
-firefox: BROWSER_NAME=firefox ## Install Firefox Browser https://www.mozilla.org/en-US/firefox/new/
+firefox: APP_NAME=firefox ## Install Firefox Browser https://www.mozilla.org/en-US/firefox/new/
 firefox: firefox-$(OSFLAG)
 
-firefox-LINUX: browser-LINUX
+firefox-LINUX: app-LINUX
 
-firefox-OSX:  browser-OSX
+firefox-OSX:  app-OSX
 
-firefox-WIN32: browser-WIN32
+firefox-WIN32: app-WIN32
 
 
-opera: BROWSER_NAME=opera ## Install Firefox Browser https://www.mozilla.org/en-US/firefox/new/
+opera: APP_NAME=opera ## Install Firefox Browser https://www.mozilla.org/en-US/firefox/new/
 opera: opera-$(OSFLAG)
 
-opera-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+opera-LINUX: app-LINUX
 
 opera-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-opera-WIN32: browser-WIN32
+opera-WIN32: app-WIN32
 
 
-vivaldi: BROWSER_NAME=vivaldi ## Install Firefox Browser https://www.mozilla.org/en-US/firefox/new/
+vivaldi: APP_NAME=vivaldi ## Install Firefox Browser https://www.mozilla.org/en-US/firefox/new/
 vivaldi: vivaldi-$(OSFLAG)
 
 vivaldi-LINUX:
-	@echo $(NOT_IMPLEMENTED_LINUX)
+	@echo $(NOT_SUPPORTED_LINUX)
 
 vivaldi-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-vivaldi-WIN32: browser-WIN32
+vivaldi-WIN32: app-WIN32
