@@ -14,7 +14,7 @@ node-OSX:
 # node-WIN32: COMMAND+="$$outputPath = 'C:\nvm-setup.exe';"
 # node-WIN32: COMMAND+="$$webClient = New-Object System.Net.WebClient;"
 # node-WIN32: COMMAND+="$$webClient.DownloadFile($$downloadUrl, $$outputPath); Start-Process -FilePath $$outputPath -Wait; "
-# node-WIN32: 
+# node-WIN32:
 # 	@powershell.exe -Command "$(COMMAND)"
 
 node-WIN32: APP_NAME=nvm
@@ -272,44 +272,46 @@ node-WIN32: app-WIN32
 # # Python
 # #
 
-# PY_VERSION = 3.9
-# # PY_VERSION = 3.8
-# # PY_VERSION = 3.7
-# # PY_VERSION = 3.6
-# # PY_VERSION = 3.5
+PY_VERSION = 3.9
+# PY_VERSION = 3.8
+# PY_VERSION = 3.7
+# PY_VERSION = 3.6
+# PY_VERSION = 3.5
 
-# # PY_CONFIGURE_OPTS = --enable-optimizations
-# PY_CONFIGURE_OPTS =
+# PY_CONFIGURE_OPTS = --enable-optimizations
+PY_CONFIGURE_OPTS =
 
-# PY_FOLDER = $$HOME/lib/python
+PY_FOLDER = $$HOME/lib/python
 
-# PY_URL = https://www.python.org/ftp/python
+PY_URL = https://www.python.org/ftp/python
 
-# python: python-$(OSFLAG) ## Install Python PY_VERSION=3.9,3.5,3.6,3.7,3.8
+python: python-$(OSFLAG) ## Install Python PY_VERSION=3.9,3.5,3.6,3.7,3.8
 
-# python-LINUX:
-# 	sudo make --directory=$(DIR_INSTALL) essential
-# 	sudo apt-get install -y checkinstall libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev
+python-LINUX:
+	sudo make --directory=$(DIR_INSTALL) essential
+	sudo apt-get install -y checkinstall libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev
 
-# 	mkdir -p $(PY_FOLDER)
-# 	VERSION=$$(curl -sSL $(PY_URL) | grep $(PY_VERSION) | awk -F '"' '{ print $$2 }' | awk -F'/' '{ print $$1 }' | sort -nr | head -n1); \
-# 		cd $(PY_FOLDER); \
-# 		\
-# 		rm -rf Python-$$VERSION*; \
-# 		curl -sSL "$(PY_URL)/$$VERSION/Python-$$VERSION.tgz" --output "$(PY_FOLDER)/Python-$$VERSION.tgz"; \
-# 		tar -xzf Python-$$VERSION.tgz; \
-# 		\
-# 		cd Python-$$VERSION; \
-# 		./configure $(PY_CONFIGURE_OPTS); \
-# 		make; \
-# 		curl https://bootstrap.pypa.io/get-pip.py | $(PY_FOLDER)/Python-$$VERSION/python
+	mkdir -p $(PY_FOLDER)
+	VERSION=$$(curl -sSL $(PY_URL) | grep $(PY_VERSION) | awk -F '"' '{ print $$2 }' | awk -F'/' '{ print $$1 }' | sort -nr | head -n1); \
+		cd $(PY_FOLDER); \
+		\
+		rm -rf Python-$$VERSION*; \
+		curl -sSL "$(PY_URL)/$$VERSION/Python-$$VERSION.tgz" --output "$(PY_FOLDER)/Python-$$VERSION.tgz"; \
+		tar -xzf Python-$$VERSION.tgz; \
+		\
+		cd Python-$$VERSION; \
+		./configure $(PY_CONFIGURE_OPTS); \
+		make; \
+		curl https://bootstrap.pypa.io/get-pip.py | $(PY_FOLDER)/Python-$$VERSION/python
 
 
-# python-OSX:
-# 	@echo $(NOT_IMPLEMENTED_OSX)
+python-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
 
-# python-WIN32:
-# 	$(POWERSHELL) -File .\install-python.ps1 -PyVersion $(PY_VERSION)
+python-WIN32: APP_NAME=python$(subst .,,$(PY_VERSION))
+python-WIN32: app-WIN32
+python-WIN32:
+	powershell -Command "Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile './get-pip.py'; python ./get-pip.py; Remove-Item -Force ./get-pip.py"
 
 # #
 # # Php
