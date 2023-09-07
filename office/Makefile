@@ -11,18 +11,7 @@ DIR_INSTALL = ../.install
 default: ## Install default Office App (WPS Office)
 	make wpsoffice
 
-APP_NAME=
-app-LINUX:
-	snap install $(APP_NAME)
-
-app-OSX:
-	brew install $(APP_NAME)
-
-app-WIN32:
-	choco upgrade -y $(APP_NAME)
-
 # --------------------------------------------------------------------------------------
-
 
 libreoffice: libreoffice-$(OSFLAG) ## Install Discord
 libreoffice-LINUX:
@@ -34,8 +23,11 @@ libreoffice-OSX:
 libreoffice-WIN32: APP_NAME=libreoffice
 libreoffice-WIN32: app-WIN32
 
+notion: APP_NAME=notion
+notion: BREW_ARGS=--cask
+notion: app-$(OSFLAG) ## Install Notion
 
-wpsoffice: wpsoffice-$(OSFLAG) ## Install Ferdium
+wpsoffice: wpsoffice-$(OSFLAG) ## Install WPS Office
 wpsoffice-LINUX:
 	@echo $(NOT_IMPLEMENTED_LINUX)
 

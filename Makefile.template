@@ -130,10 +130,10 @@ req_root_not-WIN32:
 APP_NAME=
 APP_ARGS=
 app-LINUX:
-	snap install $(APP_NAME) $(APP_ARGS) || apt-get install -y $(APP_NAME) $(APP_ARGS)
+	snap install $(APP_NAME) $(APP_ARGS) $(SNAP_ARGS)  || apt-get install -y $(APP_NAME) $(APP_ARGS) $(APT_ARGS)
 
 app-OSX:
-	brew install $(APP_NAME) $(APP_ARGS)
+	brew install $(APP_NAME) $(APP_ARGS) $(BREW_ARGS)
 
 app-WIN32:
-	choco upgrade -y $(APP_NAME) $(APP_ARGS)
+	choco upgrade -y $(APP_NAME) $(APP_ARGS) $(CHOCO_ARGS)
