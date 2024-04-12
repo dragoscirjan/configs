@@ -42,7 +42,7 @@ fleet-LINUX:
 fleet-OSX:
 	@echo $(NOT_IMPLEMENTED_OSX)
 
-fleet-WIN32: 
+fleet-WIN32:
 	@echo $(NOT_IMPLEMENTED_WIN32)
 
 
@@ -95,6 +95,21 @@ jetbrains-toolbox-OSX:
 
 jetbrains-toolbox-WIN32: APP_NAME=intellijidea-community
 jetbrains-toolbox-WIN32: app-WIN32
+
+
+neovim: req_root neovim-$(OSFLAG) ## Install NeoVIM
+
+# https://www.lazyvim.org/installation
+neovim-LINUX:
+	@echo $(NOT_IMPLEMENTED_LINUX)
+
+# https://www.lazyvim.org/installation
+neovim-OSX:
+	@echo $(NOT_IMPLEMENTED_OSX)
+
+neovim-WIN32: scoop
+	scoop install neovim
+	$(POWERSHELL) -Command "Remove-Item -Recurse -Force $$env:LOCALAPPDATA\nvim; git clone https://github.com/dragoscirjan/neovim-config $$env:LOCALAPPDATA\nvim"
 
 
 phpstorm: APP_NAME=phpstorm
@@ -268,29 +283,6 @@ webstorm-WIN32: app-WIN32
 # # goland-WIN32:
 # # 	make --directory=$(DIR_INSTALL) dld URL="https://download.jetbrains.com/go/silent.config" FILE="~/Downloads/silent.config"
 # # 	make --directory=$(DIR_INSTALL) iu PACKAGE_URL="goland-2020.1.1.exe" PACKAGE_MATCH="goland.*.exe" PACKAGE_ARGS="/S /CONFIG=__HOME__\Downloads\silent.config /D=__PROGRAMFILES__\JetBrains\GoLand"
-
-
-# NEO_CONFIG_PATH=~/.config/nvm
-# ifeq ($(OSFLAG),WIN32)
-# 	NEO_CONFIG_PATH=$$HOME\AppData\Local\nvim
-# endif
-# neovim-postinstall:
-# 	make --directory=$(DIR_INSTALL) mkdir MKDIR_PATH="$(NEO_CONFIG_PATH)"
-# ifeq ($(OSFLAG),WIN32)
-# 	$(POWERSHELL) -Command 'Copy-Item "$(NEO_CONFIG_PATH)\init.vim" -Destination "$(NEO_CONFIG_PATH)\init-$$(get-date -f yyyyMMddHHmmss).vim"' -Force
-# 	$(POWERSHELL) -Command 'Copy-Item ".\neovim-init.vim" -Destination "$(NEO_CONFIG_PATH)\init.vim"'
-# else
-# 	cp $(NEO_CONFIG_PATH)/init.vim $(NEO_CONFIG_PATH)/init.vim-$$(date +%F).$$(date +%N)
-# 	cp ./neovim-init.vim $(NEO_CONFIG_PATH)/init.vim
-# endif
-# 	make --directory=$(DIR_INSTALL) dld URL="https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" FILE="$$$(NEO_CONFIG_PATH)/autoload/plug.vim" CURL_OPTS="--create-dirs"
-
-# neovim: req_root neovim-$(OSFLAG) ## Install NeoVIM
-
-# neovim-WIN32:
-# 	make --directory=$(DIR_INSTALL) i PACKAGE=neovim
-# 	make neovim-postinstall
-# 	# sed -e "s|~/.local/share|~/AppData/Local|g" -i $(NEO_CONFIG_PATH)/init.vim
 
 # phpstorm: ## Install JetBrains PhpStorm
 # 	make jetbrains JETBRAINS_IDE=phpstorm
