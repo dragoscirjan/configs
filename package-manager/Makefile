@@ -12,7 +12,7 @@ pm-LINUX: req_root ## Configure Bash
 	echo
 
 pm-OSX: ## Configure Zsh
-	echo
+	which brew > /dev/null || /bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # https://ohmyposh.dev/docs/installation/windows
 # https://github.com/devblackops/Terminal-Icons

@@ -105,7 +105,9 @@ neovim-LINUX:
 
 # https://www.lazyvim.org/installation
 neovim-OSX:
-	@echo $(NOT_IMPLEMENTED_OSX)
+	brew install neovim neovim-qt
+	rm -rf ~/.config/nvim
+	git clone https://github.com/dragoscirjan/neovim-config ~/.config/nvim
 
 neovim-WIN32: scoop
 	scoop install neovim
