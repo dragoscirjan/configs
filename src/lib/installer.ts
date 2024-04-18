@@ -43,7 +43,10 @@ export const createBrewInstaller = (packages: string[], args?: string[]): Instal
   spawn: async (update?: boolean) => {
     const binary = await which('brew');
     try {
-      await runPlatformInstaller([binary, `${update ? 're' : ''}install`, ...packages, ...(args ?? [])], true);
+      await runPlatformInstaller(
+        [binary, `${update ? 're' : ''}install`, '--force', ...packages, ...(args ?? [])],
+        true,
+      );
     } catch (e) {
       if (update) {
         logger.warn(`brew install failed, trying to upgrade ${packages.join(' ')}`);

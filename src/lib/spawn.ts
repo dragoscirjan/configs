@@ -10,6 +10,7 @@ export type SpawnOptions = {
     resolve: (value: string | void | PromiseLike<string | void>) => void,
     reject?: (reason?: any) => void,
   ) => void;
+  soft?: boolean;
 };
 
 export const spawn = (command: string[], options: SpawnOptions = {}): Promise<void | string> => {
@@ -41,7 +42,7 @@ export const spawn = (command: string[], options: SpawnOptions = {}): Promise<vo
         });
     }
 
-    proc.on('close', (code) => {
+    proc.on('close', (code: number) => {
       if (code === 0) {
         if (stdout.length) {
           resolve(stdout);
@@ -53,7 +54,8 @@ export const spawn = (command: string[], options: SpawnOptions = {}): Promise<vo
         if (stderr) {
           logger.debug(`error: ${stderr}`);
         }
-        process.exit(1);
+        options.soft && process.exit(code);
+        reject && reject(code);
       }
     });
   });

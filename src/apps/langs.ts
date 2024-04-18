@@ -1,13 +1,10 @@
-import {platform} from 'os';
-import {Apps} from '../lib/installer';
-import {createBrewInstaller} from '../lib/installer';
-import {githubListReleases} from '../lib/github';
-import {logger} from '../lib/logger';
-import axios, {AxiosResponse} from 'axios';
-import * as stream from 'stream';
-import {promisify} from 'util';
-import {createWriteStream} from 'fs';
-import {runPlatformInstaller, which} from '../lib/spawn';
+import { platform } from 'os';
+import { Apps } from '../lib/installer';
+import { createBrewInstaller } from '../lib/installer';
+import { githubListReleases } from '../lib/github';
+import { logger } from '../lib/logger';
+import { runPlatformInstaller, which } from '../lib/spawn';
+import { download } from '../lib/axios';
 
 const nvmShInstall = async (_update?: boolean): Promise<void> => {
   logger.info('Installing nvm-sh');
@@ -20,17 +17,7 @@ const nvmShInstall = async (_update?: boolean): Promise<void> => {
   const nvmScript = '/tmp/nvm.sh';
 
   logger.info(`Downloading installer...`);
-  await axios
-    .request({
-      method: 'get',
-      url: `https://raw.githubusercontent.com/nvm-sh/nvm/v${version}/install.sh`,
-      responseType: 'stream',
-    })
-    .then((response: AxiosResponse) => {
-      const writer = createWriteStream(nvmScript);
-      response.data.pipe(writer);
-      return promisify(stream.finished)(writer);
-    });
+  await download(`https://raw.githubusercontent.com/nvm-sh/nvm/v${version}/install.sh`, nvmScript);
 
   logger.info(`Installing...`);
   const bashBinary = await which('bash');
