@@ -18,6 +18,7 @@ const gits: Apps = [
     installers: [
       {
         platform: 'custom',
+        name: 'git-custom-installer',
         spawn: async (update?: boolean): Promise<void> => {
           await installSingle(
             {

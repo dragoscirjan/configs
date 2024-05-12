@@ -30,7 +30,7 @@ const promisedCopy = (src: string, dest: string): Promise<void> => new Promise((
 });
 
 const createDarwinFontInstaller = (url: string): Installer => ({
-  platform: 'darwin', spawn: async (_update?: boolean) => {
+  platform: 'darwin', name: 'darwin-custom-font-installer', spawn: async (_update?: boolean) => {
     await nixDownloadAndUnzip(url);
     const darwinFontsPath = pathJoin(process.env.HOME as string, 'Library', 'Fonts');
     mkdirSync(darwinFontsPath, { recursive: true });

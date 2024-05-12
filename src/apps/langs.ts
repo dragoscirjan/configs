@@ -1,5 +1,5 @@
 import { platform } from 'os';
-import { Apps } from '../lib/installer';
+import { Apps, createChocoInstaller, createScoopInstaller, createWingetInstaller, installMultiple } from '../lib/installer';
 import { createBrewInstaller } from '../lib/installer';
 import { githubListReleases } from '../lib/github';
 import { logger } from '../lib/logger';
@@ -32,6 +32,9 @@ const ims: Apps = [
     name: 'clang',
     installers: [
       createBrewInstaller(['llvm']),
+      createChocoInstaller(['llvm']),
+      createScoopInstaller(['llvm']),
+      createWingetInstaller(['clangd']),
       //
     ],
   },
@@ -39,6 +42,10 @@ const ims: Apps = [
     name: 'dotnet',
     installers: [
       createBrewInstaller(['dotnet']),
+      createChocoInstaller(['dotnetcore']),
+      createScoopInstaller(['dotnet-sdk']),
+      // TODO: needs periodic check for updates => https://winget.run/search?query=dotnet%20core, https://learn.microsoft.com/en-us/dotnet/core/install/windows?tabs=net80
+      createWingetInstaller(['Microsoft.DotNet.SDK.8']),
       //
     ],
   },
@@ -46,6 +53,10 @@ const ims: Apps = [
     name: 'go',
     installers: [
       createBrewInstaller(['go']),
+      createChocoInstaller(['golang']),
+      createScoopInstaller(['go']),
+      // TODO: needs periodic check for updates => https://winget.run/search?query=go%20lang
+      createWingetInstaller(['GoLang.Go.1.20']),
       //
     ],
   },
@@ -54,14 +65,18 @@ const ims: Apps = [
     installers: [
       {
         platform: 'custom',
+        name: 'nvm.sh-custom-installer',
         spawn: async (update?: boolean): Promise<void> => {
           if (platform() === 'win32') {
-            throw new Error('Not implemented');
+            logger.info('Windows platform has it\'s own installers')
           }
 
           return nvmShInstall(update);
         },
       },
+      createChocoInstaller(['nvm']),
+      createScoopInstaller(['nvm']),
+      createWingetInstaller(['CoreyButler.NVMforWindows'])
     ],
   },
   {
@@ -69,7 +84,11 @@ const ims: Apps = [
     installers: [
       {
         platform: 'custom',
-        spawn: async (_update?: boolean): Promise<void> => {},
+        name: 'java-custom-installer',
+        spawn: async (_update?: boolean): Promise<void> => {
+          logger.error('Not implemented');
+          process.exit(0);
+        },
       },
     ],
   },
@@ -77,6 +96,8 @@ const ims: Apps = [
     name: 'php',
     installers: [
       createBrewInstaller(['php']),
+      createChocoInstaller(['php']),
+      createScoopInstaller(['main/php'])
       //
     ],
   },
@@ -84,6 +105,10 @@ const ims: Apps = [
     name: 'python',
     installers: [
       createBrewInstaller(['python']),
+      createChocoInstaller(['python']),
+      createScoopInstaller(['main/python']),
+      // TODO: needs periodic check for updates => https://winget.run/search?query=python
+      createWingetInstaller(['Python.Python.3.11'])
       //
     ],
   },
@@ -91,13 +116,29 @@ const ims: Apps = [
     name: 'ruby',
     installers: [
       createBrewInstaller(['ruby']),
+      createChocoInstaller(['ruby']),
+      createScoopInstaller(['main/ruby']),
+      // TODO: needs periodic check for updates => https://winget.run/search?query=ruby
+      createWingetInstaller(['RubyInstallerTeam.Ruby.3.1'])
       //
     ],
   },
   {
     name: 'rust',
     installers: [
-      createBrewInstaller(['rust']),
+      createBrewInstaller(['rustup-init']),
+      createChocoInstaller(['rustup']),
+      createScoopInstaller(['main/rustup']),
+      createWingetInstaller(['Rustlang.Rustup'])
+      //
+    ],
+  },
+  {
+    name: 'swift',
+    installers: [
+      createBrewInstaller(['swift']),
+      createScoopInstaller(['main/swift']),
+      createWingetInstaller(['Swift.Toolchain'])
       //
     ],
   },
@@ -105,6 +146,8 @@ const ims: Apps = [
     name: 'zig',
     installers: [
       createBrewInstaller(['zig']),
+      createChocoInstaller(['zig']),
+      createScoopInstaller(['main/zig'])
       //
     ],
   },

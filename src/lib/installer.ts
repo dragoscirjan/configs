@@ -11,11 +11,13 @@ export type Apps = App[];
 
 export type Installer = {
   platform: 'custom' | 'darwin' | 'linux' | 'win32';
+  name: string;
   spawn: (update?: boolean) => Promise<any>;
 };
 
 export const createAptInstaller = (packages: string[], args?: string[]): Installer => ({
   platform: 'linux',
+  name: 'apt',
   spawn: async (update?: boolean) => {
     const binary = await which('apt');
     return runPlatformInstaller([
@@ -32,6 +34,7 @@ export const createAptInstaller = (packages: string[], args?: string[]): Install
 
 export const createAptGetInstaller = (packages: string[], args?: string[]): Installer => ({
   platform: 'linux',
+  name: 'apt-get',
   spawn: async (update?: boolean) => {
     const binary = await which('apt-get');
     return runPlatformInstaller(['sudo', binary, ...(update ? [] : ['install', '-yf']), ...packages, ...(args ?? [])]);
@@ -40,6 +43,7 @@ export const createAptGetInstaller = (packages: string[], args?: string[]): Inst
 
 export const createBrewInstaller = (packages: string[], args?: string[]): Installer => ({
   platform: 'darwin',
+  name: 'brew',
   spawn: async (update?: boolean) => {
     const binary = await which('brew');
     try {
@@ -62,11 +66,41 @@ export const createBrewInstaller = (packages: string[], args?: string[]): Instal
 
 export const createChocoInstaller = (packages: string[], args?: string[]): Installer => ({
   platform: 'win32',
+  name: 'choco',
   spawn: async (update?: boolean) => {
     let index = 0;
     const binary = await which('choco');
     for (const item of packages) {
-      await runPlatformInstaller([binary, 'install', ...(update ? ['--force'] : []), ...(args ?? []), item]);
+      await runPlatformInstaller([binary, 'install', '-y', ...(update ? ['--force'] : []), ...(args ?? []), item]);
+      index++;
+    }
+  },
+});
+
+export const createScoopInstaller = (packages: string[], args?: string[]): Installer => ({
+  platform: 'win32',
+  name: 'scoop',
+  spawn: async (update?: boolean) => {
+    let index = 0;
+    const binary = await which('scoop');
+    for (const item of packages) {
+      if (item.split('/').length > 1) {
+        await runPlatformInstaller([binary, 'bucket', 'add', item.split('/')[0]]);
+      }
+      await runPlatformInstaller([binary, ...(update ? ['update', '-f',] : ['install', '-g',]), ...(args ?? []), item]);
+      index++;
+    }
+  },
+});
+
+export const createWingetInstaller = (packages: string[], args?: string[]): Installer => ({
+  platform: 'win32',
+  name: 'winget',
+  spawn: async (update?: boolean) => {
+    let index = 0;
+    const binary = await which('winget');
+    for (const item of packages) {
+      await runPlatformInstaller([binary, 'install', '--silent', ...(update ? ['--uninstall-previous'] : []), '-e', '--id',...(args ?? []), item]);
       index++;
     }
   },
@@ -79,7 +113,7 @@ export const installSingle = async (app: App, update?: boolean): Promise<void> =
       try {
         return installer.spawn(update);
       } catch (e) {
-        // TODO: log error and info
+        logger.warn(`Failed to install using '${installer.name ?? 'generic installer'}'. Moving on to next installer.`)
       }
     }
   } else {

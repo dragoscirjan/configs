@@ -1,5 +1,5 @@
 import {platform} from 'os';
-import {Apps, createBrewInstaller, installMultiple, installSingle} from '../lib/installer';
+import {Apps, createBrewInstaller, createChocoInstaller, createScoopInstaller, createWingetInstaller, installMultiple, installSingle} from '../lib/installer';
 import langsList from './langs';
 import {which} from '../lib/spawn';
 import {logger} from '../lib/logger';
@@ -22,6 +22,9 @@ const ides: Apps = [
     name: 'clion',
     installers: [
       createBrewInstaller(['clion'], ['--cask']),
+      createChocoInstaller(['clion-ide']),
+      createScoopInstaller(['extras/clion']),
+      createWingetInstaller(['JetBrains.CLion'])
       //
     ],
   },
@@ -30,6 +33,7 @@ const ides: Apps = [
     installers: [
       {
         platform: 'custom',
+        name: 'fleet-custom-installer',
         spawn: async (_update?: boolean): Promise<void> => {
           throw new Error('Not implemented');
         },
@@ -40,26 +44,27 @@ const ides: Apps = [
     name: 'goland',
     installers: [
       createBrewInstaller(['goland'], ['--cask']),
-      // ['choco', 'win32', 'brave'],
-      // ['scoop', 'win32', 'brave'],
-      // ['winget', 'win32', 'brave'],
+      createChocoInstaller(['goland']),
+      createScoopInstaller(['extras/idea-ultimate']),
+      createWingetInstaller(['JetBrains.GoLand'])
     ],
   },
   {
     name: 'idea',
     installers: [
       createBrewInstaller(['intellij-idea'], ['--cask']),
-      // ['choco', 'win32', 'GoogleChrome'],
-      // ['winget', 'win32', 'Google.Chrome'],
+      createChocoInstaller(['intellijidea-ultimate']),
+      createScoopInstaller(['extras/goland']),
+      createWingetInstaller(['JetBrains.IntelliJIDEA.Ultimate'])
     ],
   },
   {
     name: 'idea-ce',
     installers: [
       createBrewInstaller(['intellij-idea-ce'], ['--cask']),
-      // ['choco', 'win32', 'chromium'],
-      // ['scoop', 'win32', 'chromium'],
-      // ['winget', 'win32', 'Hibbiki.Chromium'],
+      createChocoInstaller(['intellijidea-community']),
+      createScoopInstaller(['extras/idea']),
+      createWingetInstaller(['JetBrains.IntelliJIDEA.Community'])
     ],
   },
   {
@@ -67,6 +72,7 @@ const ides: Apps = [
     installers: [
       {
         platform: 'custom',
+        name: 'neovim-custom-installer',
         spawn: async (update?: boolean): Promise<void> => {
           // nerdfont
           await installNeovimDependencies(update);
@@ -76,6 +82,9 @@ const ides: Apps = [
               name: 'neovim',
               installers: [
                 createBrewInstaller(['neovim', 'neovim-qt']),
+                createChocoInstaller(['neovim']),
+                createScoopInstaller(['main/neovim', 'main/neovim-qt']),
+                createWingetInstaller(['Neovim.Neovim'])
                 //
               ],
             },
@@ -100,58 +109,77 @@ const ides: Apps = [
     name: 'phpstorm',
     installers: [
       createBrewInstaller(['phpstorm'], ['--cask']),
-      // ['choco', 'win32', 'firefox'],
-      // ['scoop', 'win32', 'firefox'],
-      // ['winget', 'win32', 'firefox'],
+      createChocoInstaller(['phpstorm']),
+      createScoopInstaller(['extras/phpstorm']),
+      createWingetInstaller(['JetBrains.PHPStorm'])
     ],
   },
   {
     name: 'pycharm',
     installers: [
       createBrewInstaller(['pycharm'], ['--cask']),
-      //
+      createChocoInstaller(['pycharm']),
+      createScoopInstaller(['extras/pycharm-professional']),
+      createWingetInstaller(['JetBrains.PyCharm.Professional'])
     ],
   },
   {
     name: 'pycharm-ce',
     installers: [
       createBrewInstaller(['pycharm-ce'], ['--cask']),
-      //
+      createChocoInstaller(['pycharm-community']),
+      createScoopInstaller(['extras/pycharm']),
+      createWingetInstaller(['JetBrains.PyCharm.Community'])
     ],
   },
   {
     name: 'rider',
     installers: [
       createBrewInstaller(['rider'], ['--cask']),
-      //
+      createChocoInstaller(['jetbrains-rider', 'resharper']),
+      createScoopInstaller(['extras/rider', 'main/resharper-clt']),
+      createWingetInstaller(['JetBrains.Rider', 'JetBrains.ReSharper'])
     ],
   },
   {
     name: 'sublime',
     installers: [
       createBrewInstaller(['sublime-text'], ['--cask']),
-      //
+      createChocoInstaller(['sublimetext4'], ['--pre']),
+      createScoopInstaller(['extras/sublime-text']),
+      createWingetInstaller(['SublimeHQ.SublimeText.4'])
     ],
   },
   {
     name: 'vscode',
     installers: [
       createBrewInstaller(['visual-studio-code'], ['--cask']),
-      //
+      createChocoInstaller(['vscode']),
+      createScoopInstaller(['extras/vscode']),
+      createWingetInstaller(['Microsoft.VisualStudioCode'])
+    ],
+  },
+  {
+    name: 'vscodium',
+    installers: [
+      createBrewInstaller(['vscodium'], ['--cask']),
+      createScoopInstaller(['extras/vscodium']),
+      createWingetInstaller(['VSCodium.VSCodium'])
     ],
   },
   {
     name: 'webstorm',
     installers: [
       createBrewInstaller(['webstorm'], ['--cask']),
-      //
+      createChocoInstaller(['webstorm']),
+      createScoopInstaller(['extras/webstorm']),
+      createWingetInstaller(['JetBrains.WebStorm'])
     ],
   },
   {
     name: 'zed',
     installers: [
       createBrewInstaller(['zed'], ['--cask']),
-      //
     ],
   },
 ];
