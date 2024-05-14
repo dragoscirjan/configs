@@ -142,12 +142,33 @@ const ides: Apps = [
     ],
   },
   {
+    name: 'rustrover',
+    installers: [
+      createBrewInstaller(['rustrover'], ['--cask']),
+      createChocoInstaller(['rustrover'])
+    ],
+  },
+  {
     name: 'sublime',
     installers: [
       createBrewInstaller(['sublime-text'], ['--cask']),
       createChocoInstaller(['sublimetext4'], ['--pre']),
       createScoopInstaller(['extras/sublime-text']),
       createWingetInstaller(['SublimeHQ.SublimeText.4'])
+    ],
+  },
+  {
+    name: 'visual-studio',
+    installers: [
+      createChocoInstaller(['visualstudio2022community']),
+      createWingetInstaller(['Microsoft.VisualStudio.2022.Enterprise.Preview'])
+    ],
+  },
+  {
+    name: 'visual-studio-ce',
+    installers: [
+      createChocoInstaller(['visualstudio2022community']),
+      createWingetInstaller(['Microsoft.VisualStudio.2022.Community.Preview'])
     ],
   },
   {

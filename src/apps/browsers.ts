@@ -4,13 +4,15 @@ import {
   createAptInstaller,
   createBrewInstaller,
   createChocoInstaller,
+  createScoopInstaller,
+  createWingetInstaller,
 } from '../lib/installer';
 
 const browsers: Apps = [
   {
     name: 'arc',
     installers: [
-      createBrewInstaller(['arc'], ['--cask']),
+      createBrewInstaller(['arc'], ['--cask'])
       //
     ],
   },
@@ -18,34 +20,35 @@ const browsers: Apps = [
     name: 'brave',
     installers: [
       createBrewInstaller(['brave-browser'], ['--cask']),
-
       createChocoInstaller(['brave']),
-      // ['scoop', 'win32', 'brave'],
-      // ['winget', 'win32', 'brave'],
+      createScoopInstaller(['extras/brave']),
+      createWingetInstaller(['Brave.Brave'])
     ],
   },
   {
     name: 'chrome',
     installers: [
       createBrewInstaller(['google-chrome'], ['--cask']),
-      // ['choco', 'win32', 'GoogleChrome'],
-      // ['winget', 'win32', 'Google.Chrome'],
+      createChocoInstaller(['googlechrome']),
+      createScoopInstaller(['extras/googlechrome']),
+      createWingetInstaller(['Google.Chrome'])
     ],
   },
   {
     name: 'chromium',
     installers: [
       createBrewInstaller(['chromium'], ['--cask']),
-      // ['choco', 'win32', 'chromium'],
-      // ['scoop', 'win32', 'chromium'],
-      // ['winget', 'win32', 'Hibbiki.Chromium'],
+      createChocoInstaller(['chromium']),
+      createScoopInstaller(['extras/chromium']),
+      createWingetInstaller(['Hibbiki.Chromium'])
     ],
   },
   {
     name: 'edge',
     installers: [
       createBrewInstaller(['microsoft-edge'], ['--cask']),
-      // ['choco', 'win32', 'microsoft-edge'],
+      createChocoInstaller(['microsoft-edge']),
+      createWingetInstaller(['Microsoft.Edge'])
     ],
   },
   {
@@ -55,22 +58,27 @@ const browsers: Apps = [
       createAptGetInstaller(['firefox']),
 
       createBrewInstaller(['firefox']),
-
       createChocoInstaller(['firefox']),
+      createScoopInstaller(['extras/firefox']),
+      createWingetInstaller(['Mozilla.Firefox'])
     ],
   },
   {
     name: 'opera',
     installers: [
       createBrewInstaller(['opera'], ['--cask']),
-      //
+      createChocoInstaller(['opera']),
+      createScoopInstaller(['extras/opera']),
+      createWingetInstaller(['Opera.Opera'])
     ],
   },
   {
     name: 'vivaldi',
     installers: [
       createBrewInstaller(['vivaldi'], ['--cask']),
-      //
+      createChocoInstaller(['vivaldi']),
+      createScoopInstaller(['extras/vivaldi']),
+      createWingetInstaller(['VivaldiTechnologies.Vivaldi'])
     ],
   },
 ];

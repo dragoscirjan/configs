@@ -103,7 +103,7 @@ export default function run() {
       '<string...>',
       `IMs to install: ${imsList.map((i: App) => i.name).join(' ')}`,
       (value: string, previous: string[]) => [...(previous || []), value].filter((item) => item !== 'ides'),
-      ['discord', 'ferdium'],
+      // ['discord', 'ferdium'],
     )
     .option('--update', 'Force update to the latest version')
     .action(async (ims: string[], options: any) => {
@@ -121,7 +121,7 @@ export default function run() {
       '<string...>',
       `Languages to install: ${langsList.map((i: App) => i.name).join(' ')}`,
       (value: string, previous: string[]) => [...(previous || []), value].filter((item) => item !== 'langs'),
-      ['nodejs', 'clang', 'go'],
+      // ['nodejs', 'clang', 'go'],
     )
     .option('--update', 'Force update to the latest version')
     .action(async (langs: string[], options: any) => {
@@ -156,7 +156,7 @@ export default function run() {
       '<string...>',
       `Tools to install: ${restList.map((i: App) => i.name).join(' ')}`,
       (value: string, previous: string[]) => [...(previous || []), value].filter((item) => item !== 'rest'),
-      ['postman'],
+      // ['postman'],
     )
     .option('--update', 'Force update to the latest version')
     .action(async (rest: string[], options: any) => {

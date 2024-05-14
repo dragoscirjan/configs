@@ -1,4 +1,4 @@
-import {Apps, createBrewInstaller, installSingle} from '../lib/installer';
+import {Apps, createBrewInstaller, createChocoInstaller, createScoopInstaller, createWingetInstaller, installSingle} from '../lib/installer';
 import {runPlatformInstaller} from '../lib/spawn';
 
 const gitAfterInstall = async () => {
@@ -23,7 +23,12 @@ const gits: Apps = [
           await installSingle(
             {
               name: 'git',
-              installers: [createBrewInstaller(['git'], ['--cask'])],
+              installers: [
+                createBrewInstaller(['git'], ['--cask']),
+                createChocoInstaller(['git']),
+                createScoopInstaller(['main/git']),
+                createWingetInstaller(['Git.Git'])
+              ],
             },
             update,
           );
@@ -37,13 +42,18 @@ const gits: Apps = [
     name: 'gitkraken',
     installers: [
       createBrewInstaller(['gitkraken'], ['--cask']),
-      //
+      createChocoInstaller(['gitkraken']),
+      createScoopInstaller(['extras/gitkraken']),
+      createWingetInstaller(['Axosoft.GitKraken'])
     ],
   },
   {
     name: 'gh',
     installers: [
       createBrewInstaller(['gh'], ['--cask']),
+      createChocoInstaller(['gh']),
+      createScoopInstaller(['main/gh']),
+      createWingetInstaller(['GitHub.cli'])
       //
     ],
   },

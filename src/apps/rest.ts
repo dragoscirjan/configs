@@ -1,10 +1,13 @@
-import {Apps, createBrewInstaller} from '../lib/installer';
+import {Apps, createBrewInstaller, createChocoInstaller, createScoopInstaller, createWingetInstaller} from '../lib/installer';
 
 const office: Apps = [
   {
     name: 'insomnia',
     installers: [
       createBrewInstaller(['insomnia'], ['--cask']),
+      createChocoInstaller(['insomnia']),
+      createScoopInstaller(['extras/insomnia']),
+      createWingetInstaller(['Insomnia.Insomnia'])
       //
     ],
   },
@@ -12,6 +15,9 @@ const office: Apps = [
     name: 'postman',
     installers: [
       createBrewInstaller(['postman'], ['--cask']),
+      createChocoInstaller(['postman']),
+      createScoopInstaller(['extras/postman']),
+      createWingetInstaller(['Postman.Postman'])
       //
     ],
   },
