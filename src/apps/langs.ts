@@ -5,6 +5,7 @@ import { githubListReleases } from '../lib/github';
 import { logger } from '../lib/logger';
 import { runPlatformInstaller, which } from '../lib/spawn';
 import { download } from '../lib/axios';
+import { unlink } from 'fs/promises';
 
 const nvmShInstall = async (_update?: boolean): Promise<void> => {
   logger.info('Installing nvm-sh');
@@ -25,9 +26,53 @@ const nvmShInstall = async (_update?: boolean): Promise<void> => {
 
   logger.info('nvm-sh installed');
   logger.info('Open a new terminal and type `nvm --version` to verify the installation');
+
+  await unlink(nvmScript);
 };
 
+const bunInstall = async (_update?: boolean): Promise<void> => {
+  const installScript = `${process.env.TEMP}/install.${process.platform === 'win32' ? 'ps1' : 'sh'}`
+
+  logger.info(`Downloading installer...`);
+  await download(`https://bun.sh/install.${process.platform === 'win32' ? 'ps1' : 'sh'}`, installScript);
+
+  logger.info(`Installing...`);
+  const powershellBinary = await which(process.platform === 'win32' ? 'powershell' : 'bash');
+  await runPlatformInstaller([powershellBinary, ...(process.platform === 'win32' ? ['-File'] : []), installScript]);
+
+  logger.info('bun installed');
+  logger.info('Open a new terminal and type `bun --version` to verify the installation');
+
+  await unlink(installScript);
+}
+
+const denoInstall = async (_update?: boolean): Promise<void> => {
+  const installScript = `${process.env.TEMP}/install.${process.platform === 'win32' ? 'ps1' : 'sh'}`
+
+  logger.info(`Downloading installer...`);
+  await download(`https://deno.land/install.${process.platform === 'win32' ? 'ps1' : 'sh'}`, installScript);
+
+  logger.info(`Installing...`);
+  const powershellBinary = await which(process.platform === 'win32' ? 'powershell' : 'bash');
+  await runPlatformInstaller([powershellBinary, ...(process.platform === 'win32' ? ['-File'] : []), installScript]);
+
+  logger.info('deno installed');
+  logger.info('Open a new terminal and type `deno --version` to verify the installation');
+
+  await unlink(installScript);
+}
+
 const ims: Apps = [
+  {
+    name: 'bun',
+    installers: [
+      {
+        platform: 'custom',
+        name: 'bun-custom-installer',
+        spawn: bunInstall,
+      },
+    ],
+  },
   {
     name: 'clang',
     installers: [
@@ -36,6 +81,16 @@ const ims: Apps = [
       createScoopInstaller(['llvm']),
       createWingetInstaller(['clangd']),
       //
+    ],
+  },
+  {
+    name: 'deno',
+    installers: [
+      {
+        platform: 'custom',
+        name: 'deno-custom-installer',
+        spawn: denoInstall,
+      },
     ],
   },
   {
