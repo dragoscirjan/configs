@@ -1,73 +1,86 @@
 [
   {
+    default: true,
     name: "arc",
     installers: {
       brew: ["cask/arc"],
     },
     os: ["darwin", "windows"],
     type: "browser",
-    default: true,
   },
   {
+    default: true,
     name: "brave",
     installers: {
+      apt: ["brave-browser"],
       brew: ["cask/brave-browser"],
       choco: ["brave"],
+      custom_debian: [""],
+      custom_ubuntu: [""],
       scoop: ["extras/brave"],
+      snap: ["brave"],
       winget: ["Brave.Brave"],
     },
     type: "browser",
-    default: true,
   },
   {
+    default: true,
     name: "chrome",
     installers: {
       brew: ["cask/google-chrome"],
       choco: ["googlechrome"],
+      custom_debian: [""],
+      custom_ubuntu: [""],
       scoop: ["extras/googlechrome"],
       winget: ["Google.Chrome"],
     },
     type: "browser",
-    default: true,
   },
   {
+    type: "browser",
     name: "chromium",
     installers: {
       apt: ["chromium-browser"],
       brew: ["cask/chromium"],
       choco: ["chromium"],
       scoop: ["extras/chromium"],
+      snap: ["chromium"],
       winget: ["Hibbiki.Chromium"],
     },
-    type: "browser",
   },
   {
     name: "edge",
     installers: {
+      apt: ["microsoft-edge-stable"],
       brew: ["cask/microsoft-edge"],
       choco: ["microsoft-edge"],
+      custom_debian: [""],
+      custom_ubuntu: [""],
       winget: ["Microsoft.Edge"],
     },
     type: "browser",
   },
   {
+    default: true,
     name: "firefox",
     installers: {
       apt: ["firefox"],
       brew: ["firefox"],
       choco: ["firefox"],
       scoop: ["extras/firefox"],
+      snap: ["firefox"],
       winget: ["Mozilla.Firefox"],
     },
     type: "browser",
-    default: true,
   },
   {
     name: "opera",
     installers: {
+      apt: ["opera-stable"],
       brew: ["cask/opera"],
       choco: ["opera"],
       scoop: ["extras/opera"],
+      snap: ["opera"],
       winget: ["Opera.Opera"],
     },
     type: "browser",
@@ -75,6 +88,7 @@
   {
     name: "vivaldi",
     installers: {
+      apt: ["vivaldi-stable"],
       brew: ["cask/vivaldi"],
       choco: ["vivaldi"],
       scoop: ["extras/vivaldi"],
@@ -90,6 +104,7 @@
     type: "font",
   },
   {
+    default: true,
     name: "dejavu",
     installers: {
       font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/DejaVuSansMono.zip"],
@@ -97,6 +112,7 @@
     type: "font",
   },
   {
+    default: true,
     name: "fira-code",
     installers: {
       font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip"],
@@ -132,6 +148,7 @@
     type: "font",
   },
   {
+    default: true,
     name: "roboto",
     installers: {
       font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/RobotoMono.zip"],
@@ -139,6 +156,7 @@
     type: "font",
   },
   {
+    default: true,
     name: "sauce-code-pro",
     installers: {
       font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/SourceCodePro.zip"],
@@ -146,6 +164,7 @@
     type: "font",
   },
   {
+    default: true,
     name: "ubuntu",
     installers: {
       font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Ubuntu.zip"],
@@ -153,6 +172,7 @@
     type: "font",
   },
   {
+    default: true,
     name: "git",
     installers: {
       apt: ["git"],
@@ -164,31 +184,37 @@
     type: "git",
   },
   {
+    default: true,
     name: "gitkraken",
     installers: {
       brew: ["cask/gitkraken"],
       choco: ["gitkraken"],
       scoop: ["extras/gitkraken"],
+      snap: ["classic/gitkraken"],
       winget: ["Axosoft.GitKraken"],
     },
     type: "git",
   },
   {
+    default: true,
     name: "gh",
     installers: {
       brew: ["cask/gh"],
       choco: ["gh"],
       scoop: ["main/gh"],
+      snap: ["gh"],
       winget: ["GitHub.cli"],
     },
     type: "git",
   },
   {
+    default: true,
     name: "clion",
     installers: {
       brew: ["clion"],
       choco: ["clion-ide"],
       scoop: ["extras/clion"],
+      snap: ["classic/clion"],
       winget: ["JetBrains.CLion"],
     },
     type: "ide",
@@ -204,11 +230,13 @@
     type: "ide",
   },
   {
+    default: true,
     name: "goland",
     installers: {
       brew: ["goland"],
       choco: ["goland"],
-      scoop: ["extras/idea-ultimate"],
+      scoop: ["extras/goland"],
+      snap: ["classic/goland"],
       winget: ["JetBrains.GoLand"],
     },
     type: "ide",
@@ -218,7 +246,8 @@
     installers: {
       brew: ["intellij-idea"],
       choco: ["intellijidea-ultimate"],
-      scoop: ["extras/goland"],
+      scoop: ["extras/idea-ultimate"],
+      snap: ["classic/intellij-idea-ultimate"],
       winget: ["JetBrains.IntelliJIDEA.Ultimate"],
     },
     type: "ide",
@@ -229,17 +258,16 @@
       brew: ["intellij-idea-ce"],
       choco: ["intellijidea-community"],
       scoop: ["extras/idea"],
+      snap: ["classic/intellij-idea-community"],
       winget: ["JetBrains.IntelliJIDEA.Community"],
     },
     type: "ide",
   },
   {
+    default: true,
     name: "neovim",
     installers: {
-      custom_darwin: [""],
-      custom_debian: [""],
-      custom_windows: [""],
-      custom_ubuntu: [""],
+      snap: ["classic/nvim"],
     },
     type: "ide",
   },
@@ -249,16 +277,19 @@
       brew: ["phpstorm"],
       choco: ["phpstorm"],
       scoop: ["extras/phpstorm"],
+      snap: ["classic/phpstorm"],
       winget: ["JetBrains.PHPStorm"],
     },
     type: "ide",
   },
   {
+    default: true,
     name: "pycharm",
     installers: {
       brew: ["pycharm"],
       choco: ["pycharm"],
       scoop: ["extras/pycharm-professional"],
+      snap: ["classic/pycharm-professional"],
       winget: ["JetBrains.PyCharm.Professional"],
     },
     type: "ide",
@@ -269,6 +300,7 @@
       brew: ["pycharm-ce"],
       choco: ["pycharm-community"],
       scoop: ["extras/pycharm"],
+      snap: ["classic/pycharm-community"],
       winget: ["JetBrains.PyCharm.Community"],
     },
     type: "ide",
@@ -279,24 +311,29 @@
       brew: ["rider"],
       choco: ["jetbrains-rider", "resharper"],
       scoop: ["extras/rider", "main/resharper-clt"],
+      snap: ["classic/rider"],
       winget: ["JetBrains.Rider", "JetBrains.ReSharper"],
     },
     type: "ide",
   },
   {
+    default: true,
     name: "rustrover",
     installers: {
       brew: ["rustrover"],
       choco: ["rustrover"],
+      snap: ["classic/rustrover"],
     },
     type: "ide",
   },
   {
+    default: true,
     name: "sublime",
     installers: {
       brew: ["sublime-text"],
       choco: ["sublimetext4 --pre"],
       scoop: ["extras/sublime-text"],
+      snap: ["classic/sublime-text", "classic/sublime-merge"],
       winget: ["SublimeHQ.SublimeText.4"],
     },
     type: "ide",
@@ -318,35 +355,42 @@
     type: "ide",
   },
   {
+    default: true,
     name: "vscode",
     installers: {
       brew: ["visual-studio-code"],
       choco: ["vscode"],
       scoop: ["extras/vscode"],
+      snap: ["classic/code"],
       winget: ["Microsoft.VisualStudioCode"],
     },
     type: "ide",
   },
   {
+    default: true,
     name: "vscodium",
     installers: {
       brew: ["vscodium"],
       scoop: ["extras/vscodium"],
+      snap: ["classic/codium"],
       winget: ["VSCodium.VSCodium"],
     },
     type: "ide",
   },
   {
+    default: true,
     name: "webstorm",
     installers: {
       brew: ["webstorm"],
       choco: ["webstorm"],
       scoop: ["extras/webstorm"],
+      snap: ["classic/webstorm"],
       winget: ["JetBrains.WebStorm"],
     },
     type: "ide",
   },
   {
+    default: true,
     name: "zed",
     installers: {
       brew: ["zed"],
@@ -354,6 +398,7 @@
     type: "ide",
   },
   {
+    default: true,
     name: "discord",
     installers: {
       brew: ["discord"],
@@ -364,6 +409,7 @@
     type: "im",
   },
   {
+    default: true,
     name: "ferdium",
     installers: {
       brew: ["ferdium"],
@@ -384,6 +430,7 @@
     type: "im",
   },
   {
+    default: true,
     name: "slack",
     installers: {
       brew: ["slack"],
@@ -403,33 +450,16 @@
     },
     type: "im",
   },
+  // programming languages
   {
-    name: "bun",
-    installers: {
-      custom_darwin: [""],
-      custom_debian: [""],
-      custom_windows: [""],
-      custom_ubuntu: [""],
-    },
-    type: "language",
-  },
-  {
+    default: true,
     name: "clang",
     installers: {
       brew: ["llvm"],
       choco: ["llvm"],
       scoop: ["llvm"],
+      snap: ["classic/clangd"],
       winget: ["clangd"],
-    },
-    type: "language",
-  },
-  {
-    name: "deno",
-    installers: {
-      custom_darwin: [""],
-      custom_debian: [""],
-      custom_windows: [""],
-      custom_ubuntu: [""],
     },
     type: "language",
   },
@@ -439,28 +469,27 @@
       brew: ["dotnet"],
       choco: ["dotnetcore"],
       scoop: ["dotnet-sdk"],
+      snap: ["dotnet-runtime-80"],
       winget: ["Microsoft.DotNet.SDK.8"],
     },
     type: "language",
   },
   {
+    default: true,
     name: "go",
     installers: {
       brew: ["go"],
       choco: ["golang"],
       scoop: ["go"],
+      snap: ["classic/go"],
       winget: ["GoLang.Go.1.20"],
     },
     type: "language",
   },
   {
-    name: "nodejs",
+    name: "groovy",
     installers: {
-      custom_linux: [""],
-      custom_darwin: [""],
-      choco: ["nvm"],
-      scoop: ["nvm"],
-      winget: ["CoreyButler.NVMforWindows"],
+      snap: ["classic/gradle", "classic/groovy"],
     },
     type: "language",
   },
@@ -470,13 +499,42 @@
       brew: ["openjdk"],
       choco: ["openjdk"],
       scoop: ["main/openjdk"],
+      snap: ["openjdk"],
       winget: ["AdoptOpenJDK.OpenJDK"],
+    },
+    type: "language",
+  },
+  {
+    name: "js/bun",
+    installers: {},
+    type: "language",
+  },
+  {
+    name: "js/deno",
+    installers: {},
+    type: "language",
+  },
+  {
+    default: true,
+    name: "js/node",
+    installers: {
+      choco: ["nvm"],
+      scoop: ["nvm"],
+      winget: ["CoreyButler.NVMforWindows"],
+    },
+    type: "language",
+  },
+  {
+    name: "kotlin",
+    installers: {
+      snap: ["kotlin"],
     },
     type: "language",
   },
   {
     name: "php",
     installers: {
+      apt: ["php8.3"],
       brew: ["php"],
       choco: ["php"],
       scoop: ["main/php"],
@@ -499,6 +557,7 @@
       brew: ["ruby"],
       choco: ["ruby"],
       scoop: ["main/ruby"],
+      snap: ["classic/ruby"],
       winget: ["RubyTeam.Ruby.3.1"],
     },
     type: "language",
@@ -509,6 +568,7 @@
       brew: ["rustup-init"],
       choco: ["rustup"],
       scoop: ["main/rustup"],
+      snap: ["classic/rustup"],
       winget: ["Rustlang.Rustup"],
     },
     type: "language",
@@ -518,6 +578,7 @@
     installers: {
       brew: ["swift"],
       scoop: ["main/swift"],
+      // TODO: must search for Ubuntu
       winget: ["Swift.Toolchain"],
     },
     type: "language",
@@ -528,6 +589,7 @@
       brew: ["zig"],
       choco: ["zig"],
       scoop: ["main/zig"],
+      snap: ["classic/zig --beta"],
     },
     type: "language",
   },
@@ -538,16 +600,19 @@
       brew: ["libreoffice"],
       choco: ["libreoffice"],
       scoop: ["extras/libreoffice"],
+      snap: ["libreoffice"],
       winget: ["TheDocumentFoundation.LibreOffice"],
     },
     type: "office",
   },
   {
+    default: true,
     name: "notion",
     installers: {
       brew: ["notion"],
       choco: ["notion"],
       scoop: ["extras/notion"],
+      snap: ["notion-snap-reborn"],
       winget: ["Notion.Notion"],
     },
     type: "office",
@@ -564,11 +629,13 @@
     type: "office",
   },
   {
+    default: true,
     name: "wpsoffice",
     installers: {
       brew: ["wpsoffice"],
       choco: ["wps-office-free"],
       scoop: ["extras/wpsoffice"],
+      snap: ["wps-office-multilang"], // or wps-office
       winget: ["Kingsoft.WPSOffice"],
     },
     type: "office",
@@ -586,6 +653,7 @@
     type: "rest",
   },
   {
+    default: true,
     name: "postman",
     installers: {
       brew: ["postman"],
@@ -605,6 +673,7 @@
     type: "ssl",
   },
   {
+    default: true,
     name: "openssl",
     installers: {
       brew: ["openssl"],
@@ -616,6 +685,7 @@
   },
   // virtual machines & container tools
   {
+    default: true,
     name: "docker",
     installers: {
       brew: ["docker", "docker-completion", "docker-compose"],
@@ -626,6 +696,7 @@
     type: "vm",
   },
   {
+    default: true,
     name: "qemu",
     installers: {
       brew: ["qemu"],
@@ -646,6 +717,7 @@
     type: "vm",
   },
   {
+    default: true,
     name: "virtualbox",
     installers: {
       brew: ["virtualbox"],
