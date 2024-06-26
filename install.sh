@@ -54,16 +54,16 @@ EOF
 
 debug() {
   # if [[ ! -z "$DEBUG" ]]; then
-    echo -e "\e[90mDEBUG: $1\e[0m"
+    echo -e "\033[90mDEBUG: $1\033[0m"
   # fi
 }
 
 info() {
-  echo -e "\e[32mINFO: $1\e[0m"
+  echo -e "\033[32mINFO: $1\033[0m"
 }
 
 error() {
-  echo -e "\e[31mERROR: $1\e[0m"
+  echo -e "\033[31mERROR: $1\033[0m"
   exit 1
 }
 
@@ -212,8 +212,8 @@ installUsingBrew() {
     fi
   done
 
-  echo brew install -f ${nonCask[@]}
-  echo brew install -f ${cask[@]} --cask
+  brew install -f ${nonCask[@]}
+  brew install -f ${cask[@]} --cask
 }
 
 installUsingSnap() {

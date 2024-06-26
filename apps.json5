@@ -267,6 +267,7 @@
     default: true,
     name: "neovim",
     installers: {
+      brew: ["neovim", "neovim-qt"],
       snap: ["classic/nvim"],
     },
     type: "ide",
