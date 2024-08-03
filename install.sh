@@ -36,20 +36,6 @@ do_help() {
 install.sh ${scriptVersion}
 --------------------------------------------------------------------------------
 EOF
-
-  # local maxLen=0
-  # while read t; do
-  #   if [[ ${#t} -gt $maxLen ]]; then
-  #     maxLen=${#t}
-  #   fi
-  # done < <(jq -r '.[].type' $scriptAppsList | sort | uniq)
-  # maxLen=$((maxLen + 4))
-
-  # while read t; do
-  #   printf "%-${maxLen}s" "--$t"
-  #   echo "message"
-  # done < <(jq -r '.[].type' $scriptAppsList | sort | uniq)
-
 }
 
 debug() {
