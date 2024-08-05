@@ -238,10 +238,6 @@ if ($preferredInstallers.Count -eq 0) {
     $preferredInstallers = $osInstallers
 }
 
-# echo $AppTypes
-# echo $preferredInstallers
-# echo $AppList
-
 # $installers = @()
 # foreach ($installer in $preferredInstallers) {
 #     $installers += $installer
