@@ -1,36 +1,42 @@
 package main
 
 import (
-    // "bufio"
-    // "encoding/json"
-    // "fmt"
-    // "os"
-    // "os/exec"
-    // "path/filepath"
-    // "sort"
-    // "strings"
-    // "time"
+	"github.com/dragoscirjan/configs/cli/utils"
 )
 
-var (
-    scriptDir      string
-    scriptName     string
-    scriptVersion  string
-    scriptAppsList string = "./apps.json"
-    timestamp      string
-    osType         string
-    osInstallers   []string
-    preferredInstallers []string
-    appTypes       []string
-    appList        []string
-)
-
-type App struct {
-    Name       string            `json:"name"`
-    Type       string            `json:"type"`
-    Default    bool              `json:"default"`
-    Installers map[string][]string `json:"installers"`
+func main() {
+	utils.ParseFlags()
 }
+
+// "bufio"
+// "encoding/json"
+// "fmt"
+// "os"
+// "os/exec"
+// "path/filepath"
+// "sort"
+// "strings"
+// "time"
+
+// var (
+// 	scriptDir           string
+// 	scriptName          string
+// 	scriptVersion       string
+// 	scriptAppsList      string = "./apps.json"
+// 	timestamp           string
+// 	osType              string
+// 	osInstallers        []string
+// 	preferredInstallers []string
+// 	appTypes            []string
+// 	appList             []string
+// )
+
+// type App struct {
+// 	Name       string              `json:"name"`
+// 	Type       string              `json:"type"`
+// 	Default    bool                `json:"default"`
+// 	Installers map[string][]string `json:"installers"`
+// }
 
 // func initVariables() {
 //     scriptDir = filepath.Dir(os.Args[0])
@@ -72,40 +78,6 @@ type App struct {
 // func fileExists(path string) bool {
 //     _, err := os.Stat(path)
 //     return !os.IsNotExist(err)
-// }
-
-// func parseArgs() {
-//     args := os.Args[1:]
-//     for i := 0; i < len(args); i++ {
-//         arg := args[i]
-//         if arg == "--preferred-installers" {
-//             i++
-//             preferredInstallers = strings.Split(args[i], " ")
-//         } else if arg == "-h" || arg == "--help" {
-//             doHelp()
-//             os.Exit(0)
-//         } else if strings.HasPrefix(arg, "--") {
-//             appType := strings.TrimPrefix(arg, "--")
-//             if contains(appTypes, appType) {
-//                 if i+1 < len(args) && !strings.HasPrefix(args[i+1], "--") {
-//                     i++
-//                     appList = append(appList, strings.Split(args[i], " ")...)
-//                 } else {
-//                     defaultApps := getDefaultApps(appType)
-//                     appList = append(appList, defaultApps...)
-//                 }
-//             } else {
-//                 fmt.Printf("Unknown option %s\n", arg)
-//                 os.Exit(1)
-//             }
-//         } else {
-//             // Positional arguments
-//         }
-//     }
-// }
-
-// func doHelp() {
-//     fmt.Printf("install.sh %s\n--------------------------------------------------------------------------------\n", scriptVersion)
 // }
 
 // func contains(slice []string, item string) bool {
@@ -201,14 +173,3 @@ type App struct {
 //         return ""
 //     }
 // }
-
-func main() {
-    initVariables()
-    // parseArgs()
-    // determineOSType()
-    // if len(preferredInstallers) == 0 {
-    //     preferredInstallers = osInstallers
-    // }
-    // sortInstallers()
-    // installApps()
-}
