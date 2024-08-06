@@ -3,7 +3,7 @@ package apps
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 
@@ -26,7 +26,7 @@ func readAppsJSON() ([]App, error) {
 	}
 	defer file.Close()
 
-	byteValue, err := ioutil.ReadAll(file)
+	byteValue, err := io.ReadAll(file)
 	if err != nil {
 		return nil, err
 	}
@@ -36,24 +36,54 @@ func readAppsJSON() ([]App, error) {
 	return apps, nil
 }
 
-func GetAppsByType(appsType string) ([]string, error) {
+// GetApps Convert the apps.json file into an App array
+func GetApps() ([]App, error) {
 	apps, err := readAppsJSON()
 	if err != nil {
 		return nil, err
 	}
 
-	var filteredApps []string
+	return apps, nil
+}
+
+// GetAppTypes will list all the apps.json types as a string array
+func GetAppTypes() ([]string, error) {
+	var types []string
+	var apps, err = GetApps()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, app := range apps {
+		if !arrayutils.Contains(types, app.Type) {
+			types = append(types, app.Type)
+		}
+	}
+
+	return types, nil
+}
+
+// GetAppsByType returns all the apps in the given type
+func GetAppsByType(appsType string) ([]App, error) {
+	apps, err := GetApps()
+	if err != nil {
+		return nil, err
+	}
+
+	var filteredApps []App
 	for _, app := range apps {
 		if app.Type == appsType {
-			filteredApps = append(filteredApps, app.Name)
+			filteredApps = append(filteredApps, app)
 		}
 	}
 
 	return filteredApps, nil
 }
 
-func GetAppsByTypeAndNamesSubset(appsType string, names []string) ([]string, error) {
-	apps, err := readAppsJSON()
+// GetAppsByTypeAndNamesSubset returns a list of App objects matching the specified app
+// type and app names as a slice of App objects
+func GetAppsByTypeAndNamesSubset(appsType string, names []string) ([]App, error) {
+	apps, err := GetApps()
 	if err != nil {
 		return nil, err
 	}
@@ -63,18 +93,30 @@ func GetAppsByTypeAndNamesSubset(appsType string, names []string) ([]string, err
 		nameSet[name] = struct{}{}
 	}
 
-	var filteredApps []string
+	var filteredApps []App
 	for _, app := range apps {
 		if app.Type == appsType {
 			if _, exists := nameSet[app.Name]; exists {
-				filteredApps = append(filteredApps, app.Name)
+				filteredApps = append(filteredApps, app)
 			}
 		}
 	}
 
-	if diff := arrayutils.Difference(names, filteredApps); len(diff) > 0 {
+	var filteredAppsNames = AppsToNames(filteredApps)
+	if diff := arrayutils.Difference(names, filteredAppsNames); len(diff) > 0 {
 		return nil, fmt.Errorf("the following names were not found: %v", diff)
 	}
 
 	return filteredApps, nil
+}
+
+// AppsToNames returns the names of the apps as a slice of strings
+func AppsToNames(apps []App) []string {
+	var names []string
+
+	for _, app := range apps {
+		names = append(names, app.Name)
+	}
+
+	return names
 }
