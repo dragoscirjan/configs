@@ -37,7 +37,6 @@
     type: "browser",
   },
   {
-    type: "browser",
     name: "chromium",
     installers: {
       apt: ["chromium-browser"],
@@ -47,6 +46,7 @@
       snap: ["chromium"],
       winget: ["Hibbiki.Chromium"],
     },
+    type: "browser",
   },
   {
     name: "edge",

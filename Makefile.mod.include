@@ -1,0 +1,101 @@
+include Makefile.include
+
+## Add your make instructions here
+
+GIT_CERT_IGNORE =
+GIT_CERT_IGNORE_COMMAND =
+ifneq ($(GIT_CERT_IGNORE),)
+	GIT_CERT_IGNORE_COMMAND = git config http.sslVerify false
+endif
+
+#
+# Instructions
+#
+
+
+GODOCMOD_OPTIONS =
+docs: ## Generate documentation for the Project
+ifneq ($(wildcard ./src/.*),)
+	godocdown $(GODOCMOD_OPTIONS) ./src > docs.md
+else
+	godocdown $(GODOCMOD_OPTIONS) . > docs.md
+endif
+
+configure: configure-$(SHELL_IS) ## Configure and Init the code dependencies
+	$(GIT_CERT_IGNORE_COMMAND)
+	go get -u golang.org/x/lint/golint
+
+	go get golang.org/x/tools/cmd/goimports
+
+	go get github.com/fzipp/gocyclo
+
+	go get github.com/robertkrimen/godocdown/godocdown
+
+	go get -t -v ./...
+
+configure-bash:
+	chmod 755 .scripts/pre-commit.sh
+	[ -f .git/hooks/pre-commit ] || ln -s .scripts/pre-commit.sh .git/hooks/pre-commit
+
+	go get -v -u github.com/go-lintpack/lintpack/...
+	lintpack build -o gocritic github.com/go-critic/go-critic/checkers
+
+	go get -v github.com/go-critic/go-critic/...
+ifeq ($(IN_TRAVIS),)
+ifeq ($(OSFLAG),WIN32)
+	cd $$GOPATH/src/github.com/go-critic/go-critic; make gocritic
+else
+	cd $(shell go env GOPATH)/src/github.com/go-critic/go-critic && make gocritic
+endif
+endif
+
+	curl --insecure -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin $$(curl -sSL https://github.com/golangci/golangci-lint/releases | grep "releases/tag" | head -n 1 | awk -F '>' '{print $$2}' | awk -F '<' '{print $$1}')
+
+# https://winaero.com/blog/create-symbolic-link-windows-10-powershell/
+configure-powershell:
+	$(POWERSHELL) -File ./.scripts/make.ps1 -Action Configure
+
+	go get -v -u github.com/go-lintpack/lintpack/...
+	lintpack build -o gocritic github.com/go-critic/go-critic/checkers
+
+	go get -v github.com/go-critic/go-critic/...
+ifeq ($(IN_TRAVIS),)
+	cd $(shell go env GOPATH)/src/github.com/go-critic/go-critic && make gocritic
+endif
+
+RELEASE_OPTIONS = -Patch -Dry
+release: release-$(SHELL_IS) ## Publish code & mark for release
+
+release-bash:
+	bash ./.scripts/release-tag.sh $(RELEASE_OPTIONS)
+
+release-powershell:
+	$(POWERSHELL) -File ./.scripts/release-tag.ps1 $(RELEASE_OPTIONS)
+
+GO_TEST_FLAGS=-tags=unit -timeout 30s -short -coverprofile=.coverage/coverage -v
+GO_TEST=go test $(GO_TEST_FLAGS)
+GO_COVERAGE_FLAGS=-o .coverage/coverage.html -html=.coverage/coverage
+GO_COVERAGE=go tool cover $(GO_COVERAGE_FLAGS)
+test: test-$(SHELL_IS) ## Run Tests
+	$(GO_COVERAGE)
+
+test-bash:
+	mkdir -p ./.coverage
+	$(GO_TEST) ./...
+
+# test-bash:
+# 	mkdir -p ./.coverage
+# 	find . -iname "*_test.go" | while read f; do echo $$(dirname $$f)/...; done | uniq | xargs $(GO_TEST)
+
+test-powershell:
+	$(POWERSHELL) -File ./.scripts/make.ps1 -Action MkDir -Path .\.coverage
+	$(GO_TEST) .\...
+
+# test-powershell:
+# 	$(POWERSHELL) -File ./.scripts/make.ps1 -Action MkDir -Path .\.coverage
+# 	$(POWERSHELL) -File ./.scripts/make.ps1 -Action Test -Command "$(GO_TEST)"
+
+
+TEST_PATH=./...
+test-single:
+	$(GO_TEST) $(TEST_PATH)
