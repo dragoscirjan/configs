@@ -122,40 +122,7 @@ LazyVim's implementation is based on [Takuya Matsuyama](https://dev.to/craftzdog
 #
 # Darwin & Linux
 #
-
-# Fish Shell https://fishshell.com/
-#
-uname -a | grep Darwin 2>/dev/null \
-  && brew install fish
-
-if [[ -f /etc/os-release ]]; then
-  . /etc/os-release
-
-  # https://launchpad.net/~fish-shell/+archive/ubuntu/release-3
-  if [[ "$ID" == "ubuntu" ]]; then
-    sudo apt-add-repository ppa:fish-shell/release-3 \
-      && sudo apt update \
-      && sudo apt install fish
-  fi
-
-  # Fedora 40 https://software.opensuse.org/download.html?project=shells%3Afish%3Arelease%3A3&package=fish
-  if [[ "$ID" == "fedora" ]]; then
-    sudo dnf config-manager --add-repo https://download.opensuse.org/repositories/shells:fish:release:3/Fedora_40/shells:fish:release:3.repo \
-      && dnf install fish
-  fi
-fi
-
-# FuzzyFinder https://github.com/junegunn/fzf?tab=readme-ov-file#installation
-#
-uname -a | grep Darwin 2>/dev/null \
-  && brew install fzf
-which apk 2>/dev/null && sudo apk add fzf
-which apt 2>/dev/null && sudo apt install fzf -y
-which dnf 2>/dev/null && sudo dnf install fzf -y
-
-# Z (Directory Jumper) for Fish shell https://github.com/jethrokuan/z
-#
-which fisher 2>/dev/null && fisher install jethrokuan/z
+curl -o- https://raw.githubusercontent.com/dragoscirjan/configs/main/scripts/ide-neovim-lazyvim.sh | bash
 ```
 
 ```powershell
@@ -163,39 +130,9 @@ which fisher 2>/dev/null && fisher install jethrokuan/z
 # Windows
 #
 
-# FuzzyFinder https://github.com/junegunn/fzf?tab=readme-ov-file#installation
-#
-Get-Command choco && choco install fzf -y
-Get-Command scoop && scoop bucket add main && scoop install main/fzf
-Get-Command winget && winget install --id fzf
-
-# PSFzf https://github.com/kelleyma49/PSFzf?tab=readme-ov-file#installation
-#
-Get-Command scoop && scoop bucket add extras && scoop install extras/psfzf
-# or
-Get-Command scoop || Install-Module -Name PSFzf
-
-# Z (Directory Jumper) https://www.powershellgallery.com/packages/z/1.1.14
-#
-Install-Module -Name z # -AllowClobber
-
-# Ripgrep https://github.com/BurntSushi/ripgrep?tab=readme-ov-file#installation
-Get-Command choco && choco install ripgrep -y
-Get-Command scoop && scoop bucket add main && scoop install main/ripgrep
-Get-Command winget && winget install --id BurntSushi.ripgrep.MSVC
-
-# Fd https://github.com/sharkdp/fd
-Get-Command choco && choco install fd -y
-Get-Command scoop && scoop bucket add main && scoop install fd
-Get-Command winget && winget install --id sharkdp.fd
-
-# Oh My Posh https://ohmyposh.dev/
-#
-Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://ohmyposh.dev/install.ps1'))
-
-# Terminal Icons https://github.com/devblackops/Terminal-Icons
-#
-Install-Module -Name Terminal-Icons -Repository PSGallery
+Set-ExecutionPolicy Bypass -Scope Process -Force; 
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/dragoscirjan/configs/main/scripts/ide-neovim-lazyvim.ps1'))
 ```
 
 ##### LazyVim Config
