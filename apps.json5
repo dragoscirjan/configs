@@ -99,7 +99,9 @@
   {
     name: "agave",
     installers: {
-      font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Agave.zip"],
+      font_custom: [
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Agave.zip",
+      ],
     },
     type: "font",
   },
@@ -107,7 +109,9 @@
     default: true,
     name: "dejavu",
     installers: {
-      font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/DejaVuSansMono.zip"],
+      font_custom: [
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/DejaVuSansMono.zip",
+      ],
     },
     type: "font",
   },
@@ -115,35 +119,45 @@
     default: true,
     name: "fira-code",
     installers: {
-      font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip"],
+      font_custom: [
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip",
+      ],
     },
     type: "font",
   },
   {
     name: "hasklug",
     installers: {
-      font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hasklig.zip"],
+      font_custom: [
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Hasklig.zip",
+      ],
     },
     type: "font",
   },
   {
     name: "inconsolata",
     installers: {
-      font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Inconsolata.zip"],
+      font_custom: [
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Inconsolata.zip",
+      ],
     },
     type: "font",
   },
   {
     name: "lekton-nerd",
     installers: {
-      font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Lekton.zip"],
+      font_custom: [
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Lekton.zip",
+      ],
     },
     type: "font",
   },
   {
     name: "lilex",
     installers: {
-      font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Lilex.zip"],
+      font_custom: [
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Lilex.zip",
+      ],
     },
     type: "font",
   },
@@ -151,7 +165,9 @@
     default: true,
     name: "roboto",
     installers: {
-      font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/RobotoMono.zip"],
+      font_custom: [
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/RobotoMono.zip",
+      ],
     },
     type: "font",
   },
@@ -159,7 +175,9 @@
     default: true,
     name: "sauce-code-pro",
     installers: {
-      font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/SourceCodePro.zip"],
+      font_custom: [
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/SourceCodePro.zip",
+      ],
     },
     type: "font",
   },
@@ -167,7 +185,9 @@
     default: true,
     name: "ubuntu",
     installers: {
-      font_custom: ["https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Ubuntu.zip"],
+      font_custom: [
+        "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/Ubuntu.zip",
+      ],
     },
     type: "font",
   },
@@ -180,6 +200,18 @@
       choco: ["git"],
       scoop: ["main/git"],
       winget: ["Git.Git"],
+    },
+    type: "git",
+  },
+  {
+    default: true,
+    name: "lazygit",
+    installers: {
+      brew: ["lazygit"],
+      choco: ["lazygit"],
+      snap: ["lazygit-gm"],
+      scoop: ["extras/lazygit"],
+      winget: ["JesseDuffield.lazygit"],
     },
     type: "git",
   },
