@@ -1,15 +1,17 @@
 param(
-    [string]$PackageManager = 'choco'
+  [string]$PackageManager = ''
 )
 
 # Define the list of valid package managers
 $validPackageManagers = @('choco', 'scoop', 'winget')
 # Check if the provided PackageManager is valid
-if ($validPackageManagers -contains $PackageManager) {
-  Write-Host "$PackageManager is a valid package manager."
-} else {
-  Write-Host "$PackageManager is not a valid package manager. Please specify 'choco', 'scoop', or 'winget'." -ForegroundColor Red
-  exit 1
+if ($PackageManager -ne '') {
+  if ($validPackageManagers -contains $PackageManager) {
+    Write-Host "$PackageManager is a valid package manager."
+  } else {
+    Write-Host "$PackageManager is not a valid package manager. Please specify 'choco', 'scoop', or 'winget'." -ForegroundColor Red
+    exit 1
+  }
 }
 
 # Requirements:
@@ -27,23 +29,34 @@ if ($validPackageManagers -contains $PackageManager) {
 # Terminal Icons https://github.com/devblackops/Terminal-Icons
 
 function Install-Common-Modules {
+  param(
+    [switch]$PSFzf
+  )
+
+  if ($PSFzf -eq $true) {
+    Write-Host "Installing PSFzf" -ForegroundColor Green
+    Install-Module -Name PSFzf
+  }
+
+  Write-Host "Installing Z" -ForegroundColor Green
   Install-Module -Name z -AllowClobber
 
+  Write-Host "Installing OhMyPosh" -ForegroundColor Green
   Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://ohmyposh.dev/install.ps1'))
 
+  Write-Host "Installing Terminal Icons" -ForegroundColor Green
   Install-Module -Name Terminal-Icons -Repository PSGallery
 }
 
 function Install-Using-Choco {
   @(
-    "fzf"
-    "ripgrep"
+    "llvm",
+    "fzf",
+    "ripgrep",
     "fd"
   ) | ForEach-Object { choco install $_ -y }
 
-  Install-Module -Name PSFzf
-
-  Install-Common-Modules
+  Install-Common-Modules -PSFzf
 }
 
 function Install-Using-Scoop {
@@ -51,9 +64,10 @@ function Install-Using-Scoop {
   scoop bucket add extras
 
   @(
-    "main/fzf"
-    "extras/psfzf"
-    "main/ripgrep"
+    "main/llvm",
+    "main/fzf",
+    "extras/psfzf",
+    "main/ripgrep",
     "main/fd"
   ) | ForEach-Object { scoop install $_ }
 
@@ -62,30 +76,37 @@ function Install-Using-Scoop {
 
 function Install-Using-Winget {
   @(
-    "fzf"
-    "BurntSushi.ripgrep.MSVC"
+    "LLVM.LLVM",
+    "junegunn.fzf",
+    "BurntSushi.ripgrep.MSVC",
     "sharkdp.fd"
-  ) | ForEach-Object { winget install --id $_ }
+  ) | ForEach-Object { winget install -e --id $_ }
 
-  Install-Module -Name PSFzf
-
-  Install-Common-Modules
+  Install-Common-Modules -PSFzf
 }
 
-$chocoExists = Get-Command choco -ErrorAction SilentlyContinue
-if ( $PackageManager -eq 'choco' -or $chocoExists) {
-  Install-Using-Choco
-  exit 0
+function Install-Using {
+  param(
+    [string]$PackageManager = ''
+  )
+
+  $PackageManagers = $validPackageManagers
+  if ( $PackageManager -ne '' ) {
+    $PackageManagers = @($PackageManager)
+  }
+
+  $PackageManagers | ForEach-Object {
+    $pm = $_
+    $pmExists = Get-Command -Name $pm -ErrorAction SilentlyContinue
+    if ($pmExists) {
+      $functionName = 'Install-Using-' + $pm.Substring(0, 1).ToUpper() + $pm.Substring(1).ToLower()
+      Invoke-Expression $functionName
+      exit 0
+    }
+  }
+
+  Write-Host "No package manager discovered. Please install 'choco', 'scoop', or 'winget' and try again." -ForegroundColor Red
+  exit 1
 }
 
-$scoopExists = Get-Command scoop -ErrorAction SilentlyContinue
-if ( $PackageManager -eq 'scoop' -or $scoopExists) {
-  Install-Using-Scoop
-  exit 0
-}
-
-$wingetExists = Get-Command winget -ErrorAction SilentlyContinue
-if ( $PackageManager -eq 'winget' -or $wingetExists) {
-  Install-Using-Winget
-  exit 0
-}
+Install-Using -PackageManager $PackageManager
