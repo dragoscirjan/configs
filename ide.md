@@ -11,6 +11,7 @@
     - [LazyVim](#lazyvim)
         - [LazyVim Config](#lazyvim-config)
   - [PhpStorm](#phpstorm)
+  - [PyCharm](#pycharm)
 
 ## Default
 
@@ -150,40 +151,57 @@ git clone https://github.com/dragoscirjan/neovim-config $env:LOCALAPPDATA/nvim
 ```
 
 ## PhpStorm
-  {
-    name: "phpstorm",
-    installers: {
-      brew: ["phpstorm"],
-      choco: ["phpstorm"],
-      scoop: ["extras/phpstorm"],
-      snap: ["classic/phpstorm"],
-      winget: ["JetBrains.PHPStorm"],
-    },
-    type: "ide",
-  },
-  {
-    default: true,
-    name: "pycharm",
-    installers: {
-      brew: ["pycharm"],
-      choco: ["pycharm"],
-      scoop: ["extras/pycharm-professional"],
-      snap: ["classic/pycharm-professional"],
-      winget: ["JetBrains.PyCharm.Professional"],
-    },
-    type: "ide",
-  },
-  {
-    name: "pycharm-ce",
-    installers: {
-      brew: ["pycharm-ce"],
-      choco: ["pycharm-community"],
-      scoop: ["extras/pycharm"],
-      snap: ["classic/pycharm-community"],
-      winget: ["JetBrains.PyCharm.Community"],
-    },
-    type: "ide",
-  },
+
+```bash
+# Darwin
+brew install phpstorm
+# Linux
+sudo snap install phpstorm --classic
+# Windows
+choco install phpstorm -y
+scoop bucket add extras && scoop install extras/phpstorm
+winget install -e --id JetBrains.PHPStorm
+```
+
+## PyCharm
+
+```bash
+# Darwin
+brew install pycharm
+# Linux
+sudo snap install pycharm --classic
+# Windows
+choco install pycharm-professiional -y
+scoop bucket add extras && scoop install extras/pycharm-professiional
+winget install -e --id JetBrains.PyCharm.Professiional
+```
+
+## PyCharm Community Edition
+
+```bash
+# Darwin
+brew install pycharm-ce
+# Linux
+sudo snap install pycharm-community --classic
+# Windows
+choco install pycharm-community -y
+scoop bucket add extras && scoop install extras/pycharm
+winget install -e --id JetBrains.PyCharm.Community
+```
+
+## Rider
+
+```bash
+# Darwin
+brew install rider
+# Linux
+sudo snap install rider --classic
+# Windows
+choco install jetbrains-rider resharper -y
+scoop bucket add extras && scoop install extras/rider && scoop install main/resharper-clt
+winget install -e --id JetBrains.Rider JetBrains.ReSharper
+```
+
   {
     name: "rider",
     installers: {
@@ -195,6 +213,9 @@ git clone https://github.com/dragoscirjan/neovim-config $env:LOCALAPPDATA/nvim
     },
     type: "ide",
   },
+
+## RustRover
+
   {
     default: true,
     name: "rustrover",
@@ -205,6 +226,9 @@ git clone https://github.com/dragoscirjan/neovim-config $env:LOCALAPPDATA/nvim
     },
     type: "ide",
   },
+
+## Sublime
+
   {
     default: true,
     name: "sublime",
@@ -217,6 +241,9 @@ git clone https://github.com/dragoscirjan/neovim-config $env:LOCALAPPDATA/nvim
     },
     type: "ide",
   },
+
+## Visual Studio
+
   {
     name: "visual-studio",
     installers: {
@@ -225,6 +252,9 @@ git clone https://github.com/dragoscirjan/neovim-config $env:LOCALAPPDATA/nvim
     },
     type: "ide",
   },
+
+## Visual Studio Community Edition
+
   {
     name: "visual-studio-ce",
     installers: {
@@ -233,6 +263,9 @@ git clone https://github.com/dragoscirjan/neovim-config $env:LOCALAPPDATA/nvim
     },
     type: "ide",
   },
+
+## Visual Studio Code
+
   {
     default: true,
     name: "vscode",
@@ -245,6 +278,9 @@ git clone https://github.com/dragoscirjan/neovim-config $env:LOCALAPPDATA/nvim
     },
     type: "ide",
   },
+
+## VS Codium
+
   {
     default: true,
     name: "vscodium",
@@ -256,6 +292,9 @@ git clone https://github.com/dragoscirjan/neovim-config $env:LOCALAPPDATA/nvim
     },
     type: "ide",
   },
+
+## WebStorm
+
   {
     default: true,
     name: "webstorm",
@@ -268,11 +307,14 @@ git clone https://github.com/dragoscirjan/neovim-config $env:LOCALAPPDATA/nvim
     },
     type: "ide",
   },
-  {
-    default: true,
-    name: "zed",
-    installers: {
-      brew: ["zed"],
-    },
-    type: "ide",
-  },
+
+## Zed
+
+```bash
+# Darwin
+brew install zed
+# Linux - https://zed.dev/docs/linux
+curl -f https://zed.dev/install.sh | sh
+# Windows - https://zed.dev/docs/windows
+# You need to build it yourself...
+```
