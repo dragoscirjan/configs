@@ -202,111 +202,94 @@ scoop bucket add extras && scoop install extras/rider && scoop install main/resh
 winget install -e --id JetBrains.Rider JetBrains.ReSharper
 ```
 
-  {
-    name: "rider",
-    installers: {
-      brew: ["rider"],
-      choco: ["jetbrains-rider", "resharper"],
-      scoop: ["extras/rider", "main/resharper-clt"],
-      snap: ["classic/rider"],
-      winget: ["JetBrains.Rider", "JetBrains.ReSharper"],
-    },
-    type: "ide",
-  },
-
 ## RustRover
 
-  {
-    default: true,
-    name: "rustrover",
-    installers: {
-      brew: ["rustrover"],
-      choco: ["rustrover"],
-      snap: ["classic/rustrover"],
-    },
-    type: "ide",
-  },
+```bash
+# Darwin
+brew install rustrover
+# Linux
+sudo snap install rustrover --classic
+# Windows
+choco install rustrover -y
+scoop bucket add extras && scoop install extras/rustrover 
+# -- winget install -e --id JetBrains.Rider JetBrains.ReSharper
+```
 
 ## Sublime
 
-  {
-    default: true,
-    name: "sublime",
-    installers: {
-      brew: ["sublime-text"],
-      choco: ["sublimetext4 --pre"],
-      scoop: ["extras/sublime-text"],
-      snap: ["classic/sublime-text", "classic/sublime-merge"],
-      winget: ["SublimeHQ.SublimeText.4"],
-    },
-    type: "ide",
-  },
+```bash
+# Darwin
+brew install sublime-text
+# Linux
+sudo snap install sublime-text sublime-merge --classic
+# Windows
+choco install sublimetext4 -y
+scoop bucket add extras && scoop install extras/sublime-text 
+winget install -e --id SublimeHQ.SublimeText.4
+```
 
 ## Visual Studio
 
-  {
-    name: "visual-studio",
-    installers: {
-      choco: ["visualstudio2022community"],
-      winget: ["Microsoft.VisualStudio.2022.Enterprise.Preview"],
-    },
-    type: "ide",
-  },
-
+```bash
+# Darwin
+# -- brew install rustrover
+# Linux
+# -- sudo snap install rustrover --classic
+# Windows
+choco install visualstudio2022community -y
+# -- scoop bucket add extras && scoop install extras/rustrover 
+winget install -e --id Microsoft.VisualStudio.2022.Enterprise.Preview
+```
 ## Visual Studio Community Edition
 
-  {
-    name: "visual-studio-ce",
-    installers: {
-      choco: ["visualstudio2022community"],
-      winget: ["Microsoft.VisualStudio.2022.Community.Preview"],
-    },
-    type: "ide",
-  },
-
+```bash
+# Darwin
+# -- brew install rustrover
+# Linux
+# -- sudo snap install rustrover --classic
+# Windows
+choco install visualstudio2022community -y
+# -- scoop bucket add extras && scoop install extras/rustrover 
+winget install -e --id Microsoft.VisualStudio.2022.Community.Preview
+```
 ## Visual Studio Code
 
-  {
-    default: true,
-    name: "vscode",
-    installers: {
-      brew: ["visual-studio-code"],
-      choco: ["vscode"],
-      scoop: ["extras/vscode"],
-      snap: ["classic/code"],
-      winget: ["Microsoft.VisualStudioCode"],
-    },
-    type: "ide",
-  },
+```bash
+# Darwin
+brew install visual-studio-code
+# Linux
+sudo snap install code --classic
+# Windows
+choco install vscode -y
+scoop bucket add extras && scoop install extras/vscode 
+winget install -e --id Microsoft.VisualStudioCode
+```
 
 ## VS Codium
 
-  {
-    default: true,
-    name: "vscodium",
-    installers: {
-      brew: ["vscodium"],
-      scoop: ["extras/vscodium"],
-      snap: ["classic/codium"],
-      winget: ["VSCodium.VSCodium"],
-    },
-    type: "ide",
-  },
+```bash
+# Darwin
+brew install vscodium
+# Linux
+sudo snap install codium --classic
+# Windows
+choco install vscodium -y
+scoop bucket add extras && scoop install extras/vscodium 
+winget install -e --id VSCodium.VSCodium
+```
 
 ## WebStorm
 
-  {
-    default: true,
-    name: "webstorm",
-    installers: {
-      brew: ["webstorm"],
-      choco: ["webstorm"],
-      scoop: ["extras/webstorm"],
-      snap: ["classic/webstorm"],
-      winget: ["JetBrains.WebStorm"],
-    },
-    type: "ide",
-  },
+```bash
+# Darwin
+brew install webstorm
+# Linux
+sudo snap install webstorm --classic
+# Windows
+choco install webstorm -y
+scoop bucket add extras && scoop install extras/webstorm 
+winget install -e --id JetBrains.WebStorm
+```
 
 ## Zed
 
