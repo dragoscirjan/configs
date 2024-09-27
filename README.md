@@ -4,18 +4,18 @@ This repository contains a collection of markdown files that provide instruction
 
 ## List of Markdown Files
 
-1. **IDE Tools** (`ide.md`): Covers IDEs such as Visual Studio Code, IntelliJ IDEA, CLion, PyCharm, and more.
-2. **Browser Tools** (`browser.md`): Covers popular web browsers like Chrome, Firefox, Brave, and more.
-3. **Git Tools** (`git.md`): Covers Git tools such as Git, GitKraken, GitHub CLI, and LazyGit.
-4. **IM Tools** (`im.md`): Covers instant messaging tools like Discord, Ferdium, Slack, and more.
-5. **Programming Languages** (`language.md`): Covers installation for programming languages like Python, Rust, Go, Zig, and more.
-6. **SSL Tools** (`ssl.md`): Covers SSL-related tools such as OpenSSL and LibreSSL.
-7. **Virtual Machines & Containers** (`vm.md`): Covers VM and container tools like Docker, Podman, VirtualBox, and QEMU.
-8. **VPN Tools** (`vpn.md`): Covers VPN tools like OpenVPN.
-9. **REST Tools** (`rest.md`): Covers REST tools like Postman and Insomnia.
-10. **Office Tools** (`office.md`): Covers office productivity tools like WPS Office, Notion, LibreOffice, and more.
-11. **Design Tools** (`design.md`): Covers design tools like GIMP, Figma, Inkscape, and Sketch.
-12. **Terminal Tools** (`terminal.md`): Covers terminal emulators like Alacritty, WezTerm, Ghostty, and more.
+1. **[IDE Tools](ide.md)**: Covers IDEs such as Visual Studio Code, IntelliJ IDEA, CLion, PyCharm, and more.
+2. **[Browser Tool](browser.md)s**: Covers popular web browsers like Chrome, Firefox, Brave, and more.
+3. **[Git Tools](git.md)**: Covers Git tools such as Git, GitKraken, GitHub CLI, and LazyGit.
+4. **[IM Tools](im.md)**: Covers instant messaging tools like Discord, Ferdium, Slack, and more.
+5. **[Programming Languages](language.md)**: Covers installation for programming languages like Python, Rust, Go, Zig, and more.
+6. **[SSL Tools](ssl.md)**: Covers SSL-related tools such as OpenSSL and LibreSSL.
+7. **[Virtual Machines & Containers](vm.md)**: Covers VM and container tools like Docker, Podman, VirtualBox, and QEMU.
+8. **[VPN Tools](vpn.md)**: Covers VPN tools like OpenVPN.
+9. **[REST Tools](rest.md)**: Covers REST tools like Postman and Insomnia.
+10. **[Office Tools](office.md)**: Covers office productivity tools like WPS Office, Notion, LibreOffice, and more.
+11. **[Design Tools](design.md)**: Covers design tools like GIMP, Figma, Inkscape, and Sketch.
+12. **[Terminal Tools](terminal.md)**: Covers terminal emulators like Alacritty, WezTerm, Ghostty, and more.
 
 ## Package Managers Used
 
