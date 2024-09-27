@@ -9,27 +9,31 @@
   - [IntelliJ IDEA Community Edition](#intellij-idea-community-edition)
   - [Neovim](#neovim)
     - [LazyVim](#lazyvim)
-        - [LazyVim Config](#lazyvim-config)
+      - [LazyVim Config](#lazyvim-config)
   - [PhpStorm](#phpstorm)
   - [PyCharm](#pycharm)
+  - [Sublime Text](#sublime-text)
+    - [Sublime Merge](#sublime-merge)
+  - [Visual Studio Code](#visual-studio-code)
+  - [Zed](#zed)
 
 ## Default
 
 ```bash
 # Darwin
-brew install clion goland
+brew install clion goland neovim visual-studio-code zed pycharm sublime-text
 
 # Linux
-sudo snap install clion goland --classic
-```
+sudo snap install clion goland nvim code pycharm-professional --classic
+curl -f https://zed.dev/install.sh | sh
+sudo apt update && sudo apt install sublime-text sublime-merge
 
-```powershell
 # Windows
-choco install clion-ide goland -y
+choco install clion-ide goland neovim vscode zed pycharm-professional sublimetext4 sublime-merge -y
 
-scoop bucket add extras && scoop install extras/clion extras/goland
+scoop bucket add extras && scoop install extras/clion extras/goland extras/neovim extras/vscode extras/pycharm extras/sublime-text extras/sublime-merge
 
-@("JetBrains.CLion", "JetBrains.GoLand") | ForEach-Object { winget install -e --id $_ }
+@("JetBrains.CLion", "JetBrains.GoLand", "Neovim.Neovim", "Microsoft.VisualStudioCode", "JetBrains.PyCharm.Professional", "VSCodium.VSCodium", "SublimeHQ.SublimeText.4", "SublimeHQ.SublimeMerge", "Zed.Zed") | ForEach-Object { winget install -e --id $_ }
 ```
 
 ## CLion
@@ -38,7 +42,7 @@ scoop bucket add extras && scoop install extras/clion extras/goland
 # Darwin
 brew install clion
 # Linux
-sudo snap install clion goland --classic
+sudo snap install clion --classic
 # Windows
 choco install clion-ide -y
 scoop bucket add extras && scoop install extras/clion
@@ -50,11 +54,10 @@ winget install -e --id JetBrains.CLion
 ```bash
 # TODO
 ```
-  
+
 ## Goland
 
 ```bash
-
 # Darwin
 brew install goland
 # Linux
@@ -64,6 +67,7 @@ choco install goland -y
 scoop bucket add extras && scoop install extras/goland
 winget install -e --id JetBrains.GoLand
 ```
+
 ## IntelliJ IDEA
 
 ```bash
@@ -76,6 +80,7 @@ choco install intellijidea-ultimate -y
 scoop bucket add extras && scoop install extras/idea-ultimate
 winget install -e --id JetBrains.IntelliJIDEA.Ultimate
 ```
+
 ## IntelliJ IDEA Community Edition
 
 ```bash
@@ -100,19 +105,18 @@ brew install neovim neovim-qt
 ```bash
 # Linux Snap
 sudo snap install nvim --classic
-# Linux 
+# Linux Tarball
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
 sudo rm -rf /opt/nvim
 sudo tar -C /opt -xzf nvim-linux64.tar.gz
-
-cat ~/.bashrc | grep nvim 2>/dev/null || echo "export PATH=\"$PATH:/opt/nvim-linux64/bin\"" >> ~/.bashrc
-soruce ~/.bashrc
+echo 'export PATH="$PATH:/opt/nvim-linux64/bin"' | sudo tee -a /etc/profile.d/nvim.sh
+source /etc/profile.d/nvim.sh
 ```
 ```powershell
 # Windows
 choco install lua luarocks neovim -y
 scoop bucket add main && scoop install main/lua main/luarocks main/neovim
-# winget install --id Neovim.Neovim
+winget install --id Neovim.Neovim -e
 ```
 
 ### LazyVim
@@ -136,7 +140,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force;
 iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/dragoscirjan/configs/main/scripts/ide-neovim-lazyvim.ps1'))
 ```
 
-##### LazyVim Config
+#### LazyVim Config
 
 ```bash
 # Darwin
@@ -169,11 +173,11 @@ winget install -e --id JetBrains.PHPStorm
 # Darwin
 brew install pycharm
 # Linux
-sudo snap install pycharm --classic
+sudo snap install pycharm-professional --classic
 # Windows
-choco install pycharm-professiional -y
-scoop bucket add extras && scoop install extras/pycharm-professiional
-winget install -e --id JetBrains.PyCharm.Professiional
+choco install pycharm-professional -y
+scoop bucket add extras && scoop install extras/pycharm-professional
+winget install -e --id JetBrains.PyCharm.Professional
 ```
 
 ## PyCharm Community Edition
@@ -211,47 +215,60 @@ brew install rustrover
 sudo snap install rustrover --classic
 # Windows
 choco install rustrover -y
-scoop bucket add extras && scoop install extras/rustrover 
-# -- winget install -e --id JetBrains.Rider JetBrains.ReSharper
+scoop bucket add extras && scoop install extras/rustrover
+winget install -e --id JetBrains.RustRover
 ```
 
-## Sublime
+## Sublime Text
 
 ```bash
 # Darwin
 brew install sublime-text
 # Linux
-sudo snap install sublime-text sublime-merge --classic
+sudo snap install sublime-text --classic
 # Windows
 choco install sublimetext4 -y
 scoop bucket add extras && scoop install extras/sublime-text 
 winget install -e --id SublimeHQ.SublimeText.4
 ```
 
+### Sublime Merge
+
+```bash
+# Darwin
+brew install sublime-merge
+# Linux
+sudo apt update && sudo apt install sublime-merge -y
+# Windows
+choco install sublime-merge -y
+scoop bucket add extras && scoop install extras/sublime-merge 
+winget install -e --id SublimeHQ.SublimeMerge
+```
+
 ## Visual Studio
 
 ```bash
 # Darwin
-# -- brew install rustrover
+# -- Visual Studio is not available on macOS
 # Linux
-# -- sudo snap install rustrover --classic
+# -- Visual Studio is not available on Linux
 # Windows
 choco install visualstudio2022community -y
-# -- scoop bucket add extras && scoop install extras/rustrover 
 winget install -e --id Microsoft.VisualStudio.2022.Enterprise.Preview
 ```
+
 ## Visual Studio Community Edition
 
 ```bash
 # Darwin
-# -- brew install rustrover
+# -- Visual Studio is not available on macOS
 # Linux
-# -- sudo snap install rustrover --classic
+# -- Visual Studio is not available on Linux
 # Windows
 choco install visualstudio2022community -y
-# -- scoop bucket add extras && scoop install extras/rustrover 
 winget install -e --id Microsoft.VisualStudio.2022.Community.Preview
 ```
+
 ## Visual Studio Code
 
 ```bash
@@ -275,7 +292,9 @@ sudo snap install codium --classic
 # Windows
 choco install vscodium -y
 scoop bucket add extras && scoop install extras/vscodium 
-winget install -e --id VSCodium.VSCodium
+winget
+
+ install -e --id VSCodium.VSCodium
 ```
 
 ## WebStorm
@@ -296,7 +315,7 @@ winget install -e --id JetBrains.WebStorm
 ```bash
 # Darwin
 brew install zed
-# Linux - https://zed.dev/docs/linux
+# Linux
 curl -f https://zed.dev/install.sh | sh
 # Windows - https://zed.dev/docs/windows
 # You need to build it yourself...
