@@ -18,7 +18,8 @@
 
 ```bash
 # Darwin
-brew install llvm nvm python rustup-init go bun zig
+brew install llvm nvm python rustup go bun zig
+curl -fsSL https://bun.sh/install | bash
 
 # Linux
 sudo apt update && sudo apt install -y clangd python3 python3-pip golang rustc
