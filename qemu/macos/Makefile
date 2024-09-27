@@ -23,14 +23,14 @@ MAC_DRIVE ?= MyDisk.qcow2
 ifeq ($(MAC_DRIVE),MyDisk.qcow2)
 MAC_DRIVE_COMMAND = qemu-img create -f qcow2 MyDisk.qcow2 64G
 # MAC_DRIVE_COMMAND2 = echo "    -drive id=SystemDisk,if=none,file=MyDisk.qcow2 \\" >> basic.sh
-else 
+else
 MAC_DRIVE_COMMAND = echo "Skipping drive creation command. Will used user created file."
 # MAC_DRIVE_COMMAND2 = echo "    -drive id=SystemDisk,if=none,file=$(MAC_DRIVE) \\" >> basic.sh
 endif
 
 init: ## Initialize project
 	mkdir -p $(QEMU_DIR)
-	
+
 	cd $(QEMU_DIR) \
 		&& [ -d macOS-Simple-KVM ] \
 		|| git clone https://github.com/foxlet/macOS-Simple-KVM
