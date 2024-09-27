@@ -18,8 +18,10 @@
 
 ```bash
 # Darwin
-brew install llvm nvm python rustup go bun zig
+brew install llvm python rustup go bun zig
 curl -fsSL https://bun.sh/install | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+nvm install lts/iron; nvm use lts/iron --default
 
 # Linux
 sudo apt update && sudo apt install -y clangd python3 python3-pip golang rustc
@@ -27,6 +29,8 @@ curl -fsSL https://bun.sh/install | bash
 curl https://sh.rustup.rs -sSf | sh
 wget https://ziglang.org/download/latest/zig-linux-x86_64-0.10.1.tar.xz -O zig.tar.xz && tar -xf zig.tar.xz && sudo mv zig-linux-x86_64-0.10.1 /opt/zig && rm zig.tar.xz
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+nvm install lts/iron; nvm use lts/iron --default
+
 
 # Windows
 choco install llvm nvm python rust golang zig bun -y
@@ -34,6 +38,8 @@ choco install llvm nvm python rust golang zig bun -y
 scoop install main/clangd main/nvm main/python main/rust main/go main/zig bun
 
 @("clangd", "CoreyButler.NVMforWindows", "Python.Python.3.11", "Rustlang.Rustup", "GoLang.Go", "Ziglang.Zig", "Bun.Bun") | ForEach-Object { winget install -e --id $_ }
+
+nvm install lts/iron; nvm use lts/iron --default
 ```
 
 ## Clangd

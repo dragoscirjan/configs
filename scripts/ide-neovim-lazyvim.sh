@@ -44,6 +44,36 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/mast
 # #
 # fisher install IlanCosman/tide@v6
 
+# Fd https://github.com/sharkdp/fd
+#
+brew install fd
+# TODO: see how to do it for Linux
+
+# Ripgrep https://github.com/BurntSushi/ripgrep
+#
+brew install ripgrep
+# TODO: see how to do it for Linux
+
+# Lazygit https://github.com/jesseduffield/lazygit
+#
+brew install lazygit
+# TODO: see how to do it for Linux
+
+# Lazygit https://rust-analyzer.github.io/
+#
+brew install rust-analyzer
+# TODO: see how to do it for Linux
+
+# Node
+#
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+nvm install lts/iron; nvm use lts/iron --default
+# TODO: see how to do it for Linux
+
+# Luarocks https://luarocks.org/
+#
+brew install luarocks
+
 # FuzzyFinder https://github.com/junegunn/fzf?tab=readme-ov-file#installation
 #
 uname -a | grep Darwin 2>/dev/null && brew install fzf
