@@ -3,6 +3,7 @@
 - [Virtual Machines & Containers](#virtual-machines--containers)
   - [Default](#default)
   - [Docker](#docker)
+  - [Podman](#podman)
   - [QEMU](#qemu)
   - [Vagrant](#vagrant)
   - [VirtualBox](#virtualbox)
@@ -11,20 +12,21 @@
 
 ```bash
 # Darwin
-brew install docker docker-completion docker-compose qemu vagrant virtualbox
+brew install podman docker docker-completion docker-compose qemu virtualbox
 
 # Linux
-sudo apt update && sudo apt install -y docker.io docker-compose qemu qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils vagrant virtualbox
+sudo apt update && sudo apt install -y docker.io docker-compose podman qemu qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virtualbox
 sudo systemctl start docker
 sudo systemctl enable docker
 sudo usermod -aG docker $USER
+sudo usermod -aG libvirt $USER
 
 # Windows
-choco install docker docker-compose qemu vagrant virtualbox -y
+choco install podman docker docker-compose qemu virtualbox -y
 
-scoop bucket add main && scoop install main/docker main/qemu main/vagrant main/virtualbox
+scoop bucket add main && scoop install main/podman main/docker main/qemu main/virtualbox
 
-@("Docker.DockerDesktop", "SoftwareFreedomConservancy.QEMU", "Hashicorp.Vagrant", "Oracle.VirtualBox") | ForEach-Object { winget install -e --id $_ }
+@("RedHat.Podman", "Docker.DockerDesktop", "SoftwareFreedomConservancy.QEMU", "Oracle.VirtualBox") | ForEach-Object { winget install -e --id $_ }
 ```
 
 ## Docker
@@ -41,6 +43,19 @@ sudo usermod -aG docker $USER
 choco install docker docker-compose -y
 scoop install docker
 winget install -e --id Docker.DockerDesktop
+```
+
+## Podman
+
+```bash
+# Darwin
+brew install podman
+# Linux
+sudo apt install -y podman
+# Windows
+choco install podman -y
+scoop install podman
+winget install -e --id RedHat.Podman
 ```
 
 ## QEMU
