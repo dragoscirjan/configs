@@ -10,11 +10,19 @@
   - [Neovim](#neovim)
     - [LazyVim](#lazyvim)
       - [LazyVim Config](#lazyvim-config)
+        - [LazyVim Config Windows](#lazyvim-config-windows)
   - [PhpStorm](#phpstorm)
   - [PyCharm](#pycharm)
+  - [PyCharm Community Edition](#pycharm-community-edition)
+  - [Rider](#rider)
+  - [RustRover](#rustrover)
   - [Sublime Text](#sublime-text)
     - [Sublime Merge](#sublime-merge)
+  - [Visual Studio](#visual-studio)
+  - [Visual Studio Community Edition](#visual-studio-community-edition)
   - [Visual Studio Code](#visual-studio-code)
+  - [VS Codium](#vs-codium)
+  - [WebStorm](#webstorm)
   - [Zed](#zed)
 
 ## Default
@@ -152,6 +160,41 @@ git clone https://github.com/dragoscirjan/neovim-config ~/.config/nvim
 ```
 ```powershell
 git clone https://github.com/dragoscirjan/neovim-config $env:LOCALAPPDATA/nvim
+```
+
+##### LazyVim Config Windows
+
+**TreeSitter Compiler**
+
+```lua
+-- init.lua must contain the list of compilers for treesitter
+require("config.lazy")
+require("nvim-treesitter.install").compilers = { "zig", "clang" }
+```
+
+**Alacritty**
+
+If you are using `alacritty` as terminal, here's a minimal `$env:APPDATA/alacritty/alacritty.toml` config:
+
+```toml
+[font]
+size = 11.0
+
+[font.bold]
+family = "DejaVuSansM Nerd Font Mono"
+style = "Bold"
+
+[font.bold_italic]
+family = "DejaVuSansM Nerd Font Mono"
+style = "Bold Italic"
+
+[font.italic]
+family = "DejaVuSansM Nerd Font Mono"
+style = "Italic"
+
+[font.normal]
+family = "DejaVuSansM Nerd Font Mono"
+style = "Regular"
 ```
 
 ## PhpStorm
