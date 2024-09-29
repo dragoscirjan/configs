@@ -50,10 +50,20 @@ function Install-Common-Modules {
 
 function Install-Using-Choco {
   @(
-    "llvm",
+    # Eza https://github.com/eza-community/eza
+    "eza",
+    # Fd https://github.com/sharkdp/fd
+    "fd",
+    # FuzzyFinder https://github.com/junegunn/fzf
     "fzf",
+    # Lazygit https://github.com/jesseduffield/lazygit
+    "lazygit",
+    # Luarocks https://luarocks.org/
+    "luarocks",
+    # Ripgrep https://github.com/BurntSushi/ripgrep
     "ripgrep",
-    "fd"
+    # compilers
+    "cmake", "llvm", "lua", "ruby", "zig"
   ) | ForEach-Object { choco install $_ -y }
 
   Install-Common-Modules -PSFzf
@@ -64,11 +74,13 @@ function Install-Using-Scoop {
   scoop bucket add extras
 
   @(
-    "main/llvm",
-    "main/fzf",
-    "extras/psfzf",
+    "main/eza",
+    "main/fd",
+    "main/fzf", "extras/psfzf",
+    "extras/lazygit",
+    "main/luarocks",
     "main/ripgrep",
-    "main/fd"
+    "main/cmake", "main/llvm", "main/lua", "main/ruby", "main/zig"
   ) | ForEach-Object { scoop install $_ }
 
   Install-Common-Modules
@@ -76,10 +88,13 @@ function Install-Using-Scoop {
 
 function Install-Using-Winget {
   @(
-    "LLVM.LLVM",
+    "eza-community.eza",
+    "sharkdp.fd",
     "junegunn.fzf",
+    "JesseDuffield.lazygit",
+    # luarocks ?
     "BurntSushi.ripgrep.MSVC",
-    "sharkdp.fd"
+    "Kitware.CMake", "LLVM.LLVM", "DEVCOM.Lua", "RubyInstallerTeam.Ruby.3.1", "zig.zig"
   ) | ForEach-Object { winget install -e --id $_ }
 
   Install-Common-Modules -PSFzf
