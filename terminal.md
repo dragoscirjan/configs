@@ -20,14 +20,17 @@ brew install --cask alacritty wezterm ghostty
 # Linux
 sudo apt update && sudo apt install -y alacritty
 sudo snap install wezterm --classic
-# Ghostty is not natively available for Linux.
+
+curl -sSL https://github.com/mkasberg/ghostty-ubuntu/releases/download/1.0.1-0-ppa1/ghostty_1.0.1-0.ppa1_amd64_24.04.deb -o /tmp/ghostty.deb
+sudo dpkg -i /tmp/ghostty.deb # see docs for config file bellow
+rm -rf /tmp/ghsotty.deb
 
 # Windows
-choco install alacritty wezterm ghostty -y
+choco install alacritty wezterm -y
 
-scoop bucket add extras && scoop install extras/alacritty extras/wezterm extras/ghostty
+scoop bucket add extras && scoop install extras/alacritty extras/wezterm
 
-@("Alacritty.Alacritty", "WezWezterm", "Ghostty.Ghostty") | ForEach-Object { winget install -e --id $_ }
+@("Alacritty.Alacritty", "WezWezterm") | ForEach-Object { winget install -e --id $_ }
 ```
 
 ## Alacritty
@@ -61,12 +64,31 @@ winget install -e --id Cmder.Cmder
 ```bash
 # Darwin
 brew install --cask ghostty
-# Linux
-# Ghostty is not available for Linux.
-# Windows
-choco install ghostty -y
-scoop install extras/ghostty
-winget install -e --id Ghostty.Ghostty
+# Linux (https://ghostty.org/docs/install/binary)
+curl -sSL https://github.com/mkasberg/ghostty-ubuntu/releases/download/1.0.1-0-ppa1/ghostty_1.0.1-0.ppa1_amd64_24.04.deb -o /tmp/ghostty.deb
+sudo dpkg -i /tmp/ghostty.deb
+rm -rf /tmp/ghsotty.deb
+```
+
+More details on the configuration file here: https://ghostty.org/docs/config
+
+```bash
+CONFIG_FILE=$HOME/.config/ghostty/config
+CMD_KEY=ctrl
+uname -a | grep Darwin > /dev/null \
+  && CONFIG_FILE="$HOME/Library/Application Support/com.mitchellh.ghostty/config" \
+  && CMD_KEY=cmd
+cat > $CONFIG_FILE <<EOF
+# Visuals
+
+font-family = "SauceCodePro Nerd Font"
+background-opacity = 0.9
+
+
+# Tab Navigation
+keybind = $CMD_KEY+right=next_tab
+keybind = $CMD_KEY+left=previous_tab
+EOF
 ```
 
 ## iTerm2
