@@ -29,7 +29,24 @@ curl -fsSL https://bun.sh/install | bash
 curl https://sh.rustup.rs -sSf | sh
 wget https://ziglang.org/download/latest/zig-linux-x86_64-0.10.1.tar.xz -O zig.tar.xz && tar -xf zig.tar.xz && sudo mv zig-linux-x86_64-0.10.1 /opt/zig && rm zig.tar.xz
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-nvm install lts/iron; nvm use lts/iron --default
+
+cat > ~.bashrc <<EOF
+NODE_VERSION="lts/jod"
+
+# Check if nvm is loaded
+if command -v nvm > /dev/null 2>&1; then
+  # Check if Node.js is installed and matches the desired version
+  INSTALLED_VERSION=$(nvm version $NODE_VERSION)
+  if [ "$INSTALLED_VERSION" = "N/A" ]; then
+    echo "Node.js $NODE_VERSION not found. Installing..."
+    nvm install $NODE_VERSION
+  fi
+  echo "Using Node.js $NODE_VERSION"
+  nvm use $NODE_VERSION
+else
+  echo "nvm is not installed or not properly loaded. Please ensure nvm is installed and accessible."
+fi
+EOF
 
 
 # Windows
