@@ -1,0 +1,5 @@
+#! /bin/bash
+
+# GoLang Configuration
+GOLANG="$HOME/go"
+PATH="$PATH:$GOLANG/bin"

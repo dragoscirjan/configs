@@ -20,3 +20,7 @@ tasks:
       - cmd: |
           choco install golang -y || scoop install go || winget install -e --id GoLang.Go
         platforms: [windows]
+      - cmd: |
+          [ -f ~/.zshrc ] && grep GOPATH ~/.zshrc || tail -n +2 go_zshrc_bashrc >> ~/.zshrc
+          [ -f ~/.bashrc ] && grep GOPATH ~/.bashrc || tail -n +2 go_zshrc_bashrc >> ~/.bashrc
+        platforms: [darwin, linux]
