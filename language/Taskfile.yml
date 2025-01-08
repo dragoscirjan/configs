@@ -1,0 +1,22 @@
+version: "3"
+
+tasks:
+  default:
+    desc: default action - lists the tasks (you're looking at it)
+    silent: true
+    cmds:
+      - task --list
+  minimal:
+    desc: Install minimal set of used languages
+    cmds:
+      - task: go
+  go:
+    desc: Install GoLang
+    cmds:
+      - cmd: brew install go
+        platforms: [darwin]
+      - cmd: sudo apt update; sudo apt install -y golang
+        platforms: [linux]
+      - cmd: |
+          choco install golang -y || scoop install go || winget install -e --id GoLang.Go
+        platforms: [windows]
