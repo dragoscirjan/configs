@@ -1,0 +1,57 @@
+version: '3'
+
+vars:
+  SHELL:
+    sh: bash
+    windows: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task --list
+
+  install:brew:
+    desc: Install a package using Homebrew if not installed
+    vars:
+      PACKAGE: "{{.PACKAGE}}"  # Package name passed dynamically
+    cmds:
+      - cmd: |
+          if command -v brew &>/dev/null && ! brew list --cask {{.PACKAGE}} &>/dev/null; then
+            brew install {{.PACKAGE}}
+          fi
+        platforms: [darwin]
+
+  install:snap:
+    desc: Install a package using Snap if not installed
+    vars:
+      PACKAGE: "{{.PACKAGE}}"  # Package name passed dynamically
+    cmds:
+      - cmd: |
+          if command -v snap &>/dev/null && ! snap list | grep -q clion; then
+            sudo snap install {{.PACKAGE}} --classic
+          fi
+        platforms: [darwin]
+
+
+      # - cmd: |
+      #     if (Get-Command choco -ErrorAction SilentlyContinue) {
+      #       if (!(choco list --local-only | Select-String -Pattern 'clion')) {
+      #         choco install clion-ide -y
+      #       }
+      #     }
+      #   platforms: [windows]
+      # - cmd: |
+      #     if (Get-Command scoop -ErrorAction SilentlyContinue) {
+      #       if (!(scoop list | Select-String -Pattern 'clion')) {
+      #         scoop bucket add extras && scoop install extras/clion
+      #       }
+      #     }
+      #   platforms: [windows]
+      # - cmd: |
+      #     if (Get-Command winget -ErrorAction SilentlyContinue) {
+      #       if (!(winget list | Select-String -Pattern 'JetBrains.CLion')) {
+      #         winget install -e --id JetBrains.CLion
+      #       }
+      #     }
+      #   platforms: [windows]
