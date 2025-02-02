@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 vars:
   SHELL:
@@ -11,28 +11,46 @@ tasks:
     cmds:
       - task --list
 
-  install:brew:
+  brew:
     desc: Install a package using Homebrew if not installed
     vars:
-      PACKAGE: "{{.PACKAGE}}"  # Package name passed dynamically
+      PACKAGE: "{{.PACKAGE}}" # Package name passed dynamically
+      ARGS: "{{.ARGS}}"
     cmds:
       - cmd: |
-          if command -v brew &>/dev/null && ! brew list --cask {{.PACKAGE}} &>/dev/null; then
-            brew install {{.PACKAGE}}
+          if command -v brew &>/dev/null; then
+            for package in {{.PACKAGE}}; do
+              if ! brew list {{.ARGS}} $package &>/dev/null; then
+                brew install {{.ARGS}} $package
+              else
+                echo $package alread installed
+              fi
+            done
           fi
         platforms: [darwin]
+      - cmd: echo "'brew' is only availble on MacOS"
+        platforms: [linux, windows]
 
-  install:snap:
+  brew:cask:
+    desc: Install a package using Homebrew (cask) if not installed
+    vars:
+      PACKAGE: "{{.PACKAGE}}" # Package name passed dynamically
+      ARGS: --cask
+    cmds:
+      - task: brew
+
+  snap:
     desc: Install a package using Snap if not installed
     vars:
-      PACKAGE: "{{.PACKAGE}}"  # Package name passed dynamically
+      PACKAGE: "{{.PACKAGE}}" # Package name passed dynamically
     cmds:
       - cmd: |
           if command -v snap &>/dev/null && ! snap list | grep -q clion; then
             sudo snap install {{.PACKAGE}} --classic
           fi
         platforms: [darwin]
-
+      - cmd: echo "'snap' is only availble on Linux"
+        platforms: [darwin, windows]
 
       # - cmd: |
       #     if (Get-Command choco -ErrorAction SilentlyContinue) {

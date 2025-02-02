@@ -1,0 +1,152 @@
+version: "3"
+
+includes:
+  common:
+    taskfile: ../common/Taskfile.yml
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task --list
+
+  i:ollama:
+    desc: Install Ollama from https://ollama.com
+    cmds:
+      - task: common:brew
+        vars:
+          PACKAGE: ollama
+
+  o:clear:models:
+    desc: Remove All Models Installed in Ollama
+    cmds:
+      - cmd: |
+          ollama ls {{if .MODEL}}| grep -v {{.MODEL}} {{end}}| tail -n+2 | awk '{print $1}' | xargs ollama rm
+        platforms: [darwin, linux]
+    vars:
+      MODEL: "{{.MODEL}}"
+
+  o:run:
+    cmds:
+      - cmd: ollama run {{.MODEL}}
+    deps:
+      - task: o:clear:models
+        vars:
+          MODEL: "{{.MODEL}}"
+    desc: Run Model Using Ollama
+    vars:
+      MODEL: "{{.MODEL}}"
+
+  o:run:codellama:
+    cmds:
+      - task: o:run
+        vars:
+          MODEL: codellama:{{.BPARAMS}}b
+    desc: Run CodeLlama Model
+    summary: |
+      A large language model that can use text prompts to generate and discuss code.
+      Code Llama is a model for generating and discussing code, built on top of Llama 2. It’s designed to make workflows faster and efficient for developers and make it easier for people to learn how to code. It can generate both code and natural language about code. Code Llama supports many of the most popular programming languages used today, including Python, C++, Java, PHP, Typescript (Javascript), C#, Bash and more.
+      ---
+      7b 13b 34b 70b
+      https://codellama.dev/about
+      ---
+      > [ BPARAMS=13 ] task run o:run:codellama
+    vars:
+      BPARAMS: "{{default 13 .BPARAMS}}"
+
+  o:run:deepseek:
+    cmds:
+      - task: o:run
+        vars:
+          MODEL: deepseek-r1:{{.BPARAMS}}b
+    desc: Run DeepSeek Model
+    summary: |
+      DeepSeek's first-generation of reasoning models with comparable performance to OpenAI-o1, including six dense models distilled from DeepSeek-R1 based on Llama and Qwen.
+      ---
+      https://www.deepseek.com/
+      1.5b 7b 8b 14b 32b 70b 671b
+      ---
+      > [ BPARAMS=14 ] task run o:run:deepseek
+    vars:
+      BPARAMS: "{{default 14 .BPARAMS}}"
+
+  o:run:gemma:
+    cmds:
+      - task: o:run
+        vars:
+          MODEL: gemma2:{{.BPARAMS}}b
+    desc: Run Gemma Model
+    summary: |
+      Google Gemma 2 is a high-performing and efficient model available in three sizes: 2B, 9B, and 27B.
+      Google’s Gemma 2 model is available in three sizes, 2B, 9B and 27B, featuring a brand new architecture designed for class leading performance and efficiency.
+      ---
+      https://ai.google.dev/gemma
+      2b 9b 27b
+      ---
+      > [ BPARAMS=9b ] task run o:run:gemma
+    vars:
+      BPARAMS: "{{default 9 .BPARAMS}}"
+
+  o:run:llama:
+    cmds:
+      - task: o:run
+        vars:
+          MODEL: llama3.{{.VERSION}}:{{.BPARAMS}}b
+    desc: Run Llama Model
+    summary: |
+      * New state of the art 70B model. Llama 3.3 70B offers similar performance compared to the Llama 3.1 405B model.
+      * Meta's Llama 3.2 goes small with 1B and 3B models.
+      * Llama 3.1 is a new state-of-the-art model from Meta available in 8B, 70B and 405B parameter sizes.
+      ---
+      https://www.llama.com/
+      1b 3b 8b 70b 405b
+      ---
+      > [ BPARAMS=32 ] task run o:run:llama
+    vars:
+      BPARAMS: "{{default 70 .BPARAMS}}"
+      VERSION: "{{default 1 .VERSION}}"
+
+  o:run:mistral:
+    cmds:
+      - task: o:run
+        vars:
+          MODEL: mistral
+    desc: Run Mistral Model
+    summary: |
+      Mistral is a 7B parameter model, distributed with the Apache license. It is available in both instruct (instruction following) and text completion.
+      The Mistral AI team has noted that Mistral 7B:
+      * Outperforms Llama 2 13B on all benchmarks
+      * Outperforms Llama 1 34B on many benchmarks
+      * Approaches CodeLlama 7B performance on code, while remaining good at English tasks
+      ---
+      7b
+      https://mistral.ai/
+
+  o:run:phi4:
+    cmds:
+      - task: o:run
+        vars:
+          MODEL: phi4
+    desc: Run Phi4 Model
+    summary: |
+      Phi-4 is a 14B parameter, state-of-the-art open model from Microsoft.
+      Phi-4 is a 14B parameter, state-of-the-art open model built upon a blend of synthetic datasets, data from filtered public domain websites, and acquired academic books and Q&A datasets.
+      ---
+      14b
+
+  o:run:qwen:
+    cmds:
+      - task: o:run
+        vars:
+          MODEL: qwen2.5:{{.BPARAMS}}b
+    desc: Run DeepSeek Model
+    summary: |
+      Qwen2.5 models are pretrained on Alibaba's latest large-scale dataset, encompassing up to 18 trillion tokens. The model supports up to 128K tokens and has multilingual support.
+      Qwen2.5 is the latest series of Qwen large language models. For Qwen2.5, a range of base language models and instruction-tuned models are released, with sizes ranging from 0.5 to 72 billion parameters.
+      ---
+      https://qwen-ai.com/
+      0.5b 1.5b 3b 7b 14b 32b 72b
+      ---
+      > [ BPARAMS=14 ] task run o:run:qwen
+    vars:
+      BPARAMS: "{{default 14 .BPARAMS}}"

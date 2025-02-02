@@ -1,0 +1,24 @@
+version: "3"
+
+includes:
+  common:
+    taskfile: ../common/Taskfile.yml
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task --list
+
+  curl:
+    desc: Install zip tools
+    cmds:
+      - task: common:brew
+        vars:
+          PACKAGE: curl
+  zip:
+    desc: Install zip tools
+    cmds:
+      - task: common:brew
+        vars:
+          PACKAGE: zip unzip
