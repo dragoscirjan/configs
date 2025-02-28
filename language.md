@@ -136,7 +136,10 @@ winget install -e --id Rustlang.Rustup
 # Darwin
 brew install go
 # Linux
-sudo apt install -y golang
+# sudo apt install -y golang
+sudo add-apt-repository ppa:longsleep/golang-backports
+sudo apt update
+sudo apt install golang-go
 # Windows
 choco install golang -y
 scoop install go
