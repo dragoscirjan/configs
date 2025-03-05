@@ -12,10 +12,12 @@
 ```bash
 # Darwin
 brew install git gitkraken gh
+git config --global core.pager cat
 
 # Linux
 sudo apt update && sudo apt install -y git gh
 sudo snap install gitkraken --classic
+git config --global core.pager cat
 
 # Windows
 choco install git gitkraken gh -y
@@ -23,6 +25,8 @@ choco install git gitkraken gh -y
 scoop install main/git extras/gitkraken main/gh
 
 @("Git.Git", "Axosoft.GitKraken", "GitHub.cli") | ForEach-Object { winget install -e --id $_ }
+
+git config --global core.pager cat
 ```
 
 ## Git
@@ -36,6 +40,8 @@ sudo apt install git
 choco install git -y
 scoop install git
 winget install -e --id Git.Git
+# run after install
+git config --global core.pager cat
 ```
 
 ## GitKraken
