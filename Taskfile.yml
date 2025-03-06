@@ -11,3 +11,34 @@ tasks:
     silent: true
     cmds:
       - task --list
+
+  update:all:
+    desc: Upgrade All Installed Packages
+    cmds:
+      - cmd: |
+          if command -v brew > /dev/null; then
+            brew upgrade && brew upgrade --cask
+          fi
+        platforms: [darwin]
+      - cmd: |
+          if command -v snap > /dev/null; then sudo snap refresh; fi
+        platforms: [linux]
+      # https://docs.chocolatey.org/en-us/choco/commands/upgrade/
+      # https://learn.microsoft.com/en-us/windows/package-manager/winget/upgrade
+      # https://github.com/ScoopInstaller/Scoop/issues/3954
+      - cmd: |
+          if (Get-Command choco -ErrorAction SilentlyContinue) {
+            choco upgrade all
+          } else {
+            if (Get-Command winget -ErrorAction SilentlyContinue) {
+              winget upgrade --all
+            } else {
+              if (Get-Command winget -ErrorAction SilentlyContinue) {
+                scoop list | foreach { scoop update $_.Name }
+              } else {
+                echo "No Package Manager Detected"
+                exit 1
+              }
+            }
+          }
+        platforms: [windows]
