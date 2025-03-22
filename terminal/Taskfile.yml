@@ -1,0 +1,39 @@
+version: "3"
+
+includes:
+  c: ../common/Taskfile.yml
+
+vars:
+  SHELL:
+    sh: bash
+    windows: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command
+
+tasks:
+  default:
+    desc: default action - lists the tasks (you're looking at it)
+    silent: true
+    cmds:
+      - task --list
+
+  alacritty:
+    desc: Install Alacritty Termianl (Windows)
+    cmds:
+      - task: c:install:windows
+        vars:
+          PACKAGE: Alacritty.Alacritty;choco:alacritty;scoop:extras/alacritty
+          TEST_COMMAND: alacritty --version
+
+  warp:
+    desc: Install Warp Terminal (Darwin,Linux,Windows)
+    cmds:
+      - task: c:install:windows
+        vars:
+          PACKAGE: Warp.Warp;scoop:extras/warp-terminal
+          TEST_COMMAND: wezterm --version
+
+  wezterm:
+    desc: Install Wezterm Terminal (Windows)
+    cmds:
+      - task: c:install:windows
+        vars:
+          PACKAGE: wez.wezterm;choco:wezterm;scoop:extras/wezterm

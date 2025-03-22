@@ -1,9 +1,9 @@
-version: '3'
+version: "3"
 
-vars:
-  SHELL:
-    sh: bash
-    windows: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command
+# vars:
+#   SHELL:
+#     sh: bash
+#     windows: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command
 
 tasks:
   default:
@@ -14,7 +14,7 @@ tasks:
   install:brew:
     desc: Install a package using Homebrew if not installed
     vars:
-      PACKAGE: "{{.PACKAGE}}"  # Package name passed dynamically
+      PACKAGE: "{{.PACKAGE}}" # Package name passed dynamically
     cmds:
       - cmd: |
           if command -v brew &>/dev/null && ! brew list --cask {{.PACKAGE}} &>/dev/null; then
@@ -25,7 +25,7 @@ tasks:
   install:snap:
     desc: Install a package using Snap if not installed
     vars:
-      PACKAGE: "{{.PACKAGE}}"  # Package name passed dynamically
+      PACKAGE: "{{.PACKAGE}}"
     cmds:
       - cmd: |
           if command -v snap &>/dev/null && ! snap list | grep -q clion; then
@@ -33,25 +33,85 @@ tasks:
           fi
         platforms: [darwin]
 
+  install:windows:
+    cmds:
+      - cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -Command ' `
+            $packageMap = "{{ .PACKAGE }}"; `
+            $manager = ""; `
+            $package = ""; `
+            ("winget,choco,scoop" -split "," | ForEach-Object {
+              if (-not $manager -or -not $package) { `
+                $manager = $_.Trim(); `
+                if (-not (Get-Command $manager -ErrorAction SilentlyContinue)) { `
+                  Write-Host "Package manager $manager not found. Moving on." -ForegroundColor Yellow; `
+                  $manager = ""; `
+                } `
+                if ($packageMap -match "${manager}:") { `
+                  $packageMap -split ";" | ForEach-Object { `
+                    $mapping=$_; `
+                    if ($mapping -match "${manager}:") { `
+                      $package = $mapping.Replace("${manager}:", "");`
+                    } `
+                  } `
+                } else { `
+                  $packageMap -split ";" | ForEach-Object { `
+                    $mapping=$_; `
+                    if (-not ($mapping -match ":")) { `
+                      $package = $mapping; `
+                    } `
+                  } `
+                } `
+                if ($package) { `
+                  Write-Host "Using $manager package manager to install $package" -ForegroundColor Blue; `
+                } `
+              } `
+            }); `
+            $installCommands = @{ `
+              "winget" = @{ `
+                check = { param($pkg) winget list | Select-String -Pattern $pkg }; `
+                install = { param($pkg) winget install -e --id $pkg }; `
+                forceInstall = { param($pkg) winget install -e --id $pkg --force }; `
+              }; `
+              "choco" = @{ `
+                check = { param($pkg) choco list | Select-String -Pattern $pkg }; `
+                install = { param($pkg) choco install -y $pkg }; `
+                forceInstall = { param($pkg) choco install -y $pkg --force }; `
+              }; `
+              "scoop" = @{ `
+                check = { param($pkg) scoop list | Select-String -Pattern $pkg }; `
+                install = { param($pkg) `
+                  $items = $pkg -split "/"; `
+                  $bucket = if ($items.Length -gt 1) { $items[0] } else { "main" }; `
+                  scoop bucket add $bucket; `
+                  scoop install $pkg; `
+                }; `
+              }; `
+            }; `
+            if ($installCommands.ContainsKey($manager)) { `
+              $cmd = $installCommands[$manager]; `
+              {{if .FORCE}}& $cmd.forceInstall $package{{else}}if (-not (& $cmd.check $package)) { `
+                Write-Host "Installing $package using $manager" -ForegroundColor Blue; `
+                & $cmd.install $package; `
+              } else { `
+                Write-Host "$package already installed" -ForegroundColor Yellow; `
+              }{{end}} `
+            } `
+          '
+        platforms: [windows]
+      - cmd: |
+          {{if .TEST_COMMAND}}{{.TEST_COMMAND}}{{else}}Write-Host ""{{end}}
+        platforms: [windows]
+    desc: Install a Package under Windows
+    internal: true
+    vars:
+      PACKAGE: "{{ .PACKAGE }}"
+      FORCE: "{{ .FORCE }}"
+      TEST_COMMAND: "{{ .TEST_COMMAND }}"
 
-      # - cmd: |
-      #     if (Get-Command choco -ErrorAction SilentlyContinue) {
-      #       if (!(choco list --local-only | Select-String -Pattern 'clion')) {
-      #         choco install clion-ide -y
-      #       }
-      #     }
-      #   platforms: [windows]
-      # - cmd: |
-      #     if (Get-Command scoop -ErrorAction SilentlyContinue) {
-      #       if (!(scoop list | Select-String -Pattern 'clion')) {
-      #         scoop bucket add extras && scoop install extras/clion
-      #       }
-      #     }
-      #   platforms: [windows]
-      # - cmd: |
-      #     if (Get-Command winget -ErrorAction SilentlyContinue) {
-      #       if (!(winget list | Select-String -Pattern 'JetBrains.CLion')) {
-      #         winget install -e --id JetBrains.CLion
-      #       }
-      #     }
-      #   platforms: [windows]
+  #   # if (Get-Command choco -ErrorAction SilentlyContinue) {
+  #   #   if (!(choco list --local-only | Select-String -Pattern 'clion')) {
+  #   #     choco install clion-ide -y
+  #   #   }
+  #   # }
+# scoop bucket add extras && scoop install extras/clion
