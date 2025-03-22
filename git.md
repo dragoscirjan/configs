@@ -23,6 +23,9 @@ choco install git gitkraken gh -y
 scoop install main/git extras/gitkraken main/gh
 
 @("Git.Git", "Axosoft.GitKraken", "GitHub.cli") | ForEach-Object { winget install -e --id $_ }
+
+# Extra
+git config --global core.pager less -F -X
 ```
 
 ## Git
@@ -36,6 +39,8 @@ sudo apt install git
 choco install git -y
 scoop install git
 winget install -e --id Git.Git
+# run after install
+git config --global core.pager less -F -X
 ```
 
 ## GitKraken
