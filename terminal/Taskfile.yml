@@ -26,10 +26,14 @@ tasks:
   warp:
     desc: Install Warp Terminal (Darwin,Linux,Windows)
     cmds:
+      - task: c:install:darwin
+        vars:
+          PACKAGE: cask/warp
+          TEST_COMMAND: alacritty --version
       - task: c:install:windows
         vars:
-          PACKAGE: Warp.Warp;scoop:extras/warp-terminal
-          TEST_COMMAND: wezterm --version
+          PACKAGE: Alacritty.Alacritty;choco:alacritty;scoop:extras/alacritty
+          TEST_COMMAND: alacritty --version
 
   wezterm:
     desc: Install Wezterm Terminal (Windows)
