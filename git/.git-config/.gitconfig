@@ -1,0 +1,12 @@
+[user]
+  email = dragos.cirjan@gmail.com
+  name = Dragos Cirjan
+#  signingkey = ABC123
+
+[includeIf "gitdir:*/Cellebrite/"]
+  path = ~/.gitconfig.Cellebrite
+[safe]
+	directory =
+[core]
+	sshCommand = "ssh -i ~/.ssh/id_rsa_personal"
+	pager = less -F -X
