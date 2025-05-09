@@ -1,3 +1,5 @@
+# https://www.youtube.com/watch?v=DZI0Zl-1JqQ
+
 [alias]
   pll = "!sh -c 'git pull origin \"$(git rev-parse --abbrev-ref HEAD)\"'"
   psh = "!sh -c 'branch=$(git rev-parse --abbrev-ref HEAD) && git push origin "$branch" "$@"' -"
