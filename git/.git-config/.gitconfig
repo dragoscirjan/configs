@@ -8,5 +8,5 @@
 [safe]
 	directory =
 [core]
-	sshCommand = "ssh -i ~/.ssh/id_rsa_personal"
+	sshCommand = "ssh -i ~/.ssh/id_ed25519_personal"
 	pager = less -F -X

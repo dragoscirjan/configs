@@ -2,4 +2,4 @@
   email = dragos.cirjan@cellebrite.com
 
 [core]
-  sshCommand = "ssh -i ~/.ssh/id_rsa_cellebrite"
+  sshCommand = "ssh -i ~/.ssh/id_ed25519_cellebrite"
