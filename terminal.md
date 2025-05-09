@@ -80,15 +80,17 @@ uname -a | grep Darwin > /dev/null \
   && CMD_KEY=cmd
 cat > $CONFIG_FILE <<EOF
 # Visuals
-
-font-family = "SauceCodePro Nerd Font"
-background-opacity = 0.9
+font-family                = "SauceCodePro Nerd Font"
+font-size                  = 16
+window-inherit-font-size   = true
+background-opacity         = 0.9
 
 
 # Tab Navigation
 keybind = $CMD_KEY+right=next_tab
 keybind = $CMD_KEY+left=previous_tab
 EOF
+cat $CONFIG_FILE
 ```
 
 ## iTerm2

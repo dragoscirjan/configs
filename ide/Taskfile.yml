@@ -1,0 +1,150 @@
+version: '3'
+
+includes:
+  common: ./common/Taskfile.yml
+
+vars:
+  SHELL:
+    sh: bash
+    windows: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command
+
+tasks:
+  default:
+    desc: default action - lists the tasks (you're looking at it)
+    silent: true
+    cmds:
+      - task --list
+
+  minimal:
+    desc: Install minimal list of IDEs based on the operating system
+    cmds:
+      - task: clion
+      - task: goland
+      - task: neovim
+      - task: vscode
+      - task: zed
+      - task: pycharm
+      - task: sublime
+
+  clion:
+    desc: Install CLion IDE
+    cmds:
+      - cmd: brew install clion
+        platforms: [darwin]
+      - cmd: sudo snap install clion --classic
+        platforms: [linux]
+      - cmd: |
+          if (!(choco list --local-only | Select-String -Pattern 'clion')) {
+            choco install clion-ide -y
+          } else {
+            exit 0
+          }
+        platforms: [windows]
+      - cmd: scoop bucket add extras && scoop install extras/clion
+        platforms: [windows]
+      - cmd: winget install -e --id JetBrains.CLion
+        platforms: [windows]
+
+  goland:
+    desc: Install GoLand IDE
+    cmds:
+      - cmd: brew install goland
+        platforms: [darwin]
+      - cmd: sudo snap install goland --classic
+        platforms: [linux]
+      - cmd: |
+          if (!(choco list --local-only | Select-String -Pattern 'goland')) {
+            choco install goland -y
+          } else {
+            exit 0
+          }
+        platforms: [windows]
+      - cmd: scoop bucket add extras && scoop install extras/goland
+        platforms: [windows]
+      - cmd: winget install -e --id JetBrains.GoLand
+        platforms: [windows]
+
+  neovim:
+    desc: Install Neovim
+    cmds:
+      - cmd: brew install neovim neovim-qt
+        platforms: [darwin]
+      - cmd: sudo snap install nvim --classic
+        platforms: [linux]
+      - cmd: |
+          if (!(choco list --local-only | Select-String -Pattern 'neovim')) {
+            choco install lua luarocks neovim -y
+          } else {
+            exit 0
+          }
+        platforms: [windows]
+      - cmd: scoop bucket add main && scoop install main/lua main/luarocks main/neovim
+        platforms: [windows]
+      - cmd: winget install --id Neovim.Neovim -e
+        platforms: [windows]
+
+  vscode:
+    desc: Install VS Code
+    cmds:
+      - cmd: brew install visual-studio-code
+        platforms: [darwin]
+      - cmd: sudo snap install code --classic
+        platforms: [linux]
+      - cmd: |
+          if (!(choco list --local-only | Select-String -Pattern 'vscode')) {
+            choco install vscode -y
+          } else {
+            exit 0
+          }
+        platforms: [windows]
+      - cmd: scoop bucket add extras && scoop install extras/vscode
+        platforms: [windows]
+      - cmd: winget install -e --id Microsoft.VisualStudioCode
+        platforms: [windows]
+
+  zed:
+    desc: Install Zed
+    cmds:
+      - cmd: brew install zed
+        platforms: [darwin]
+      - cmd: curl -f https://zed.dev/install.sh | sh
+        platforms: [linux]
+
+  pycharm:
+    desc: Install PyCharm
+    cmds:
+      - cmd: brew install pycharm
+        platforms: [darwin]
+      - cmd: sudo snap install pycharm-professional --classic
+        platforms: [linux]
+      - cmd: |
+          if (!(choco list --local-only | Select-String -Pattern 'pycharm')) {
+            choco install pycharm-professional -y
+          } else {
+            exit 0
+          }
+        platforms: [windows]
+      - cmd: scoop bucket add extras && scoop install extras/pycharm-professional
+        platforms: [windows]
+      - cmd: winget install -e --id JetBrains.PyCharm.Professional
+        platforms: [windows]
+
+  sublime:
+    desc: Install Sublime Text
+    cmds:
+      - cmd: brew install sublime-text
+        platforms: [darwin]
+      - cmd: sudo snap install sublime-text --classic
+        platforms: [linux]
+      - cmd: |
+          if (!(choco list --local-only | Select-String -Pattern 'sublimetext')) {
+            choco install sublimetext4 -y
+          } else {
+            exit 0
+          }
+        platforms: [windows]
+      - cmd: scoop bucket add extras && scoop install extras/sublime-text
+        platforms: [windows]
+      - cmd: winget install -e --id SublimeHQ.SublimeText.4
+        platforms: [windows]
+
