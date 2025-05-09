@@ -1,6 +1,9 @@
 version: "3"
 
 includes:
+  git:
+    taskfile: ./git
+    dir: ./git
   lang:
     taskfile: ./language
     dir: ./language

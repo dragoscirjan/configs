@@ -1,0 +1,94 @@
+version: "3"
+
+tasks:
+  default:
+    desc: default action - lists the tasks (you're looking at it)
+    silent: true
+    cmds:
+      - task --list
+  minimal:
+    desc: Install minimal set of used languages
+    cmds:
+      - task: git
+      - task: gitconfig
+      - task: gitkraken
+      - task: gh
+  git:
+    desc: Install Git
+    cmds:
+      - cmd: brew install git
+        platforms: [darwin]
+      - cmd: sudo apt install -y git
+        platforms: [linux]
+      - cmd: |
+          choco install git -y || scoop install git || winget install -e --id Git.Git
+        platforms: [windows]
+  gitkraken:
+    desc: Install GitKraken
+    cmds:
+      - cmd: brew install --cask gitkraken
+        platforms: [darwin]
+      - cmd: sudo snap install gitkraken --classic
+        platforms: [linux]
+      - cmd: |
+          choco install gitkraken -y || scoop install extras/gitkraken || winget install -e --id Axosoft.GitKraken
+        platforms: [windows]
+  gh:
+    desc: Install GitHub CLI
+    cmds:
+      - cmd: brew install gh
+        platforms: [darwin]
+      - cmd: sudo apt install -y gh
+        platforms: [linux]
+      - cmd: |
+          choco install gh -y || scoop install gh || winget install -e --id GitHub.cli
+        platforms: [windows]
+  lazygit:
+    desc: Install LazyGit
+    cmds:
+      - cmd: brew install lazygit
+        platforms: [darwin]
+      - cmd: sudo snap install lazygit --classic
+        platforms: [linux]
+      - cmd: |
+          choco install lazygit -y || scoop install extras/lazygit || winget install -e --id JesseDuffield.lazygit
+        platforms: [windows]
+  gitconfig:
+    desc: Backup and link Git configuration files
+    cmds:
+      - cmd: |
+          # Handle .gitconfig file
+          if [ -f "$HOME/.gitconfig" ]; then
+            echo "Backing up existing .gitconfig to $HOME/.gitconfig.bak.$(date +%s)"
+            mv "$HOME/.gitconfig" "$HOME/.gitconfig.bak.$(date +%s)"
+          fi
+          echo "Linking .gitconfig to $HOME/.gitconfig"
+          ln -sf "$(pwd)/.git-config/.gitconfig" "$HOME/.gitconfig"
+
+          # Handle .gitattributes file
+          if [ -f "$HOME/.gitattributes" ]; then
+            echo "Backing up existing .gitattributes to $HOME/.gitattributes.bak.$(date +%s)"
+            mv "$HOME/.gitattributes" "$HOME/.gitattributes.bak.$(date +%s)"
+          fi
+          echo "Linking .gitattributes to $HOME/.gitattributes"
+          ln -sf "$(pwd)/.git-config/.gitattributes" "$HOME/.gitattributes"
+        platforms: [darwin, linux]
+      - cmd: |
+          $timestamp = [Math]::Floor([decimal](Get-Date(Get-Date).ToUniversalTime()-UFormat "%s"))
+
+          # Handle .gitconfig file
+          if (Test-Path "$env:USERPROFILE\.gitconfig") {
+            echo "Backing up existing .gitconfig to $env:USERPROFILE\.gitconfig.bak.$timestamp"
+            Move-Item "$env:USERPROFILE\.gitconfig" "$env:USERPROFILE\.gitconfig.bak.$timestamp"
+          }
+          echo "Linking .gitconfig to $env:USERPROFILE\.gitconfig"
+          New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.gitconfig" -Target "$PWD\.git-config\.gitconfig" -Force
+
+          # Handle .gitattributes file
+          if (Test-Path "$env:USERPROFILE\.gitattributes") {
+            echo "Backing up existing .gitattributes to $env:USERPROFILE\.gitattributes.bak.$timestamp"
+            Move-Item "$env:USERPROFILE\.gitattributes" "$env:USERPROFILE\.gitattributes.bak.$timestamp"
+          }
+          echo "Linking .gitattributes to $env:USERPROFILE\.gitattributes"
+          New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.gitattributes" -Target "$PWD\.git-config\.gitattributes" -Force
+        platforms: [windows]

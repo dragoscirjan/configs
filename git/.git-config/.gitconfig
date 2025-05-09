@@ -1,18 +1,74 @@
-# https://www.youtube.com/watch?v=DZI0Zl-1JqQ
+# Git Configuration (.gitconfig)
+#
+# References:
+# - https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+# - https://www.youtube.com/watch?v=DZI0Zl-1JqQ
+#
 
+# Aliases for common Git operations to improve workflow
 [alias]
+  # Pull from origin using the current branch name
+  # Usage: git pll
   pll = "!sh -c 'git pull origin \"$(git rev-parse --abbrev-ref HEAD)\"'"
+
+  # Push to origin using the current branch name
+  # Usage: git psh
   psh = "!sh -c 'branch=$(git rev-parse --abbrev-ref HEAD) && git push origin "$branch" "$@"' -"
+
+  # Pretty git log with commit hash, branch names, commit message, and author
+  # Usage: git lol
+  lol = "!sh -c 'git log --pretty=format:\"%C(auto)%h %d %s %C(green)(%an <%ae>)\" --decorate --all'"
+
+  # Graphical visualization of commit history
+  # Usage: git graph
+  graph = "!sh -c 'git log --oneline --graph --decorate --all'"
+
+# Core configuration settings for Git behavior
 [core]
-  # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+	# Use a specific SSH key for Git operations
+	# This is useful when you have multiple SSH keys and want Git to use a specific one
 	sshCommand = "ssh -i ~/.ssh/id_ed25519"
+
+	# Configure the pager for Git output
+	# -F: Quit if content fits on one screen
+	# -X: Don't clear screen when exiting
 	pager = less -F -X
+
+	# Handle line ending conversions
+	# input: Convert CRLF to LF when committing, but don't convert when checking out
+	# This is ideal for cross-platform development
+	autocrlf = input
+
+	# Prevent Git from committing files with mixed line endings
+	# true: Reject commits that would cause mixed line endings
+	safecrlf = true
+
+	# Default line ending style for new files
+	# lf: Use Unix-style line endings (LF) as the default
+	eol = lf
+
+# User identity used for commits
 [user]
+  # Email address used in commit messages
   email = dragos.cirjan@gmail.com
+
+  # Full name used in commit messages
   name = Dragos Cirjan
-#  signingkey = ABC123
+
+# Safe directory settings
 [safe]
+	# List directories that Git should consider safe even if they're owned by someone else
+	# This is useful when working inside Docker containers or in certain shared environments
 	directory =
 
+# Specify the path for global gitattributes
+# These settings will be applied to all repositories
+[core]
+	# Point to a global gitattributes file
+	attributesfile = ~/.gitattributes
+
+# Conditional inclusion for organization-specific settings
 [includeIf "gitdir:*/Cellebrite/"]
+  # Include additional Git configuration when working in Cellebrite repositories
+  # This allows using different user identities or settings for work vs personal projects
   path = ~/.gitconfig.Cellebrite
