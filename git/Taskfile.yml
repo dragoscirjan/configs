@@ -1,5 +1,10 @@
 version: "3"
 
+includes:
+  c:
+    taskfile: ../common
+    dir: ./common
+
 tasks:
   default:
     desc: default action - lists the tasks (you're looking at it)
@@ -16,7 +21,9 @@ tasks:
   git:
     desc: Install Git
     cmds:
-      - cmd: brew install git
+      - task: c:darwin
+        vars:
+          PACKAGES: ["git"]
         platforms: [darwin]
       - cmd: sudo apt install -y git
         platforms: [linux]
@@ -26,7 +33,9 @@ tasks:
   gitkraken:
     desc: Install GitKraken
     cmds:
-      - cmd: brew install --cask gitkraken
+      - task: c:darwin
+        vars:
+          PACKAGES: ["cask/gitkraken"]
         platforms: [darwin]
       - cmd: sudo snap install gitkraken --classic
         platforms: [linux]
@@ -36,7 +45,9 @@ tasks:
   gh:
     desc: Install GitHub CLI
     cmds:
-      - cmd: brew install gh
+      - task: c:darwin
+        vars:
+          PACKAGES: ["gh"]
         platforms: [darwin]
       - cmd: sudo apt install -y gh
         platforms: [linux]
@@ -46,7 +57,9 @@ tasks:
   lazygit:
     desc: Install LazyGit
     cmds:
-      - cmd: brew install lazygit
+      - task: c:darwin
+        vars:
+          PACKAGES: ["lazygit"]
         platforms: [darwin]
       - cmd: sudo snap install lazygit --classic
         platforms: [linux]
