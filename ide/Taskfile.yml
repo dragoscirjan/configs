@@ -22,6 +22,7 @@ tasks:
       - task: goland
       - task: neovim
       - task: vscode
+      - task: vscodium
       - task: zed
       - task: pycharm
       - task: sublime
@@ -34,15 +35,7 @@ tasks:
       - cmd: sudo snap install clion --classic
         platforms: [linux]
       - cmd: |
-          if (!(choco list --local-only | Select-String -Pattern 'clion')) {
-            choco install clion-ide -y
-          } else {
-            exit 0
-          }
-        platforms: [windows]
-      - cmd: scoop bucket add extras && scoop install extras/clion
-        platforms: [windows]
-      - cmd: winget install -e --id JetBrains.CLion
+          choco install clion-ide -y || scoop bucket add extras && scoop install extras/clion || winget install -e --id JetBrains.CLion
         platforms: [windows]
 
   goland:
@@ -53,15 +46,7 @@ tasks:
       - cmd: sudo snap install goland --classic
         platforms: [linux]
       - cmd: |
-          if (!(choco list --local-only | Select-String -Pattern 'goland')) {
-            choco install goland -y
-          } else {
-            exit 0
-          }
-        platforms: [windows]
-      - cmd: scoop bucket add extras && scoop install extras/goland
-        platforms: [windows]
-      - cmd: winget install -e --id JetBrains.GoLand
+          choco install goland -y || scoop bucket add extras && scoop install extras/goland || winget install -e --id JetBrains.GoLand
         platforms: [windows]
 
   neovim:
@@ -72,16 +57,15 @@ tasks:
       - cmd: sudo snap install nvim --classic
         platforms: [linux]
       - cmd: |
-          if (!(choco list --local-only | Select-String -Pattern 'neovim')) {
-            choco install lua luarocks neovim -y
-          } else {
-            exit 0
-          }
+          choco install lua luarocks neovim -y || scoop bucket add main && scoop install main/lua main/luarocks main/neovim || winget install --id Neovim.Neovim -e
         platforms: [windows]
-      - cmd: scoop bucket add main && scoop install main/lua main/luarocks main/neovim
-        platforms: [windows]
-      - cmd: winget install --id Neovim.Neovim -e
-        platforms: [windows]
+      - task: neovim-config
+
+  neovim-config:
+    desc: Install Neovim config
+    cmds:
+      - cmd: |
+          echo "TODO: Integrate the neovim config in the same repo as the Taskfile"
 
   vscode:
     desc: Install VS Code
@@ -91,15 +75,18 @@ tasks:
       - cmd: sudo snap install code --classic
         platforms: [linux]
       - cmd: |
-          if (!(choco list --local-only | Select-String -Pattern 'vscode')) {
-            choco install vscode -y
-          } else {
-            exit 0
-          }
+          choco install vscode -y || scoop bucket add extras && scoop install extras/vscode || winget install -e --id Microsoft.VisualStudioCode
         platforms: [windows]
-      - cmd: scoop bucket add extras && scoop install extras/vscode
-        platforms: [windows]
-      - cmd: winget install -e --id Microsoft.VisualStudioCode
+
+  vscodium:
+    desc: Install VSCodium (open source build of VS Code)
+    cmds:
+      - cmd: brew install vscodium
+        platforms: [darwin]
+      - cmd: sudo snap install codium --classic
+        platforms: [linux]
+      - cmd: |
+          choco install vscodium -y || scoop bucket add extras && scoop install extras/vscodium || winget install -e --id VSCodium.VSCodium
         platforms: [windows]
 
   zed:
@@ -109,6 +96,9 @@ tasks:
         platforms: [darwin]
       - cmd: curl -f https://zed.dev/install.sh | sh
         platforms: [linux]
+      # Unofficial Windows install
+      - cmd: scoop bucket add extras && scoop install extras/zed
+        platforms: [windows]
 
   pycharm:
     desc: Install PyCharm
@@ -118,15 +108,7 @@ tasks:
       - cmd: sudo snap install pycharm-professional --classic
         platforms: [linux]
       - cmd: |
-          if (!(choco list --local-only | Select-String -Pattern 'pycharm')) {
-            choco install pycharm-professional -y
-          } else {
-            exit 0
-          }
-        platforms: [windows]
-      - cmd: scoop bucket add extras && scoop install extras/pycharm-professional
-        platforms: [windows]
-      - cmd: winget install -e --id JetBrains.PyCharm.Professional
+          choco install pycharm-professional -y || scoop bucket add extras && scoop install extras/pycharm-professional || winget install -e --id JetBrains.PyCharm.Professional
         platforms: [windows]
 
   sublime:
@@ -137,14 +119,6 @@ tasks:
       - cmd: sudo snap install sublime-text --classic
         platforms: [linux]
       - cmd: |
-          if (!(choco list --local-only | Select-String -Pattern 'sublimetext')) {
-            choco install sublimetext4 -y
-          } else {
-            exit 0
-          }
-        platforms: [windows]
-      - cmd: scoop bucket add extras && scoop install extras/sublime-text
-        platforms: [windows]
-      - cmd: winget install -e --id SublimeHQ.SublimeText.4
+          choco install sublimetext4 -y || scoop bucket add extras && scoop install extras/sublime-text || winget install -e --id SublimeHQ.SublimeText.4
         platforms: [windows]
 

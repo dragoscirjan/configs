@@ -28,7 +28,7 @@ tasks:
             done
           fi
         platforms: [darwin]
-      - cmd: echo "'brew' is only availble on MacOS"
+      - cmd: echo "'brew' is only available on MacOS"
         platforms: [linux, windows]
     desc: Install a Package under Darwin, using Homebrew
     internal: true
