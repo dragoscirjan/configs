@@ -36,7 +36,7 @@ tasks:
       - for:
           var: PACKAGES
         cmd: |
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install.ps1 -Package {{.ITEM}} {{if .CLI_FORCE}}-Force{{end}}
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install.ps1 -Package "{{.ITEM}}" {{if .CLI_FORCE}}-Force{{end}}
         platforms: [windows]
       - cmd: echo "Windows installers are not available on Darwin or Linux"
         platforms: [darwin, linux]

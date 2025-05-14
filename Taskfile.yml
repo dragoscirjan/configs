@@ -4,6 +4,9 @@ includes:
   git:
     taskfile: ./git
     dir: ./git
+  ide:
+    taskfile: ./ide
+    dir: ./ide
   lang:
     taskfile: ./language
     dir: ./language

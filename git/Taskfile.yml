@@ -3,7 +3,7 @@ version: "3"
 includes:
   c:
     taskfile: ../common
-    dir: ./common
+    dir: ../common
 
 tasks:
   default:
@@ -27,46 +27,12 @@ tasks:
         platforms: [darwin]
       - cmd: sudo apt install -y git
         platforms: [linux]
-      - cmd: |
-          choco install git -y || scoop install git || winget install -e --id Git.Git
-        platforms: [windows]
-  gitkraken:
-    desc: Install GitKraken
-    cmds:
-      - task: c:darwin
+      - task: c:windows
         vars:
-          PACKAGES: ["cask/gitkraken"]
-        platforms: [darwin]
-      - cmd: sudo snap install gitkraken --classic
-        platforms: [linux]
-      - cmd: |
-          choco install gitkraken -y || scoop install extras/gitkraken || winget install -e --id Axosoft.GitKraken
+          PACKAGES: ["choco:git;scoop:git;winget:Git.Git"]
         platforms: [windows]
-  gh:
-    desc: Install GitHub CLI
-    cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["gh"]
-        platforms: [darwin]
-      - cmd: sudo apt install -y gh
-        platforms: [linux]
-      - cmd: |
-          choco install gh -y || scoop install gh || winget install -e --id GitHub.cli
-        platforms: [windows]
-  lazygit:
-    desc: Install LazyGit
-    cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["lazygit"]
-        platforms: [darwin]
-      - cmd: sudo snap install lazygit --classic
-        platforms: [linux]
-      - cmd: |
-          choco install lazygit -y || scoop install extras/lazygit || winget install -e --id JesseDuffield.lazygit
-        platforms: [windows]
-  gitconfig:
+      - task: git:config
+  git:config:
     desc: Backup and link Git configuration files
     cmds:
       - cmd: |
@@ -88,4 +54,43 @@ tasks:
         platforms: [darwin, linux]
       - cmd: |
           pwsh.exe -File ./gitconfig.ps1
+        platforms: [windows]
+  gitkraken:
+    desc: Install GitKraken
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["cask/gitkraken"]
+        platforms: [darwin]
+      - cmd: sudo snap install gitkraken --classic
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:gitkraken;scoop:extras/gitkraken;winget:Axosoft.GitKraken"]
+        platforms: [windows]
+  gh:
+    desc: Install GitHub CLI
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["gh"]
+        platforms: [darwin]
+      - cmd: sudo apt install -y gh
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:gh;scoop:gh;winget:GitHub.cli"]
+        platforms: [windows]
+  lazygit:
+    desc: Install LazyGit
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["lazygit"]
+        platforms: [darwin]
+      - cmd: sudo snap install lazygit --classic
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:lazygit;scoop:extras/lazygit;winget:JesseDuffield.lazygit"]
         platforms: [windows]

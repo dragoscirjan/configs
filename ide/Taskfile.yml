@@ -1,12 +1,9 @@
 version: '3'
 
 includes:
-  common: ./common/Taskfile.yml
-
-vars:
-  SHELL:
-    sh: bash
-    windows: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command
+  c:
+    taskfile: ../common
+    dir: ../common
 
 tasks:
   default:
@@ -30,34 +27,46 @@ tasks:
   clion:
     desc: Install CLion IDE
     cmds:
-      - cmd: brew install clion
+      - task: c:darwin
+        vars:
+          PACKAGES: ["clion"]
         platforms: [darwin]
       - cmd: sudo snap install clion --classic
         platforms: [linux]
-      - cmd: |
-          choco install clion-ide -y || scoop bucket add extras && scoop install extras/clion || winget install -e --id JetBrains.CLion
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:clion-ide;scoop:extras/clion;winget:JetBrains.CLion"]
         platforms: [windows]
 
   goland:
     desc: Install GoLand IDE
     cmds:
-      - cmd: brew install goland
+      - task: c:darwin
+        vars:
+          PACKAGES: ["goland"]
         platforms: [darwin]
       - cmd: sudo snap install goland --classic
         platforms: [linux]
-      - cmd: |
-          choco install goland -y || scoop bucket add extras && scoop install extras/goland || winget install -e --id JetBrains.GoLand
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:goland;scoop:extras/goland;winget:JetBrains.GoLand"]
         platforms: [windows]
 
   neovim:
     desc: Install Neovim
     cmds:
-      - cmd: brew install neovim neovim-qt
+      - task: c:darwin
+        vars:
+          PACKAGES: ["neovim", "neovim-qt"]
         platforms: [darwin]
       - cmd: sudo snap install nvim --classic
         platforms: [linux]
-      - cmd: |
-          choco install lua luarocks neovim -y || scoop bucket add main && scoop install main/lua main/luarocks main/neovim || winget install --id Neovim.Neovim -e
+      - task: c:windows
+        vars:
+          PACKAGES:
+            - "choco:lua;scoop:main/lua"
+            - "choco:luarocks;scoop:main/luarocks"
+            - "choco:neovim;scoop:main/neovim;winget:Neovim.Neovim"
         platforms: [windows]
       - task: neovim-config
 
@@ -70,55 +79,69 @@ tasks:
   vscode:
     desc: Install VS Code
     cmds:
-      - cmd: brew install visual-studio-code
+      - task: c:darwin
+        vars:
+          PACKAGES: ["visual-studio-code"]
         platforms: [darwin]
       - cmd: sudo snap install code --classic
         platforms: [linux]
-      - cmd: |
-          choco install vscode -y || scoop bucket add extras && scoop install extras/vscode || winget install -e --id Microsoft.VisualStudioCode
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:vscode;scoop:extras/vscode;winget:Microsoft.VisualStudioCode"]
         platforms: [windows]
 
   vscodium:
     desc: Install VSCodium (open source build of VS Code)
     cmds:
-      - cmd: brew install vscodium
+      - task: c:darwin
+        vars:
+          PACKAGES: ["vscodium"]
         platforms: [darwin]
       - cmd: sudo snap install codium --classic
         platforms: [linux]
-      - cmd: |
-          choco install vscodium -y || scoop bucket add extras && scoop install extras/vscodium || winget install -e --id VSCodium.VSCodium
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:vscodium;scoop:extras/vscodium;winget:VSCodium.VSCodium"]
         platforms: [windows]
 
   zed:
     desc: Install Zed
     cmds:
-      - cmd: brew install zed
+      - task: c:darwin
+        vars:
+          PACKAGES: ["zed"]
         platforms: [darwin]
       - cmd: curl -f https://zed.dev/install.sh | sh
         platforms: [linux]
-      # Unofficial Windows install
-      - cmd: scoop bucket add extras && scoop install extras/zed
+      - task: c:windows
+        vars:
+          PACKAGES: ["scoop:extras/zed"]
         platforms: [windows]
 
   pycharm:
     desc: Install PyCharm
     cmds:
-      - cmd: brew install pycharm
+      - task: c:darwin
+        vars:
+          PACKAGES: ["pycharm"]
         platforms: [darwin]
       - cmd: sudo snap install pycharm-professional --classic
         platforms: [linux]
-      - cmd: |
-          choco install pycharm-professional -y || scoop bucket add extras && scoop install extras/pycharm-professional || winget install -e --id JetBrains.PyCharm.Professional
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:pycharm-professional;scoop:extras/pycharm-professional;winget:JetBrains.PyCharm.Professional"]
         platforms: [windows]
 
   sublime:
     desc: Install Sublime Text
     cmds:
-      - cmd: brew install sublime-text
+      - task: c:darwin
+        vars:
+          PACKAGES: ["sublime-text"]
         platforms: [darwin]
       - cmd: sudo snap install sublime-text --classic
         platforms: [linux]
-      - cmd: |
-          choco install sublimetext4 -y || scoop bucket add extras && scoop install extras/sublime-text || winget install -e --id SublimeHQ.SublimeText.4
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:sublimetext4;scoop:extras/sublime-text;winget:SublimeHQ.SublimeText.4"]
         platforms: [windows]
-
