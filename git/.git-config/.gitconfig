@@ -39,13 +39,13 @@
 	# This is ideal for cross-platform development
 	autocrlf = input
 
-	# Prevent Git from committing files with mixed line endings
-	# true: Reject commits that would cause mixed line endings
-	safecrlf = true
+	# # Prevent Git from committing files with mixed line endings
+	# # true: Reject commits that would cause mixed line endings
+	# safecrlf = true
 
-	# Default line ending style for new files
-	# lf: Use Unix-style line endings (LF) as the default
-	eol = lf
+	# # Default line ending style for new files
+	# # lf: Use Unix-style line endings (LF) as the default
+	# eol = lf
 
 # User identity used for commits
 [user]
