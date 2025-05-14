@@ -1,5 +1,11 @@
 
-version: "3"
+version: '3'
+
+vars:
+  SHELL:
+    sh: bash
+    windows: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command
+
 tasks:
   default:
     desc: List available Linux install tasks
