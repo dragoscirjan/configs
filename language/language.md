@@ -2,16 +2,15 @@
 
 - [Programming Languages](#programming-languages)
   - [Default](#default)
-  - [Bun](#bun)
   - [Clangd](#clangd)
-  - [Go](#go)
-  - [Java](#java)
   - [NVM (Node Version Manager)](#nvm-node-version-manager)
-  - [PHP](#php)
-  
   - [Python](#python)
   - [Zig](#zig)
   - [Rust](#rust)
+  - [Go](#go)
+  - [Bun](#bun)
+  - [Java](#java)
+  - [PHP](#php)
   - [Ruby](#ruby)
   - [Swift](#swift)
 

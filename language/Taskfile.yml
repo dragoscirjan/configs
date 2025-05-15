@@ -7,13 +7,15 @@ includes:
 
 tasks:
   default:
-    desc: Install minimal set of used languages
     cmds:
-      - task: git
-      - task: gitkraken
-      - task: gh
+      - task: deno
+      - task: go
+      - task: node
+      - task: java
+      - task: python
+    desc: Install minimal set of used languages
+
   bun:
-    desc: Install Clangd
     cmds:
       - task: c:darwin
         vars:
@@ -25,8 +27,9 @@ tasks:
         vars:
           PACKAGES: ["choco:bun;scoop:bun;winget:Bun.Bun"]
         platforms: [windows]
-  clangd:
     desc: Install Clangd
+
+  clangd:
     cmds:
       - task: c:darwin
         vars:
@@ -38,21 +41,27 @@ tasks:
         vars:
           PACKAGES: ["choco:llvm;scoop:llvm;winget:clangd"]
         platforms: [windows]
-  # deno: # TODO: Write installer
-  #   desc: Install Deno
-  #   cmds:
-  #     - task: c:darwin
-  #       vars:
-  #         PACKAGES: ["go"]
-  #       platforms: [darwin]
-  #     # - cmd: sudo apt install -y git
-  #     #   platforms: [linux]
-  #     - task: c:windows
-  #       vars:
-  #         PACKAGES: ["choco:golang;scoop:go;winget:Golang.Go"]
-  #       platforms: [windows]
+    desc: Install Clangd
+
+  deno:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["deno"]
+        platforms: [darwin]
+      # - cmd: curl -fsSL https://deno.land/install.sh | sh
+      #   platforms: [darwin]
+      - cmd: curl -fsSL https://deno.land/install.sh | sh
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:deno;scoop:deno;winget:DenoLand.Deno"]
+        platforms: [windows]
+      # - cmd: irm https://deno.land/install.ps1 | iex
+      #   platforms: [windows]
+    desc: Install Deno
+
   go:
-    desc: Install Go
     cmds:
       - task: c:darwin
         vars:
@@ -64,21 +73,23 @@ tasks:
         vars:
           PACKAGES: ["choco:golang;scoop:go;winget:Golang.Go"]
         platforms: [windows]
-  # groovy: # TODO: Write installer
-  #   desc: Install Groovy
-  #   cmds:
-  #     - task: c:darwin
-  #       vars:
-  #         PACKAGES: ["go"]
-  #       platforms: [darwin]
-  #     # - cmd: sudo apt install -y git
-  #     #   platforms: [linux]
-  #     - task: c:windows
-  #       vars:
-  #         PACKAGES: ["choco:golang;scoop:go;winget:Golang.Go"]
-  #       platforms: [windows]
+    desc: Install Go
+
+  groovy:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["go"]
+        platforms: [groovy]
+      # - cmd: sudo apt install -y git  # TODO: Write installer
+      #   platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:groovy;scoop:main/groovy;winget:Apache.Groovy.4"]
+        platforms: [windows]
+    desc: Install Groovy
+
   java:
-    desc: Install Java (OpenJDK)
     cmds:
       - task: c:darwin
         vars:
@@ -90,21 +101,25 @@ tasks:
         vars:
           PACKAGES: ["choco:openjdk;scoop:main/openjdk;winget:AdoptOpenJDK.OpenJDK"]
         platforms: [windows]
-  # lua: # TODO:
-  #   desc: Install Lua
-  #   cmds:
-  #     - task: c:darwin
-  #       vars:
-  #         PACKAGES: ["openjdk"]
-  #       platforms: [darwin]
-  #     # - cmd: sudo apt install -y git
-  #     #   platforms: [linux]
-  #     - task: c:windows
-  #       vars:
-  #         PACKAGES: ["choco:openjdk;scoop:main/openjdk;winget:AdoptOpenJDK.OpenJDK"]
-  #       platforms: [windows]
+    desc: Install Java (OpenJDK)
+
+  lua:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["lua"]
+        platforms: [darwin]
+      # - cmd: sudo apt install -y git
+      #   platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:lua;scoop:main/lua"]
+        platforms: [windows]
+    deps:
+      - task: java
+    desc: Install Lua
+
   node:
-    desc: Install Node.js
     cmds:
       - cmd: |
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
@@ -118,8 +133,93 @@ tasks:
           PACKAGES: ["choco:nvm;scoop:nvm;winget:CoreyButler.NVMforWindows"]
         platforms: [windows]
       - cmd: |
-          nvm install lts/*
           [ -f $HOME/.nvmrc ] && cp $HOME/.nvmrc $HOME/.nvmrc.bak.$(date +%s)
-          echo "lts/*" > $HOME/.nvmrc
-          cd $HOME && nvm use --default
+          echo "lts" > $HOME/.nvmrc
+          nvm install $(Get-Content $HOME/.nvmrc) && nvm use $(Get-Content $HOME/.nvmrc)
         platforms: [darwin, linux]
+    desc: Install Node.js
+
+  php:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["php"]
+        platforms: [darwin]
+      # - task: c:linux # TODO: Write Installer
+      #   vars:
+      #     PACKAGES: ["php"]
+      #   platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:php;scoop:php;winget:PHP.Php"]
+        platforms: [windows]
+    desc: Install PHP
+
+  ruby:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["ruby"]
+        platforms: [darwin]
+      # - task: c:linux # TODO: Write Installer
+      #   vars:
+      #     PACKAGES: ["php"]
+      #   platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:ruby;scoop:ruby;winget:RubyTeam.Ruby.3.1"]
+        platforms: [windows]
+    desc: Install Ruby
+
+  rust:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["rustup-init"]
+        platforms: [darwin]
+      - cmd: |
+          rustup-init -y
+        platforms: [darwin]
+      - cmd: |
+          curl https://sh.rustup.rs -sSf | sh -s -- -y
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:rust;scoop:rustup;winget:Rustlang.Rustup"]
+        platforms: [windows]
+      - cmd: |
+          pwsh.exe -Command "if (Get-Command rustup-init.exe) { rustup-init.exe -y }"
+        platforms: [windows]
+    desc: Install Rust
+
+  swift:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["swift"]
+        platforms: [darwin]
+      # - task: c:linux # TODO: Write Installer
+      #   vars:
+      #     PACKAGES: ["php"]
+      #   platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["winget:Swift.Toolchain"]
+        platforms: [windows]
+    desc: Install Swift
+
+  zig:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["zig"]
+        platforms: [darwin]
+      # - task: c:linux # TODO: Write Installer
+      #   vars:
+      #     PACKAGES: ["php"]
+      #   platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:zig;scoop:bundle/zig;winget:Ziglang.Zig"]
+        platforms: [windows]
+    desc: Install Zig
