@@ -1,26 +1,127 @@
 version: "3"
 
+includes:
+  c:
+    taskfile: ../common
+    dir: ../common
+
 tasks:
   default:
-    desc: default action - lists the tasks (you're looking at it)
-    silent: true
-    cmds:
-      - task --list
-  minimal:
     desc: Install minimal set of used languages
     cmds:
-      - task: go
-  go:
-    desc: Install GoLang
+      - task: git
+      - task: gitkraken
+      - task: gh
+  bun:
+    desc: Install Clangd
     cmds:
-      - cmd: brew install go
+      - task: c:darwin
+        vars:
+          PACKAGES: ["bun"]
         platforms: [darwin]
-      - cmd: sudo apt update; sudo apt install -y golang
+      - cmd: curl -fsSL https://bun.sh/install | sudo bash
         platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:bun;scoop:bun;winget:Bun.Bun"]
+        platforms: [windows]
+  clangd:
+    desc: Install Clangd
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["clangd"]
+        platforms: [darwin]
+      # - cmd: sudo apt install -y git
+      #   platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:llvm;scoop:llvm;winget:clangd"]
+        platforms: [windows]
+  # deno: # TODO: Write installer
+  #   desc: Install Deno
+  #   cmds:
+  #     - task: c:darwin
+  #       vars:
+  #         PACKAGES: ["go"]
+  #       platforms: [darwin]
+  #     # - cmd: sudo apt install -y git
+  #     #   platforms: [linux]
+  #     - task: c:windows
+  #       vars:
+  #         PACKAGES: ["choco:golang;scoop:go;winget:Golang.Go"]
+  #       platforms: [windows]
+  go:
+    desc: Install Go
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["go"]
+        platforms: [darwin]
+      # - cmd: sudo apt install -y git
+      #   platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:golang;scoop:go;winget:Golang.Go"]
+        platforms: [windows]
+  # groovy: # TODO: Write installer
+  #   desc: Install Groovy
+  #   cmds:
+  #     - task: c:darwin
+  #       vars:
+  #         PACKAGES: ["go"]
+  #       platforms: [darwin]
+  #     # - cmd: sudo apt install -y git
+  #     #   platforms: [linux]
+  #     - task: c:windows
+  #       vars:
+  #         PACKAGES: ["choco:golang;scoop:go;winget:Golang.Go"]
+  #       platforms: [windows]
+  java:
+    desc: Install Java (OpenJDK)
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["openjdk"]
+        platforms: [darwin]
+      # - cmd: sudo apt install -y git
+      #   platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:openjdk;scoop:main/openjdk;winget:AdoptOpenJDK.OpenJDK"]
+        platforms: [windows]
+  # lua: # TODO:
+  #   desc: Install Lua
+  #   cmds:
+  #     - task: c:darwin
+  #       vars:
+  #         PACKAGES: ["openjdk"]
+  #       platforms: [darwin]
+  #     # - cmd: sudo apt install -y git
+  #     #   platforms: [linux]
+  #     - task: c:windows
+  #       vars:
+  #         PACKAGES: ["choco:openjdk;scoop:main/openjdk;winget:AdoptOpenJDK.OpenJDK"]
+  #       platforms: [windows]
+  node:
+    desc: Install Node.js
+    cmds:
       - cmd: |
-          choco install golang -y || scoop install go || winget install -e --id GoLang.Go
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+        platforms: [darwin, linux]
+      - cmd: |
+          nvm install lts/*
+          [ -f $HOME/.nvmrc ] && cp $HOME/.nvmrc $HOME/.nvmrc.bak.$(date +%s)
+          echo "lts/*" > $HOME/.nvmrc
+          cd $HOME && nvm use --default
+        platforms: [darwin, linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:nvm;scoop:nvm;winget:CoreyButler.NVMforWindows"]
         platforms: [windows]
       - cmd: |
-          [ -f ~/.zshrc ] && grep GOPATH ~/.zshrc || tail -n +2 go_zshrc_bashrc >> ~/.zshrc
-          [ -f ~/.bashrc ] && grep GOPATH ~/.bashrc || tail -n +2 go_zshrc_bashrc >> ~/.bashrc
+          nvm install lts/*
+          [ -f $HOME/.nvmrc ] && cp $HOME/.nvmrc $HOME/.nvmrc.bak.$(date +%s)
+          echo "lts/*" > $HOME/.nvmrc
+          cd $HOME && nvm use --default
         platforms: [darwin, linux]
