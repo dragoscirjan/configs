@@ -110,10 +110,8 @@ tasks:
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
         platforms: [darwin, linux]
       - cmd: |
-          nvm install lts/*
           [ -f $HOME/.nvmrc ] && cp $HOME/.nvmrc $HOME/.nvmrc.bak.$(date +%s)
           echo "lts/*" > $HOME/.nvmrc
-          cd $HOME && nvm use --default
         platforms: [darwin, linux]
       - task: c:windows
         vars:
