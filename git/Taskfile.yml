@@ -7,15 +7,9 @@ includes:
 
 tasks:
   default:
-    desc: default action - lists the tasks (you're looking at it)
-    silent: true
-    cmds:
-      - task --list
-  minimal:
     desc: Install minimal set of used languages
     cmds:
       - task: git
-      - task: gitconfig
       - task: gitkraken
       - task: gh
   git:

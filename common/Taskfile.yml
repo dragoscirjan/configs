@@ -16,18 +16,17 @@ tasks:
       - for:
           var: PACKAGES
         cmd: |
+          package='{{.ITEM}}'
           read repo package_name <<< ${package/\// }
           args=""
           [ -z "$package_name" ] && package_name=$repo
           [ -z "$package_name" ] && args="--$repo"
           if {{if .CLI_FORCE}}[ 1 -eq 1 ]{{else}}! brew list $args $package &>/dev/null{{end}}; then
-            brew install $args{{if .FORCE}} --force{{end}} $package_name
+            brew install $args{{if .CLI_FORCE}} --force{{end}} $package_name
           else
             echo {{.ITEM}} already installed
           fi
         platforms: [darwin]
-      - cmd: echo "'brew' is only available on MacOS"
-        platforms: [linux, windows]
     desc: Install a Package under Darwin, using Homebrew
     internal: true
 
@@ -38,7 +37,5 @@ tasks:
         cmd: |
           powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install.ps1 -Package "{{.ITEM}}" {{if .CLI_FORCE}}-Force{{end}}
         platforms: [windows]
-      - cmd: echo "Windows installers are not available on Darwin or Linux"
-        platforms: [darwin, linux]
     desc: Install a Package under Windows
     internal: true

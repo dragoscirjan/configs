@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 includes:
   c:
@@ -7,12 +7,6 @@ includes:
 
 tasks:
   default:
-    desc: default action - lists the tasks (you're looking at it)
-    silent: true
-    cmds:
-      - task --list
-
-  minimal:
     desc: Install minimal list of IDEs based on the operating system
     cmds:
       - task: clion
@@ -129,7 +123,8 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:pycharm-professional;scoop:extras/pycharm-professional;winget:JetBrains.PyCharm.Professional"]
+          PACKAGES:
+            ["choco:pycharm-professional;scoop:extras/pycharm-professional;winget:JetBrains.PyCharm.Professional"]
         platforms: [windows]
 
   sublime:
