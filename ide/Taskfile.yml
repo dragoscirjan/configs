@@ -4,6 +4,9 @@ includes:
   c:
     taskfile: ../common
     dir: ../common
+  l:
+    taskfile: ../language
+    dir: ../language
 
 tasks:
   default:
@@ -32,6 +35,20 @@ tasks:
           PACKAGES: ["choco:clion-ide;scoop:extras/clion;winget:JetBrains.CLion"]
         platforms: [windows]
 
+  coursor:
+    desc: Install Coursor
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["coursor"]
+        platforms: [darwin]
+      - cmd: sudo snap install coursor
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:coursor;scoop:extras/coursor;winget:Coursor.Coursor"]
+        platforms: [windows]
+
   goland:
     desc: Install GoLand IDE
     cmds:
@@ -49,6 +66,7 @@ tasks:
   neovim:
     desc: Install Neovim
     cmds:
+      - task: l:lua
       - task: c:darwin
         vars:
           PACKAGES: ["neovim", "neovim-qt"]
@@ -62,13 +80,21 @@ tasks:
             - "choco:luarocks;scoop:main/luarocks"
             - "choco:neovim;scoop:main/neovim;winget:Neovim.Neovim"
         platforms: [windows]
-      - task: neovim-config
+      - task: neovim:config
+    summary: |
+      Inspired from
+       - https://www.lazyvim.org
+       - https://www.youtube.com/watch?v=evCmP4hH7ZU
 
-  neovim-config:
+  neovim:config:
     desc: Install Neovim config
     cmds:
       - cmd: |
-          echo "TODO: Integrate the neovim config in the same repo as the Taskfile"
+          bash ./neovim-config.sh
+        platforms: [darwin, linux]
+      - cmd: |
+          pwsh.exe -File ./neovim-config.ps1
+        platforms: [windows]
 
   vscode:
     desc: Install VS Code
@@ -139,4 +165,18 @@ tasks:
       - task: c:windows
         vars:
           PACKAGES: ["choco:sublimetext4;scoop:extras/sublime-text;winget:SublimeHQ.SublimeText.4"]
+        platforms: [windows]
+
+  trae:
+    desc: Install Trae
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["trae"]
+        platforms: [darwin]
+      - cmd: sudo snap install trae --classic
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:trae;scoop:extras/trae;winget:Trae.Trae"]
         platforms: [windows]
