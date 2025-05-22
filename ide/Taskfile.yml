@@ -66,7 +66,6 @@ tasks:
   neovim:
     desc: Install Neovim
     cmds:
-      - task: l:lua
       - task: c:darwin
         vars:
           PACKAGES: ["neovim", "neovim-qt"]
@@ -76,11 +75,11 @@ tasks:
       - task: c:windows
         vars:
           PACKAGES:
-            - "choco:lua;scoop:main/lua"
-            - "choco:luarocks;scoop:main/luarocks"
             - "choco:neovim;scoop:main/neovim;winget:Neovim.Neovim"
         platforms: [windows]
       - task: neovim:config
+    deps:
+      - task: l:lua
     summary: |
       Inspired from
        - https://www.lazyvim.org
@@ -94,6 +93,16 @@ tasks:
         platforms: [darwin, linux]
       - cmd: |
           pwsh.exe -File ./neovim-config.ps1
+        platforms: [windows]
+
+  neovim:fix-git:
+    desc: Fix Git "dubious ownership" errors for Neovim plugins
+    cmds:
+      - cmd: |
+          pwsh.exe -File ./fix-neovim-git.ps1
+        platforms: [windows]
+      - cmd: |
+          pwsh.exe -Command "& { . './neovim-config.ps1'; Add-NeovimPluginsToGitSafeDirectory -ConfigPath (Join-Path -Path $PWD -ChildPath 'neovim-config') }"
         platforms: [windows]
 
   vscode:

@@ -113,7 +113,9 @@ tasks:
       #   platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:lua;scoop:main/lua"]
+          PACKAGES:
+            - "choco:lua;scoop:main/lua"
+            - "choco:luarocks;scoop:main/luarocks"
         platforms: [windows]
     deps:
       - task: java
