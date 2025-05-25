@@ -79,6 +79,7 @@ tasks:
         platforms: [windows]
       - task: neovim:config
     deps:
+      - task: l:clangd
       - task: l:lua
     summary: |
       Inspired from
