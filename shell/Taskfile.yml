@@ -1,0 +1,113 @@
+version: "3"
+
+includes:
+  c:
+    taskfile: ../common
+    dir: ../common
+
+tasks:
+  default:
+    desc: Install minimal set of used languages
+    cmds:
+      - task: bash
+      - task: pwsh
+      - task: zsh
+  bash:
+    desc: Install Bash
+    cmds:
+      - cmd:
+        platforms: [darwin]
+      - cmd: sudo apt install -y git
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:git;scoop:git;winget:Git.Git"]
+        platforms: [windows]
+      - task: git:config
+  bash:ohmybash:
+    desc: Backup and link Git configuration files
+    cmds:
+      - cmd: |
+          # Handle .gitconfig file
+          if [ -f "$HOME/.gitconfig" ]; then
+            echo "Backing up existing .gitconfig to $HOME/.gitconfig.bak.$(date +%s)"
+            mv "$HOME/.gitconfig" "$HOME/.gitconfig.bak.$(date +%s)"
+          fi
+          echo "Linking .gitconfig to $HOME/.gitconfig"
+          ln -sf "$(pwd)/.git-config/.gitconfig" "$HOME/.gitconfig"
+
+          # Handle .gitattributes file
+          if [ -f "$HOME/.gitattributes" ]; then
+            echo "Backing up existing .gitattributes to $HOME/.gitattributes.bak.$(date +%s)"
+            mv "$HOME/.gitattributes" "$HOME/.gitattributes.bak.$(date +%s)"
+          fi
+          echo "Linking .gitattributes to $HOME/.gitattributes"
+          ln -sf "$(pwd)/.git-config/.gitattributes" "$HOME/.gitattributes"
+        platforms: [darwin, linux]
+      - cmd: |
+          pwsh.exe -File ./gitconfig.ps1
+        platforms: [windows]
+  # fish:
+  #   desc: Install GitKraken
+  #   cmds:
+  #     - task: c:darwin
+  #       vars:
+  #         PACKAGES: ["cask/gitkraken"]
+  #       platforms: [darwin]
+  #     - cmd: sudo snap install gitkraken --classic
+  #       platforms: [linux]
+  #     - task: c:windows
+  #       vars:
+  #         PACKAGES:
+  #           ["choco:gitkraken;scoop:extras/gitkraken;winget:Axosoft.GitKraken"]
+  #       platforms: [windows]
+  # fish:ohmyfish:
+  #   desc: Install GitHub CLI
+  #   cmds:
+  #     - task: c:darwin
+  #       vars:
+  #         PACKAGES: ["gh"]
+  #       platforms: [darwin]
+  #     - cmd: sudo apt install -y gh
+  #       platforms: [linux]
+  #     - task: c:windows
+  #       vars:
+  #         PACKAGES: ["choco:gh;scoop:gh;winget:GitHub.cli"]
+  #       platforms: [windows]
+  # nushell: # https://jj-vcs.github.io/jj/latest/install-and-setup/
+  #   desc: Install JJ Version Control
+  #   cmds:
+  #     - task: c:darwin
+  #       vars:
+  #         PACKAGES: ["jj"]
+  #       platforms: [darwin]
+  #     - cmd: echo TODO
+  #       platforms: [linux]
+  #     - task: c:windows
+  #       cmd: cargo install --locked --bin jj jj-cli --features vendored-openssl
+  #   deps:
+  #     - task: l:rust
+
+  # pwsh:
+  #   desc: Install LazyGit
+  #   cmds:
+  #     - task: c:darwin
+  #       vars:
+  #         PACKAGES: ["lazygit"]
+  #       platforms: [darwin]
+  #     - cmd: sudo snap install lazygit --classic
+  #       platforms: [linux]
+  #     - task: c:windows
+  #       vars:
+  #         PACKAGES:
+  #           ["choco:lazygit;scoop:extras/lazygit;winget:JesseDuffield.lazygit"]
+  #       platforms: [windows]
+
+  # pwsh:ohmypwsh:
+  #   desc: Install Oh My Posh
+
+  # zsh:
+  #   desc: Install Zsh
+
+  # zsh:ohmyzsh:
+  #   desc: Install Oh My Zsh

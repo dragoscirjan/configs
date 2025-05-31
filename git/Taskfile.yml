@@ -4,6 +4,9 @@ includes:
   c:
     taskfile: ../common
     dir: ../common
+  l:
+    taskfile: ../language
+    dir: ../language
 
 tasks:
   default:
@@ -60,7 +63,8 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:gitkraken;scoop:extras/gitkraken;winget:Axosoft.GitKraken"]
+          PACKAGES:
+            ["choco:gitkraken;scoop:extras/gitkraken;winget:Axosoft.GitKraken"]
         platforms: [windows]
   gh:
     desc: Install GitHub CLI
@@ -75,6 +79,20 @@ tasks:
         vars:
           PACKAGES: ["choco:gh;scoop:gh;winget:GitHub.cli"]
         platforms: [windows]
+  jj: # https://jj-vcs.github.io/jj/latest/install-and-setup/
+    desc: Install JJ Version Control
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["jj"]
+        platforms: [darwin]
+      - cmd: echo TODO
+        platforms: [linux]
+      - task: c:windows
+        cmd: cargo install --locked --bin jj jj-cli --features vendored-openssl
+    deps:
+      - task: l:rust
+
   lazygit:
     desc: Install LazyGit
     cmds:
@@ -86,5 +104,6 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:lazygit;scoop:extras/lazygit;winget:JesseDuffield.lazygit"]
+          PACKAGES:
+            ["choco:lazygit;scoop:extras/lazygit;winget:JesseDuffield.lazygit"]
         platforms: [windows]
