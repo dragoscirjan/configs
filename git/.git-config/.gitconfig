@@ -23,6 +23,9 @@
   # Usage: git graph
   graph = "!sh -c 'git log --oneline --graph --decorate --all'"
 
+  # Shorder name for checkout
+  co = "!sh -c 'git checkout "$@"' -"
+
 # Core configuration settings for Git behavior
 [core]
 	# Use a specific SSH key for Git operations

@@ -90,6 +90,7 @@ tasks:
         platforms: [linux]
       - task: c:windows
         cmd: cargo install --locked --bin jj jj-cli --features vendored-openssl
+        platforms: [windows]
     deps:
       - task: l:rust
 
