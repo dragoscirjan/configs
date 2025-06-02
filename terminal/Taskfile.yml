@@ -56,6 +56,11 @@ tasks:
           mv "$config" "$config.bak.$(date +%s)"
           ln -s $(pwd)/ghostty.config "$config"
         platforms: [darwin]
+      - cmd: |
+          config="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+          mv "$config" "$config.bak.$(date +%s)"
+          ln -s $(pwd)/ghostty.config "$config"
+        platforms: [linux]
     desc: Configure Ghostty
 
   iterm:
