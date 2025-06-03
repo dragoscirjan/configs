@@ -5,6 +5,14 @@ version = 3
 [[blocks]]
 type = "prompt"
 alignment = "left"
+newline = false
+
+[[blocks.segments]]
+type = "node"
+style = "powerline"
+foreground = "#6CA35E"
+background = "transparent"
+template = ""
 
 [[blocks.segments]]
 type = "path"
@@ -14,104 +22,41 @@ background = "transparent"
 
 [blocks.segments.properties]
 style = "folder"
+# style = "full"
+
+[blocks.segments.properties.mapped_locations]
+# TODO: Can this be used as an enviroment variable?
+# "$env:USERPROFILE" = ""
+"$env:TEMP" = ""
 
 [[blocks.segments]]
 type = "git"
 style = "powerline"
-# foreground = "#193549"
-# background = "#ffeb3b"
-# background_templates = [
-# "{{ if or (.Working.Changed) (.Staging.Changed) }}#FFEB3B{{ end }}",
-# "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#FFCC80{{ end }}",
-# "{{ if gt .Ahead 0 }}#B388FF{{ end }}",
-# "{{ if gt .Behind 0 }}#B388FB{{ end }}",
-# ]
-# template = "{{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }}"
-template = '{{ if gt .Behind 0 }}⇣{{else}}{{ if gt .Ahead 0 }}⇡{{ end }}{{end}}{{ .HEAD }}'
+foreground = "cyan"
+background = "transparent"
+template = '(<magenta>{{ if gt .Behind 0 }}⇣{{end}}{{ if gt .Ahead 0 }}⇡{{ end }}{{ if and (eq .Behind 0) (eq .Ahead 0) }}{{end}}</> {{ .HEAD }}<magenta>{{ if .Working.Changed }}  {{end}}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }}</>)'
 
 [blocks.segments.properties]
-# fetch_status = true
-# fetch_upstream_icon = true
-# source = "cli"
-branch_icon = " "
+branch_icon = ""
+fetch_status = true
+fetch_upstream_icon = true
+source = "cli"
 
-# [blocks.segments.properties.mapped_branches]
-# "feat/*" = "🚀 "
-# "bug/*" = "🐛 "
+[[blocks.segments]]
+type = "jujutsu"
+style = "powerline"
+foreground = "cyan"
+background = "transparent"
+template = '(<magenta>{{ if gt .Behind 0 }}⇣{{end}}{{ if gt .Ahead 0 }}⇡{{ end }}{{ if and (eq .Behind 0) (eq .Ahead 0) }}{{end}}</> {{ .HEAD }}<magenta>{{ if .Working.Changed }}  {{end}}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }}</>)'
 
-# console_title_template = '{{ .Shell }} in {{ .Folder }}'
-# version = 3
-# final_space = true
+[blocks.segments.properties]
+branch_icon = ""
+fetch_status = true
+fetch_upstream_icon = true
+source = "cli"
 
-# [secondary_prompt]
-#   template = '❯❯ '
-#   foreground = 'magenta'
-#   background = 'transparent'
-
-# [transient_prompt]
-#   template = '❯ '
-#   background = 'transparent'
-#   foreground_templates = ['{{if gt .Code 0}}red{{end}}', '{{if eq .Code 0}}magenta{{end}}']
-
-# [[blocks]]
-# type = "path"
-# style = "powerline"
-# powerline_symbol = ""
-# foreground = "#ffffff"
-# background = "#61AFEF"
-
-# [blocks.segments.properties]
-# style = "folder"
-
-# [blocks.segments.properties.mapped_locations]
-# "C:\\temp" = ""
-
-# [blocks.segments.properties]
-# cache_duration = 'none'
-# style = 'full'
-
-# [[blocks.segments]]
-# template = ' {{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }} <cyan>{{ if gt .Behind 0 }}⇣{{ end }}{{ if gt .Ahead 0 }}⇡{{ end }}</>'
-# foreground = 'p:grey'
-# background = 'transparent'
-# type = 'git'
-# style = 'plain'
-
-# [blocks.segments.properties]
-# branch_icon = ''
-# cache_duration = 'none'
-# commit_icon = '@'
-# fetch_status = true
-
-# [[blocks]]
-# type = 'rprompt'
-# overflow = 'hidden'
-
-# [[blocks.segments]]
-# template = '{{ .FormattedMs }}'
-# foreground = 'yellow'
-# background = 'transparent'
-# type = 'executiontime'
-# style = 'plain'
-
-# [blocks.segments.properties]
-# cache_duration = 'none'
-# threshold = 5000
-
-# [[blocks]]
-# type = 'prompt'
-# alignment = 'left'
-# newline = true
-
-# [[blocks.segments]]
-# template = '❯'
-# background = 'transparent'
-# type = 'text'
-# style = 'plain'
-# foreground_templates = [
-#   '{{if gt .Code 0}}red{{end}}',
-#   '{{if eq .Code 0}}magenta{{end}}',
-# ]
-
-# [blocks.segments.properties]
-# cache_duration = 'none'
+[[blocks.segments]]
+type = "text"
+style = "plain"
+foreground = "blue"
+template = " ❯ "
