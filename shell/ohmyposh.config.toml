@@ -1,0 +1,117 @@
+"$schema" = "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json"
+final_space = true
+version = 3
+
+[[blocks]]
+type = "prompt"
+alignment = "left"
+
+[[blocks.segments]]
+type = "path"
+style = "powerline"
+foreground = "blue"
+background = "transparent"
+
+[blocks.segments.properties]
+style = "folder"
+
+[[blocks.segments]]
+type = "git"
+style = "powerline"
+# foreground = "#193549"
+# background = "#ffeb3b"
+# background_templates = [
+# "{{ if or (.Working.Changed) (.Staging.Changed) }}#FFEB3B{{ end }}",
+# "{{ if and (gt .Ahead 0) (gt .Behind 0) }}#FFCC80{{ end }}",
+# "{{ if gt .Ahead 0 }}#B388FF{{ end }}",
+# "{{ if gt .Behind 0 }}#B388FB{{ end }}",
+# ]
+# template = "{{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }}  {{ .StashCount }}{{ end }}"
+template = '{{ if gt .Behind 0 }}⇣{{else}}{{ if gt .Ahead 0 }}⇡{{ end }}{{end}}{{ .HEAD }}'
+
+[blocks.segments.properties]
+# fetch_status = true
+# fetch_upstream_icon = true
+# source = "cli"
+branch_icon = " "
+
+# [blocks.segments.properties.mapped_branches]
+# "feat/*" = "🚀 "
+# "bug/*" = "🐛 "
+
+# console_title_template = '{{ .Shell }} in {{ .Folder }}'
+# version = 3
+# final_space = true
+
+# [secondary_prompt]
+#   template = '❯❯ '
+#   foreground = 'magenta'
+#   background = 'transparent'
+
+# [transient_prompt]
+#   template = '❯ '
+#   background = 'transparent'
+#   foreground_templates = ['{{if gt .Code 0}}red{{end}}', '{{if eq .Code 0}}magenta{{end}}']
+
+# [[blocks]]
+# type = "path"
+# style = "powerline"
+# powerline_symbol = ""
+# foreground = "#ffffff"
+# background = "#61AFEF"
+
+# [blocks.segments.properties]
+# style = "folder"
+
+# [blocks.segments.properties.mapped_locations]
+# "C:\\temp" = ""
+
+# [blocks.segments.properties]
+# cache_duration = 'none'
+# style = 'full'
+
+# [[blocks.segments]]
+# template = ' {{ .HEAD }}{{ if or (.Working.Changed) (.Staging.Changed) }}*{{ end }} <cyan>{{ if gt .Behind 0 }}⇣{{ end }}{{ if gt .Ahead 0 }}⇡{{ end }}</>'
+# foreground = 'p:grey'
+# background = 'transparent'
+# type = 'git'
+# style = 'plain'
+
+# [blocks.segments.properties]
+# branch_icon = ''
+# cache_duration = 'none'
+# commit_icon = '@'
+# fetch_status = true
+
+# [[blocks]]
+# type = 'rprompt'
+# overflow = 'hidden'
+
+# [[blocks.segments]]
+# template = '{{ .FormattedMs }}'
+# foreground = 'yellow'
+# background = 'transparent'
+# type = 'executiontime'
+# style = 'plain'
+
+# [blocks.segments.properties]
+# cache_duration = 'none'
+# threshold = 5000
+
+# [[blocks]]
+# type = 'prompt'
+# alignment = 'left'
+# newline = true
+
+# [[blocks.segments]]
+# template = '❯'
+# background = 'transparent'
+# type = 'text'
+# style = 'plain'
+# foreground_templates = [
+#   '{{if gt .Code 0}}red{{end}}',
+#   '{{if eq .Code 0}}magenta{{end}}',
+# ]
+
+# [blocks.segments.properties]
+# cache_duration = 'none'

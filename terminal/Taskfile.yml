@@ -1,43 +1,121 @@
 version: "3"
 
 includes:
-  c: ../common/Taskfile.yml
-
-vars:
-  SHELL:
-    sh: bash
-    windows: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command
+  c:
+    taskfile: ../common
+    dir: ../common
+  l:
+    taskfile: ../language
+    dir: ../language
 
 tasks:
   default:
     desc: default action - lists the tasks (you're looking at it)
     silent: true
     cmds:
-      - task --list
+      - task: alacritty
+      - task: ghostty
+      - task: iterm
+      - task: warp
 
   alacritty:
-    desc: Install Alacritty Termianl (Windows)
     cmds:
-      - task: c:install:windows
+      - task: c:darwin
         vars:
-          PACKAGE: Alacritty.Alacritty;choco:alacritty;scoop:extras/alacritty
-          TEST_COMMAND: alacritty --version
+          PACKAGES: ["alacritty"]
+        platforms: [darwin]
+      # TODO: https://alacritty.org/ => check installation steps
+      - task: c:windows
+        vars:
+          PACKAGE:
+            ["Alacritty.Alacritty;choco:alacritty;scoop:extras/alacritty"]
+        platforms: [windows]
+      - task: alacritty:config
+    desc: Install Alacritty Termianl (Windows)
+
+  alacritty:config:
+    cmds:
+      - cmd: |
+          echo "Must write config script for alacritty"
+    desc: Configure Alacritty
+
+  ghostty:
+    desc: Install Ghostty Terminal (Darwin,Linux)
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: [cask/ghostty]
+        platforms: [darwin]
+      # TODO: https://ghostty.org/docs/install/binary#linux-(official) => check installation steps
+      - task: ghostty:config
+
+  ghostty:config:
+    cmds:
+      - cmd: |
+          config="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+          mv "$config" "$config.bak.$(date +%s)"
+          ln -s $(pwd)/ghostty.config "$config"
+        platforms: [darwin]
+      - cmd: |
+          config="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
+          mv "$config" "$config.bak.$(date +%s)"
+          ln -s $(pwd)/ghostty.config "$config"
+        platforms: [linux]
+    desc: Configure Ghostty
+
+  iterm:
+    desc: Install iTerm Terminal (Darwin)
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: [cask/iterm2, cask/itermai]
+        platforms: [darwin]
+      - task: iterm:config
+
+  iterm:config:
+    cmds:
+      - cmd: |
+          echo "Must write config script for iterm"
+        platforms: [darwin, linux]
+    desc: Configure Ghostty
 
   warp:
     desc: Install Warp Terminal (Darwin,Linux,Windows)
     cmds:
-      - task: c:install:darwin
+      - task: c:darwin
         vars:
-          PACKAGE: cask/warp
-          TEST_COMMAND: alacritty --version
-      - task: c:install:windows
+          PACKAGES: [cask/warp]
+        platforms: [darwin]
+      # TODO: https://www.warp.dev/linux-terminal => check installation steps
+      - task: c:windows
         vars:
-          PACKAGE: Alacritty.Alacritty;choco:alacritty;scoop:extras/alacritty
-          TEST_COMMAND: alacritty --version
+          PACKAGES: [Alacritty.Alacritty;choco:alacritty;scoop:extras/alacritty]
+        platforms: [windows]
+      - task: warp:config
+
+  warp:config:
+    cmds:
+      - cmd: |
+          echo "Must write config script for warp"
+        platforms: [darwin, linux]
+    desc: Configure Ghostty
 
   wezterm:
     desc: Install Wezterm Terminal (Windows)
     cmds:
-      - task: c:install:windows
+      - task: c:darwin
         vars:
-          PACKAGE: wez.wezterm;choco:wezterm;scoop:extras/wezterm
+          PACKAGES: [wezterm]
+        platforms: [darwin]
+      - task: c:windows
+        vars:
+          PACKAGES: [wez.wezterm;choco:wezterm;scoop:extras/wezterm]
+        platforms: [windows]
+      - task: wezterm:config
+
+  wezterm:config:
+    cmds:
+      - cmd: |
+          echo "Must write config script for wezterm"
+        platforms: [darwin, linux]
+    desc: Configure Ghostty

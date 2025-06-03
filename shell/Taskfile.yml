@@ -13,101 +13,107 @@ tasks:
       - task: pwsh
       - task: zsh
   bash:
-    desc: Install Bash
     cmds:
-      - cmd:
-        platforms: [darwin]
-      - cmd: sudo apt install -y git
-        platforms: [linux]
+      - cmd: echo "bash is already installed"
+        platforms: [darwin, linux]
       - task: c:windows
         vars:
           PACKAGES: ["choco:git;scoop:git;winget:Git.Git"]
         platforms: [windows]
-      - task: git:config
-  bash:ohmybash:
-    desc: Backup and link Git configuration files
-    cmds:
-      - cmd: |
-          # Handle .gitconfig file
-          if [ -f "$HOME/.gitconfig" ]; then
-            echo "Backing up existing .gitconfig to $HOME/.gitconfig.bak.$(date +%s)"
-            mv "$HOME/.gitconfig" "$HOME/.gitconfig.bak.$(date +%s)"
-          fi
-          echo "Linking .gitconfig to $HOME/.gitconfig"
-          ln -sf "$(pwd)/.git-config/.gitconfig" "$HOME/.gitconfig"
+    desc: Install Bash
 
-          # Handle .gitattributes file
-          if [ -f "$HOME/.gitattributes" ]; then
-            echo "Backing up existing .gitattributes to $HOME/.gitattributes.bak.$(date +%s)"
-            mv "$HOME/.gitattributes" "$HOME/.gitattributes.bak.$(date +%s)"
+  # bash:ohmybash: # https://github.com/ohmybash/oh-my-bash
+
+  fish: # https://fishshell.com/
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["cask/gitkraken"]
+        platforms: [darwin]
+      - task: c:linux
+        vars:
+          PACKAGES: ["apt:fish;apk:fish;dnf:fish;brew:fish"]
+        platforms: [linux]
+      - cmd: echo "fish shell is only available under wsl or cygwin"
+        platforms: [windows]
+    desc: Install Fish Shell
+
+  # fish:ohmyfish: # https://github.com/oh-my-fish/oh-my-fish
+
+  nushell: # https://www.nushell.sh/
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["nushell"]
+        platforms: [darwin]
+      - cmd: |
+          if command -v apk; then
+            echo "https://alpine.fury.io/nushell/" | tee -a /etc/apk/repositories
+            apk update
+            apk add --allow-untrusted nushell
+          elif command -v apt; then
+            curl -fsSL https://apt.fury.io/nushell/gpg.key | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/fury-nushell.gpg
+            echo "deb https://apt.fury.io/nushell/ /" | sudo tee /etc/apt/sources.list.d/fury.list
+            sudo apt update
+            sudo apt install nushell
+          elif command -v dnf; then
+            echo "[gemfury-nushell]
+            name=Gemfury Nushell Repo
+            baseurl=https://yum.fury.io/nushell/
+            enabled=1
+            gpgcheck=0
+            gpgkey=https://yum.fury.io/nushell/gpg.key" | sudo tee /etc/yum.repos.d/fury-nushell.repo
+            sudo dnf install -y nushell
+          else
+            brew install nushell
           fi
-          echo "Linking .gitattributes to $HOME/.gitattributes"
-          ln -sf "$(pwd)/.git-config/.gitattributes" "$HOME/.gitattributes"
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:nushell;scoop:nu;winget:nushell"]
+        platforms: [windows]
+    desc: Install Nushell
+
+  # nushell:awesome-nu: # https://github.com/nushell/awesome-nu
+
+  pwsh:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["cask/powershell"]
+        platforms: [darwin]
+      - cmd: bash ./pwsh-install.sh
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:pwsh;scoop:main/pwsh;winget:Microsoft.PowerShell"]
+        platforms: [windows]
+    desc: Install Powershell
+
+  ohmyposh:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["jandedobbeleer/oh-my-posh/oh-my-posh"]
+        platforms: [darwin]
+      - cmd: |
+          mkdir -p ~/bin
+          curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/bin
+          # brew install jandedobbeleer/oh-my-posh/oh-my-posh
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["choco:oh-my-posh;winget:JanDeDobbeleer.OhMyPosh"]
+        platforms: [windows]
+      - cmd: |
+          echo "Configure"
         platforms: [darwin, linux]
       - cmd: |
-          pwsh.exe -File ./gitconfig.ps1
+          echo "Configure"
         platforms: [windows]
-  # fish:
-  #   desc: Install GitKraken
-  #   cmds:
-  #     - task: c:darwin
-  #       vars:
-  #         PACKAGES: ["cask/gitkraken"]
-  #       platforms: [darwin]
-  #     - cmd: sudo snap install gitkraken --classic
-  #       platforms: [linux]
-  #     - task: c:windows
-  #       vars:
-  #         PACKAGES:
-  #           ["choco:gitkraken;scoop:extras/gitkraken;winget:Axosoft.GitKraken"]
-  #       platforms: [windows]
-  # fish:ohmyfish:
-  #   desc: Install GitHub CLI
-  #   cmds:
-  #     - task: c:darwin
-  #       vars:
-  #         PACKAGES: ["gh"]
-  #       platforms: [darwin]
-  #     - cmd: sudo apt install -y gh
-  #       platforms: [linux]
-  #     - task: c:windows
-  #       vars:
-  #         PACKAGES: ["choco:gh;scoop:gh;winget:GitHub.cli"]
-  #       platforms: [windows]
-  # nushell: # https://jj-vcs.github.io/jj/latest/install-and-setup/
-  #   desc: Install JJ Version Control
-  #   cmds:
-  #     - task: c:darwin
-  #       vars:
-  #         PACKAGES: ["jj"]
-  #       platforms: [darwin]
-  #     - cmd: echo TODO
-  #       platforms: [linux]
-  #     - task: c:windows
-  #       cmd: cargo install --locked --bin jj jj-cli --features vendored-openssl
-  #   deps:
-  #     - task: l:rust
-
-  # pwsh:
-  #   desc: Install LazyGit
-  #   cmds:
-  #     - task: c:darwin
-  #       vars:
-  #         PACKAGES: ["lazygit"]
-  #       platforms: [darwin]
-  #     - cmd: sudo snap install lazygit --classic
-  #       platforms: [linux]
-  #     - task: c:windows
-  #       vars:
-  #         PACKAGES:
-  #           ["choco:lazygit;scoop:extras/lazygit;winget:JesseDuffield.lazygit"]
-  #       platforms: [windows]
-
-  # pwsh:ohmypwsh:
-  #   desc: Install Oh My Posh
+    desc: Install OhMyPosh
 
   # zsh:
   #   desc: Install Zsh
 
-  # zsh:ohmyzsh:
-  #   desc: Install Oh My Zsh
+  # zsh:ohmyzsh: # https://ohmyz.sh/
