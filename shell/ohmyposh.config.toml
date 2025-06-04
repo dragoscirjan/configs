@@ -23,8 +23,8 @@ macos = "mac"
 [[blocks.segments]]
 type = "text"
 style = "plain"
-foreground = "#666666"
 template = " ❯ "
+foreground = "#666666"
 
 # Language Icons
 #
@@ -64,6 +64,14 @@ foreground = "#342311"
 background = "transparent"
 template = ""
 
+# [[blocks.segments]]
+# type = "text"
+# style = "plain"
+# foreground = "#666666"
+# template = " ❯ "
+# enabled = true
+# include_folders = ["**/package.json"]
+
 # Path Settings
 #
 
@@ -81,7 +89,6 @@ style = "folder"
 folder_icon = ""
 folder_separator_icon = " / "
 home_icon = "~"
-
 
 [blocks.segments.properties.mapped_locations]
 # TODO: Can this be used as an enviroment variable?
