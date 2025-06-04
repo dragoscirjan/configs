@@ -7,6 +7,28 @@ type = "prompt"
 alignment = "left"
 newline = false
 
+# OS Icon
+#
+
+[[blocks.segments]]
+type = "os"
+style = "plain"
+foreground = "#666666"
+background = "transparent"
+template = "{{ if .WSL }}WSL at {{ end }}{{.Icon}}"
+
+[blocks.segments.properties]
+macos = "mac"
+
+[[blocks.segments]]
+type = "text"
+style = "plain"
+foreground = "#666666"
+template = " ❯ "
+
+# Language Icons
+#
+
 [[blocks.segments]]
 type = "node"
 style = "powerline"
@@ -15,19 +37,59 @@ background = "transparent"
 template = ""
 
 [[blocks.segments]]
+type = "go"
+style = "powerline"
+foreground = "#ffffff"
+background = "transparent"
+template = ""
+
+[[blocks.segments]]
+type = "python"
+style = "powerline"
+foreground = "#100e23"
+background = "transparent"
+template = ""
+
+[[blocks.segments]]
+type = "rust"
+style = "powerline"
+foreground = "#193549"
+background = "transparent"
+template = ""
+
+[[blocks.segments]]
+type = "zig"
+style = "powerline"
+foreground = "#342311"
+background = "transparent"
+template = ""
+
+# Path Settings
+#
+
+[[blocks.segments]]
 type = "path"
 style = "powerline"
 foreground = "blue"
 background = "transparent"
+# template = '{{.Path}}'
+template = ' {{.Path}}'
 
 [blocks.segments.properties]
+# style = "agnoster"
 style = "folder"
-# style = "full"
+folder_icon = ""
+folder_separator_icon = " / "
+home_icon = "~"
+
 
 [blocks.segments.properties.mapped_locations]
 # TODO: Can this be used as an enviroment variable?
 # "$env:USERPROFILE" = ""
 "$env:TEMP" = ""
+
+# Source Control
+#
 
 [[blocks.segments]]
 type = "git"
@@ -54,6 +116,24 @@ branch_icon = ""
 fetch_status = true
 fetch_upstream_icon = true
 source = "cli"
+
+# Status Code
+#
+
+[[blocks.segments]]
+type = "status"
+style = "diamond"
+foreground = "green"
+background = "transparent"
+foreground_templates = ["{{ if .Error }}#e91e63{{ end }}"]
+trailing_diamond = ""
+template = " "
+
+[blocks.segments.properties]
+always_enabled = true
+
+# Prompt Symbol
+#
 
 [[blocks.segments]]
 type = "text"
