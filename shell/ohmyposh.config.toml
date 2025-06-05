@@ -17,9 +17,6 @@ foreground = "#666666"
 background = "transparent"
 template = "{{ if .WSL }}WSL at {{ end }}{{.Icon}}"
 
-[blocks.segments.properties]
-macos = "mac"
-
 [[blocks.segments]]
 type = "text"
 style = "plain"
