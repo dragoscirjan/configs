@@ -39,7 +39,7 @@ tasks:
             mv "$HOME/.gitconfig" "$HOME/.gitconfig.bak.$(date +%s)"
           fi
           echo "Linking .gitconfig to $HOME/.gitconfig"
-          ln -sf "$(pwd)/.git-config/.gitconfig" "$HOME/.gitconfig"
+          ln -sf "$(pwd)/git.config/gitconfig" "$HOME/.gitconfig"
 
           # Handle .gitattributes file
           if [ -f "$HOME/.gitattributes" ]; then
@@ -47,7 +47,7 @@ tasks:
             mv "$HOME/.gitattributes" "$HOME/.gitattributes.bak.$(date +%s)"
           fi
           echo "Linking .gitattributes to $HOME/.gitattributes"
-          ln -sf "$(pwd)/.git-config/.gitattributes" "$HOME/.gitattributes"
+          ln -sf "$(pwd)/git.config/gitattributes" "$HOME/.gitattributes"
         platforms: [darwin, linux]
       - cmd: |
           pwsh.exe -File ./gitconfig.ps1

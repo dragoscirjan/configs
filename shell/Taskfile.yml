@@ -94,7 +94,7 @@ tasks:
     cmds:
       - task: c:darwin
         vars:
-          PACKAGES: ["jandedobbeleer/oh-my-posh/oh-my-posh"]
+          PACKAGES: ["oh-my-posh"]
         platforms: [darwin]
       - cmd: |
           mkdir -p ~/bin

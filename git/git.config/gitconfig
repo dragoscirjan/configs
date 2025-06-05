@@ -26,6 +26,9 @@
   # Shorder name for checkout
   co = "!sh -c 'git checkout "$@"' -"
 
+  # Branch Cleanup
+  bcp = "!sh -c 'git branch | grep -v main | while read b; do git branch -d $b || git branch -D $b; done'"
+
 # Core configuration settings for Git behavior
 [core]
 	# Use a specific SSH key for Git operations
