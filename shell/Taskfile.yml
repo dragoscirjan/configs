@@ -106,14 +106,51 @@ tasks:
           PACKAGES: ["choco:oh-my-posh;winget:JanDeDobbeleer.OhMyPosh"]
         platforms: [windows]
       - cmd: |
-          echo "Configure"
+          echo "Configure"i
         platforms: [darwin, linux]
       - cmd: |
           echo "Configure"
         platforms: [windows]
     desc: Install OhMyPosh
 
-  # zsh:
-  #   desc: Install Zsh
+  # starship: # https://starship.rs/
+
+  utils:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES:
+            - autojump # https://github.com/wting/autojump
+            - fzf # https://junegunn.github.io/fzf/
+            - tmux
+        platforms: [darwin]
+      # https://yazi-rs.github.io/
+      # TODO: Maybe create a separate task for yazi
+      - cmd: brew install yazi ffmpeg sevenzip jq poppler fd ripgrep fzf zoxide resvg imagemagick font-symbols-only-nerd-font
+        platforms: [darwin]
+      - task: c:linux
+        vars:
+          PACKAGES:
+            - ???
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES:
+            - autojump
+        platforms: [windows]
+
+  zsh:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: [zsh]
+        platforms: [darwin]
+      - task: c:linux
+        vars:
+          PACKAGES: []
+        platforms: [linux]
+      - cmd: echo "ZSH can only be used in WSL"
+        platforms: [windows]
+    desc: Install Zsh
 
   # zsh:ohmyzsh: # https://ohmyz.sh/

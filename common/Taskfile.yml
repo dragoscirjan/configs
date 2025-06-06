@@ -30,6 +30,10 @@ tasks:
     desc: Install a Package under Darwin, using Homebrew
     internal: true
 
+  linux:
+    cmds:
+      - echo "not supported yet. need to write it"
+
   windows:
     cmds:
       - for:
