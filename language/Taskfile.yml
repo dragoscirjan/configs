@@ -80,7 +80,7 @@ tasks:
       - task: c:darwin
         vars:
           PACKAGES: ["go"]
-        platforms: [groovy]
+        platforms: [darwin]
       # - cmd: sudo apt install -y git  # TODO: Write installer
       #   platforms: [linux]
       - task: c:windows
