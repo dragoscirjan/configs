@@ -42,8 +42,8 @@ if ($packages.Count -eq 0 -or ($packages.Count -eq 1 -and $packages[0].Manager -
 }
 $installCommands = @{
     "winget" = @{
-        install = { param($pkg) winget install -e --id $pkg };
-        forceInstall = { param($pkg) winget install -e --id $pkg --force };
+        install = { param($pkg) winget install -e --id $pkg --silent };
+        forceInstall = { param($pkg) winget install -e --id $pkg --silent --force  };
     };
     "choco" = @{
         install = { param($pkg) choco install -y $pkg };

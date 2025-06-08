@@ -13,36 +13,50 @@ tasks:
       - task: node
       - task: java
       - task: python
+      # TODO: Uncomment when task
+      # - task: tr:make
+      # - task: tr:cmake
+      # - task: tr:xmake
     desc: Install minimal set of used languages
 
+  # https://bun.sh/docs/installation
+  #
   bun:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["bun"]
-        platforms: [darwin]
-      - cmd: curl -fsSL https://bun.sh/install | sudo bash
-        platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["choco:bun;scoop:bun;winget:Bun.Bun"]
+      - cmd: curl -fsSL https://bun.sh/install | bash
+        platforms: [darwin, linux]
+      - cmd: |
+          powershell -c "irm bun.sh/install.ps1|iex"
         platforms: [windows]
-    desc: Install Clangd
+    desc: Install Bun
 
-  clangd:
+  # https://llvm.org/docs/GettingStarted.html
+  cpp:
     cmds:
       - task: c:darwin
         vars:
-          PACKAGES: ["clangd"]
+          PACKAGES: ["llvm"]
         platforms: [darwin]
-      # - cmd: sudo apt install -y git
-      #   platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["choco:llvm;scoop:llvm;winget:clangd"]
+      - cmd: |
+          echo "Must write installer script for C++"
+        platforms: [linux]
+      - cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'winget install `
+            --id Microsoft.VisualStudio.2022.BuildTools `
+            --exact `
+            --override "--wait --passive `
+              --add Microsoft.VisualStudio.Component.VC.CoreIde `
+              --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
+              --add Microsoft.VisualStudio.Component.VC.CMake.Project `
+              --add Microsoft.VisualStudio.Component.Windows11SDK.22621 `
+              --add Microsoft.VisualStudio.Component.VC.ATL `
+              --add Microsoft.VisualStudio.Component.VC.MFC" `
+            --force'
         platforms: [windows]
-    desc: Install Clangd
+    desc: Install C++ (C/C++ Compiler)
 
+  # https://docs.deno.com/runtime/getting_started/installation/
+  #
   deno:
     cmds:
       - task: c:darwin
@@ -55,12 +69,14 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:deno;scoop:deno;winget:DenoLand.Deno"]
+          PACKAGES: ["winget:DenoLand.Deno;choco:deno;scoop:deno"]
         platforms: [windows]
       # - cmd: irm https://deno.land/install.ps1 | iex
       #   platforms: [windows]
     desc: Install Deno
 
+  # https://go.dev/doc/install
+  #
   go:
     cmds:
       - task: c:darwin
@@ -69,26 +85,31 @@ tasks:
         platforms: [darwin]
       # - cmd: sudo apt install -y git
       #   platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["choco:golang;scoop:go;winget:Golang.Go"]
+      - cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install-go.ps1
         platforms: [windows]
     desc: Install Go
 
+  # https://groovy-lang.org/install.html
+  #
   groovy:
     cmds:
       - task: c:darwin
         vars:
-          PACKAGES: ["go"]
+          PACKAGES: ["groovy"]
         platforms: [darwin]
       # - cmd: sudo apt install -y git  # TODO: Write installer
       #   platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:groovy;scoop:main/groovy;winget:Apache.Groovy.4"]
+          PACKAGES: ["winget:Apache.Groovy.4;choco:groovy;scoop:main/groovy"]
         platforms: [windows]
     desc: Install Groovy
+    deps:
+      - task: java
 
+  # https://openjdk.org/install/
+  #
   java:
     cmds:
       - task: c:darwin
@@ -99,10 +120,37 @@ tasks:
       #   platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:openjdk;scoop:main/openjdk;winget:AdoptOpenJDK.OpenJDK"]
+          PACKAGES: ["winget:ojdkbuild.openjdk.11.jdk;choco:openjdk;scoop:main/openjdk"]
         platforms: [windows]
     desc: Install Java (OpenJDK)
 
+  # https://clangd.llvm.org/installation
+  #
+  llvm:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["cmake", "llvm"]
+        platforms: [darwin]
+      # - cmd: sudo apt install -y git
+      #   platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["winget:LLVM.LLVM;choco:llvm;scoop:llvm"]
+        platforms: [windows]
+      - cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -Command `
+            "if (-not ($env:PATH -split ';' | Where-Object { $_.TrimEnd('\\') -ieq 'C:\\Program Files\\LLVM\\bin' })) { `
+              [Environment]::SetEnvironmentVariable('PATH', $env:PATH + ';C:\\Program Files\\LLVM\\bin', [EnvironmentVariableTarget]::User); `
+              Write-Host 'Added LLVM to PATH'; `
+            } else { `
+              Write-Host 'LLVM already in PATH'; `
+            }"
+        platforms: [windows]
+    desc: Install LLVM (C/C++ Compiler)
+
+  # https://www.lua.org/download.html
+  #
   lua:
     cmds:
       - task: c:darwin
@@ -114,13 +162,18 @@ tasks:
       - task: c:windows
         vars:
           PACKAGES:
-            - "choco:lua;scoop:main/lua"
-            - "choco:luarocks;scoop:main/luarocks"
+            - "winget:DEVCOM.Lua;choco:lua;scoop:main/lua"
+        platforms: [windows]
+      - cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install-luarocks.ps1
         platforms: [windows]
     deps:
       - task: java
     desc: Install Lua
 
+  # https://github.com/nvm-sh/nvm/blob/master/README.md#install--update-script
+  # https://github.com/coreybutler/nvm-windows
+  #
   node:
     cmds:
       - cmd: |
@@ -129,10 +182,11 @@ tasks:
       - cmd: |
           [ -f $HOME/.nvmrc ] && cp $HOME/.nvmrc $HOME/.nvmrc.bak.$(date +%s)
           echo "lts/*" > $HOME/.nvmrc
+          cd $HOME && nvm install && nvm use --default
         platforms: [darwin, linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:nvm;scoop:nvm;winget:CoreyButler.NVMforWindows"]
+          PACKAGES: ["winget:CoreyButler.NVMforWindows;choco:nvm;scoop:nvm"]
         platforms: [windows]
       - cmd: |
           [ -f $HOME/.nvmrc ] && cp $HOME/.nvmrc $HOME/.nvmrc.bak.$(date +%s)
@@ -141,6 +195,8 @@ tasks:
         platforms: [darwin, linux]
     desc: Install Node.js
 
+  # https://www.php.net/manual/en/install.php
+  #
   php:
     cmds:
       - task: c:darwin
@@ -153,10 +209,30 @@ tasks:
       #   platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:php;scoop:php;winget:PHP.Php"]
+          PACKAGES: ["winget:PHP.Php;choco:php;scoop:php"]
         platforms: [windows]
     desc: Install PHP
 
+  # https://www.python.org/downloads/
+  #
+  python:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["python"]
+        platforms: [darwin]
+      # - task: c:linux # TODO: Write Installer
+      #   vars:
+      #     PACKAGES: ["python3"] # On most distros, use 'python3' (not 'python')
+      #   platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["winget:Python.Python.3.11;choco:python;scoop:python"]
+        platforms: [windows]
+    desc: Install Python
+
+  # https://www.ruby-lang.org/en/documentation/installation/
+  #
   ruby:
     cmds:
       - task: c:darwin
@@ -169,10 +245,12 @@ tasks:
       #   platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:ruby;scoop:ruby;winget:RubyTeam.Ruby.3.1"]
+          PACKAGES: ["winget:RubyTeam.Ruby.3.1;choco:ruby;scoop:ruby"]
         platforms: [windows]
     desc: Install Ruby
 
+  # https://www.rust-lang.org/tools/install
+  #
   rust:
     cmds:
       - task: c:darwin
@@ -187,13 +265,15 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:rust;scoop:rustup;winget:Rustlang.Rustup"]
+          PACKAGES: ["winget:Rustlang.Rustup;choco:rust;scoop:rustup"]
         platforms: [windows]
-      - cmd: |
-          pwsh.exe -Command "if (Get-Command rustup-init.exe) { rustup-init.exe -y }"
-        platforms: [windows]
+      # - cmd: |
+      #     powershell.exe -Command "if (Get-Command rustup-init.exe) { rustup-init.exe -y }"
+      #   platforms: [windows]
     desc: Install Rust
 
+  # https://www.scala-lang.org/download/
+  #
   swift:
     cmds:
       - task: c:darwin
@@ -210,6 +290,8 @@ tasks:
         platforms: [windows]
     desc: Install Swift
 
+  # https://ziglang.org/download/
+  #
   zig:
     cmds:
       - task: c:darwin
@@ -222,6 +304,6 @@ tasks:
       #   platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:zig;scoop:bundle/zig;winget:Ziglang.Zig"]
+          PACKAGES: ["winget:Ziglang.Zig;choco:zig;scoop:bundle/zig"]
         platforms: [windows]
     desc: Install Zig

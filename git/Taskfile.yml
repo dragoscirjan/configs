@@ -12,6 +12,7 @@ tasks:
   default:
     desc: Install minimal set of used languages
     cmds:
+      - task: jj
       - task: git
       - task: gitkraken
       - task: gh
@@ -26,9 +27,10 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:git;scoop:git;winget:Git.Git"]
+          PACKAGES: ["winget:Git.Git;choco:git;scoop:git"]
         platforms: [windows]
       - task: git:config
+
   git:config:
     desc: Backup and link Git configuration files
     cmds:
@@ -50,8 +52,9 @@ tasks:
           ln -sf "$(pwd)/git.config/gitattributes" "$HOME/.gitattributes"
         platforms: [darwin, linux]
       - cmd: |
-          pwsh.exe -File ./gitconfig.ps1
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./git-config.ps1
         platforms: [windows]
+
   gitkraken:
     desc: Install GitKraken
     cmds:
@@ -64,8 +67,9 @@ tasks:
       - task: c:windows
         vars:
           PACKAGES:
-            ["choco:gitkraken;scoop:extras/gitkraken;winget:Axosoft.GitKraken"]
+            ["winget:Axosoft.GitKraken;choco:gitkraken;scoop:extras/gitkraken"]
         platforms: [windows]
+
   gh:
     desc: Install GitHub CLI
     cmds:
@@ -77,21 +81,25 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:gh;scoop:gh;winget:GitHub.cli"]
+          PACKAGES: ["winget:GitHub.cli;choco:gh;scoop:gh"]
         platforms: [windows]
-  jj: # https://jj-vcs.github.io/jj/latest/install-and-setup/
+
+  # https://jj-vcs.github.io/jj/latest/install-and-setup/
+  #
+  jj:
     desc: Install JJ Version Control
     cmds:
       - task: c:darwin
         vars:
           PACKAGES: ["jj"]
         platforms: [darwin]
-      - cmd: echo TODO
-        platforms: [linux]
       - task: c:windows
-        cmd: cargo install --locked --bin jj jj-cli --features vendored-openssl
-        platforms: [windows]
+        cmd: |
+          # To install the latest release
+          cargo install --locked --bin jj jj-cli
+        platforms: [linux, windows]
     deps:
+      - task: l:cpp
       - task: l:rust
 
   lazygit:
@@ -106,5 +114,5 @@ tasks:
       - task: c:windows
         vars:
           PACKAGES:
-            ["choco:lazygit;scoop:extras/lazygit;winget:JesseDuffield.lazygit"]
+            ["winget:JesseDuffield.lazygit;choco:lazygit;scoop:extras/lazygit"]
         platforms: [windows]

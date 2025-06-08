@@ -18,7 +18,7 @@ tasks:
         platforms: [darwin, linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:git;scoop:git;winget:Git.Git"]
+          PACKAGES: ["winget:Git.Git;choco:git;scoop:git"]
         platforms: [windows]
     desc: Install Bash
 
@@ -70,7 +70,7 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:nushell;scoop:nu;winget:nushell"]
+          PACKAGES: ["winget:nushell;choco:nushell;scoop:nu"]
         platforms: [windows]
     desc: Install Nushell
 
@@ -86,7 +86,7 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:pwsh;scoop:main/pwsh;winget:Microsoft.PowerShell"]
+          PACKAGES: ["winget:Microsoft.PowerShell;choco:pwsh;scoop:main/pwsh"]
         platforms: [windows]
     desc: Install Powershell
 
@@ -103,13 +103,13 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:oh-my-posh;winget:JanDeDobbeleer.OhMyPosh"]
+          PACKAGES: ["winget:JanDeDobbeleer.OhMyPosh;choco:oh-my-posh"]
         platforms: [windows]
       - cmd: |
-          echo "Configure"i
+          echo "Configure"
         platforms: [darwin, linux]
       - cmd: |
-          echo "Configure"
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./ohmyposh-config.ps1
         platforms: [windows]
     desc: Install OhMyPosh
 
@@ -136,7 +136,13 @@ tasks:
       - task: c:windows
         vars:
           PACKAGES:
-            - autojump
+            - winget:junegunn.fzf;choco:fzf;scoop:fzf
+        platforms: [windows]
+      - cmd: | # https://github.com/tkellogg/Jump-Location
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Install-Module Jump.Location -Scope CurrentUser"
+        platforms: [windows]
+      - cmd: | # https://github.com/vors/ZLocation
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Install-Module ZLocation -Scope CurrentUser"
         platforms: [windows]
 
   zsh:

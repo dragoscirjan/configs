@@ -1,0 +1,97 @@
+version: "3"
+
+includes:
+  c:
+    taskfile: ../common
+    dir: ../common
+
+vars:
+  NERD_FONT_BASE_URL: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0"
+
+tasks:
+  default:
+    desc: default action - lists the tasks (you're looking at it)
+    silent: true
+    cmds:
+      - task: dejavu
+      - task: firacode
+      - task: hasklug
+      - task: saucecodepro
+      - task: ubuntumono
+
+  nerd:custom:
+    desc: Install custom Nerd Fonts
+    preconditions:
+      - sh: '[ -n "{{.FONT_NAME}}" ]'
+        msg: "You must provide FONT_NAME, e.g. task nerd:custom FONT_NAME=FiraCode"
+    cmds:
+      - cmd: bash ./install-fonts-macos.sh {{.NERD_FONT_BASE_URL}}/${{.FONT_NAME}}.zip
+        platforms: [darwin]
+      - cmd: bash ./install-fonts-linux.sh {{.NERD_FONT_BASE_URL}}/${{.FONT_NAME}}.zip
+        platforms: [linux]
+      - cmd: powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install-fonts-windows.ps1 -Urls {{.NERD_FONT_BASE_URL}}/{{.FONT_NAME}}.zip -SystemWide
+        platforms: [windows]
+    vars:
+      FONT_NAME: "{{.FONT_NAME}}"
+    silent: true
+
+  agave:
+    desc: Install Agave Nerd Font
+    cmds:
+      - task: nerd:custom
+        vars: { FONT_NAME: "Agave" }
+
+  dejavu:
+    desc: Install DejaVu Sans Mono Nerd Font
+    cmds:
+      - task: nerd:custom
+        vars:
+          FONT_NAME: "DejaVuSansMono"
+
+  firacode:
+    desc: Install Fira Code Nerd Font
+    cmds:
+      - task: nerd:custom
+        vars: { FONT_NAME: "FiraCode" }
+
+  hasklug:
+    desc: Install Hasklug Nerd Font
+    cmds:
+      - task: nerd:custom
+        vars: { FONT_NAME: "Hasklig" }
+
+  inconsolata:
+    desc: Install Inconsolata Nerd Font
+    cmds:
+      - task: nerd:custom
+        vars: { FONT_NAME: "Inconsolata" }
+
+  lekton:
+    desc: Install Lekton Nerd Font
+    cmds:
+      - task: nerd:custom
+        vars: { FONT_NAME: "Lekton" }
+
+  lilex:
+    desc: Install Lilex Nerd Font
+    cmds:
+      - task: nerd:custom
+        vars: { FONT_NAME: "Lilex" }
+
+  robotomono:
+    desc: Install Roboto Mono Nerd Font
+    cmds:
+      - task: nerd:custom
+        vars: { FONT_NAME: "RobotoMono" }
+
+  saucecodepro:
+    desc: Install Sauce Code Pro Nerd Font
+    cmds:
+      - task: nerd:custom
+        vars: { FONT_NAME: "SourceCodePro" }
+
+  ubuntumono:
+    desc: Install Ubuntu Mono Nerd Font
+    cmds:
+      - task: nerd:custom
+        vars: { FONT_NAME: "Ubuntu" }

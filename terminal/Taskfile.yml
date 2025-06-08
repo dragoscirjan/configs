@@ -18,6 +18,8 @@ tasks:
       - task: iterm
       - task: warp
 
+  # https://alacritty.org/
+  #
   alacritty:
     cmds:
       - task: c:darwin
@@ -28,7 +30,7 @@ tasks:
       - task: c:windows
         vars:
           PACKAGE:
-            ["Alacritty.Alacritty;choco:alacritty;scoop:extras/alacritty"]
+            ["winget:Alacritty.Alacritty;choco:alacritty;scoop:extras/alacritty"]
         platforms: [windows]
       - task: alacritty:config
     desc: Install Alacritty Termianl (Windows)
@@ -39,6 +41,8 @@ tasks:
           echo "Must write config script for alacritty"
     desc: Configure Alacritty
 
+  # https://ghostty.org/
+  #
   ghostty:
     desc: Install Ghostty Terminal (Darwin,Linux)
     cmds:
@@ -63,6 +67,8 @@ tasks:
         platforms: [linux]
     desc: Configure Ghostty
 
+  # https://iterm2.com/
+  #
   iterm:
     desc: Install iTerm Terminal (Darwin)
     cmds:
@@ -79,6 +85,21 @@ tasks:
         platforms: [darwin, linux]
     desc: Configure Ghostty
 
+  # https://github.com/microsoft/terminal
+  #
+  terminal:
+    desc: Install Terminal (Darwin,Linux,Windows)
+    cmds:
+      - cmd: |
+          echo "Microsoft Terminal is not supported on Darwin and Linux"
+        platforms: [darwin, linux]
+      - task: c:windows
+        vars:
+          PACKAGES: [winget:Microsoft.WindowsTerminal;choco:microsoft-windows-terminal;scoop:extras/windows-terminal]
+        platforms: [windows]
+
+  # https://www.warp.dev/
+  #
   warp:
     desc: Install Warp Terminal (Darwin,Linux,Windows)
     cmds:
@@ -89,7 +110,7 @@ tasks:
       # TODO: https://www.warp.dev/linux-terminal => check installation steps
       - task: c:windows
         vars:
-          PACKAGES: [Alacritty.Alacritty;choco:alacritty;scoop:extras/alacritty]
+          PACKAGES: [winget:Warp.Warp;choco:warp;scoop:warp]
         platforms: [windows]
       - task: warp:config
 
@@ -100,6 +121,8 @@ tasks:
         platforms: [darwin, linux]
     desc: Configure Ghostty
 
+  # https://wezterm.org/index.html
+  #
   wezterm:
     desc: Install Wezterm Terminal (Windows)
     cmds:
@@ -109,7 +132,7 @@ tasks:
         platforms: [darwin]
       - task: c:windows
         vars:
-          PACKAGES: [wez.wezterm;choco:wezterm;scoop:extras/wezterm]
+          PACKAGES: [winget:wez.wezterm;choco:wezterm;scoop:extras/wezterm]
         platforms: [windows]
       - task: wezterm:config
 
