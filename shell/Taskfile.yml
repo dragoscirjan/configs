@@ -124,10 +124,6 @@ tasks:
             - fzf # https://junegunn.github.io/fzf/
             - tmux
         platforms: [darwin]
-      # https://yazi-rs.github.io/
-      # TODO: Maybe create a separate task for yazi
-      - cmd: brew install yazi ffmpeg sevenzip jq poppler fd ripgrep fzf zoxide resvg imagemagick font-symbols-only-nerd-font
-        platforms: [darwin]
       - task: c:linux
         vars:
           PACKAGES:
@@ -144,6 +140,33 @@ tasks:
       - cmd: | # https://github.com/vors/ZLocation
           powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Install-Module ZLocation -Scope CurrentUser"
         platforms: [windows]
+      - task: utils:yazi
+
+  # https://yazi-rs.github.io/
+  # TODO: untested
+  utils:yazi:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES:
+            [yazi, ffmpeg, sevenzip, jq, poppler, fd, ripgrep, fzf, zoxide, resvg, imagemagick, font-symbols-only-nerd-font]
+        platforms: [darwin]
+      - task: c:windows
+        vars:
+          PACKAGES:
+            - winget:sxyazi.yazi;choco:yazi;scoop:yazi
+            - winget:Gyan.FFmpeg;choco:ffmpeg;scoop:ffmpeg
+            - winget:7zip.7zip;choco:7zip;scoop:7zip
+            - winget:jqlang.jq;choco:jq;scoop:jq
+            - choco:poppler;scoop:poppler
+            - winget:sharkdp.fd;choco:fd;scoop:fd
+            - winget:BurntSushi.ripgrep.MSVC;choco:ripgrep;scoop:ripgrep
+            - winget:fzf;choco:fzf;scoop:fzf
+            - winget:ajeetdsouza.zoxide;choco:zoxide;scoop:zoxide
+            - scoop:resvg
+            - winget:ImageMagick.ImageMagick;choco:imagemagick;scoop:imagemagick
+            - winget:MikeFarah.yq;choco:yq;scoop:main/yq
+    desc: Install useful utils
 
   zsh:
     cmds:
