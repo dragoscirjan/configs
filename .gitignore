@@ -26,3 +26,6 @@ dist
 
 # mac
 .DS_Store
+
+# nvim
+ide/neovim-config/lazy-lock.json
