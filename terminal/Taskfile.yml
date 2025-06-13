@@ -141,4 +141,7 @@ tasks:
       - cmd: |
           echo "Must write config script for wezterm"
         platforms: [darwin, linux]
-    desc: Configure Ghostty
+      - cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../common/link-config.ps1 -Source wezterm.config.lua -Destination __HOME__/.wezterm.lua
+        platforms: [windows]
+    desc: Configure Wezterm

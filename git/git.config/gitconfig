@@ -180,6 +180,12 @@
 	directory = C:\\Users\\drago\\AppData\\Local\\nvim-data\\lazy\\ts-comments.nvim
 	directory = C:\\Users\\drago\\AppData\\Local\\nvim-data\\lazy\\which-key.nvim
 
+	directory = C:\\Users\\drago\\AppData\\Local\\nvim
+	directory = C:\\Users\\drago\\Workspace\\gh--dragoscirjan\\configs\\ide\\neovim-config
+	directory = C:\\Users\\drago\\Workspace\\gh--dragoscirjan\\configs\\ide\\neovim-config
+	directory = C:\\Users\\drago\\AppData\\Local\\nvim
+	directory = C:\\Users\\drago\\Workspace\\gh--dragoscirjan\\configs\\ide\\neovim-config
+	directory = C:\\Users\\drago\\Workspace\\gh--dragoscirjan\\configs\\ide\\neovim-config
 # Specify the path for global gitattributes
 # These settings will be applied to all repositories
 [core]

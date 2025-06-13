@@ -138,16 +138,16 @@ tasks:
         vars:
           PACKAGES: ["winget:LLVM.LLVM;choco:llvm;scoop:llvm"]
         platforms: [windows]
-      - cmd: |
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -Command `
-            "if (-not ($env:PATH -split ';' | Where-Object { $_.TrimEnd('\\') -ieq 'C:\\Program Files\\LLVM\\bin' })) { `
-              [Environment]::SetEnvironmentVariable('PATH', $env:PATH + ';C:\\Program Files\\LLVM\\bin', [EnvironmentVariableTarget]::User); `
-              Write-Host 'Added LLVM to PATH'; `
-            } else { `
-              Write-Host 'LLVM already in PATH'; `
-            }"
+      - task: llvm:attach
         platforms: [windows]
     desc: Install LLVM (C/C++ Compiler)
+
+  llvm:attach:
+    cmds:
+      - cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../common/add-to-path.ps1 -Item "C:\\Program Files\\LLVM\\bin"
+        platforms: [windows]
+    desc: Add LLVM to PATH
 
   # https://www.lua.org/download.html
   #

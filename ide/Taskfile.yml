@@ -32,7 +32,7 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:clion-ide;scoop:extras/clion;winget:JetBrains.CLion"]
+          PACKAGES: ["winget:JetBrains.CLion;choco:clion-ide;scoop:extras/clion"]
         platforms: [windows]
 
   coursor:
@@ -46,7 +46,7 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:coursor;scoop:extras/coursor;winget:Coursor.Coursor"]
+          PACKAGES: ["winget:Coursor.Coursor;choco:coursor;scoop:extras/coursor"]
         platforms: [windows]
 
   goland:
@@ -60,7 +60,7 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:goland;scoop:extras/goland;winget:JetBrains.GoLand"]
+          PACKAGES: ["winget:JetBrains.GoLand;choco:goland;scoop:extras/goland"]
         platforms: [windows]
 
   neovim:
@@ -75,11 +75,11 @@ tasks:
       - task: c:windows
         vars:
           PACKAGES:
-            - "choco:neovim;scoop:main/neovim;winget:Neovim.Neovim"
+            - "winget:Neovim.Neovim;choco:neovim;scoop:main/neovim"
         platforms: [windows]
       - task: neovim:config
     deps:
-      - task: l:clangd
+      - task: l:llvm
       - task: l:lua
     summary: |
       Inspired from
@@ -117,7 +117,21 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:vscode;scoop:extras/vscode;winget:Microsoft.VisualStudioCode"]
+          PACKAGES: ["winget:Microsoft.VisualStudioCode;choco:vscode;scoop:extras/vscode"]
+        platforms: [windows]
+
+  vscode:insiders:
+    desc: Install VS Code Insiders
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["visual-studio-code-insiders"]
+        platforms: [darwin]
+      - cmd: sudo snap install code-insiders --classic
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["winget:Microsoft.VisualStudioCode.Insiders;choco:vscode-insiders;scoop:extras/vscode-insiders"]
         platforms: [windows]
 
   vscodium:
@@ -131,7 +145,21 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:vscodium;scoop:extras/vscodium;winget:VSCodium.VSCodium"]
+          PACKAGES: ["winget:VSCodium.VSCodium;choco:vscodium;scoop:extras/vscodium"]
+        platforms: [windows]
+
+  vscodium:insiders:
+    desc: Install VSCodium Insiders (open source build of VS Code Insiders)
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["vscodium-insiders"]
+        platforms: [darwin]
+      - cmd: sudo snap install codium-insiders --classic
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["winget:VSCodium.VSCodium.Insiders;choco:vscodium-insiders;scoop:extras/vscodium-insiders"]
         platforms: [windows]
 
   zed:
@@ -145,7 +173,7 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["scoop:extras/zed"]
+          PACKAGES: ["winget:Zed.Zed;scoop:extras/zed"]
         platforms: [windows]
 
   pycharm:
@@ -160,7 +188,7 @@ tasks:
       - task: c:windows
         vars:
           PACKAGES:
-            ["choco:pycharm-professional;scoop:extras/pycharm-professional;winget:JetBrains.PyCharm.Professional"]
+            ["winget:JetBrains.PyCharm.Professional;choco:pycharm-professional;scoop:extras/pycharm-professional"]
         platforms: [windows]
 
   sublime:
@@ -174,7 +202,7 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:sublimetext4;scoop:extras/sublime-text;winget:SublimeHQ.SublimeText.4"]
+          PACKAGES: ["winget:SublimeHQ.SublimeText.4;choco:sublimetext4;scoop:extras/sublime-text"]
         platforms: [windows]
 
   trae:
@@ -188,5 +216,5 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["choco:trae;scoop:extras/trae;winget:Trae.Trae"]
+          PACKAGES: ["winget:Trae.Trae;choco:trae;scoop:extras/trae"]
         platforms: [windows]
