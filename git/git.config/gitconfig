@@ -197,3 +197,5 @@
   # Include additional Git configuration when working in Cellebrite repositories
   # This allows using different user identities or settings for work vs personal projects
   path = ~/.gitconfig.Cellebrite
+[init]
+	defaultBranch = main
