@@ -23,7 +23,13 @@ local SUPER = (os == "darwin") and "CMD" or "CTRL"
 -- Visuals
 --
 config.font = wezterm.font("SauceCodePro Nerd Font")
-config.font_size = 16
+if os == "darwin" then
+  -- On macOS, use a larger font size for better readability
+  config.font_size = 16
+else
+  -- On Linux and Windows, use a smaller font size
+  config.font_size = 14
+end
 config.window_background_opacity = 0.9
 
 --
