@@ -38,7 +38,11 @@ tasks:
   alacritty:config:
     cmds:
       - cmd: |
-          echo "Must write config script for alacritty"
+          bash ../common/link-config.sh "$(pwd)/alacritty.config.toml" "__HOME__/.config/alacritty/alacritty.toml"
+        platforms: [darwin, linux]
+      - cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../common/link-config.ps1 -Source alacritty.config.toml -Destination __HOME__/AppData/Roaming/alacritty/alacritty.toml
+        platforms: [windows]
     desc: Configure Alacritty
 
   # https://ghostty.org/
@@ -57,13 +61,11 @@ tasks:
     cmds:
       - cmd: |
           config="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
-          mv "$config" "$config.bak.$(date +%s)"
-          ln -s $(pwd)/ghostty.config "$config"
+          bash ../common/link-config.sh "$(pwd)/ghostty.config" "$config"
         platforms: [darwin]
       - cmd: |
-          config="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
-          mv "$config" "$config.bak.$(date +%s)"
-          ln -s $(pwd)/ghostty.config "$config"
+          config="$HOME/.config/ghostty/config"
+          bash ../common/link-config.sh "$(pwd)/ghostty.config" "$config"
         platforms: [linux]
     desc: Configure Ghostty
 
@@ -139,7 +141,7 @@ tasks:
   wezterm:config:
     cmds:
       - cmd: |
-          echo "Must write config script for wezterm"
+          bash ../common/link-config.sh "$(pwd)/wezterm.config.lua" "__HOME__/.wezterm.lua"
         platforms: [darwin, linux]
       - cmd: |
           powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../common/link-config.ps1 -Source wezterm.config.lua -Destination __HOME__/.wezterm.lua
