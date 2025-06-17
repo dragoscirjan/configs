@@ -173,9 +173,9 @@ end
 
 -- Debug function to log what shells are found (optional - can be removed)
 -- local function debug_shell_detection()
---   local shells = { "zsh", "bash", "fish", "nu", "elvish", "xonsh", "pwsh" }
+--   local shells = { "zsh", "bash", "fish", "nu", "pwsh" }
 --   if os == "windows" then
---     shells = { "zsh", "bash", "fish", "nu.exe", "elvish", "xonsh", "pwsh.exe" }
+--     shells = { "zsh", "bash", "fish", "nu.exe", "pwsh.exe" }
 --   end
 
 --   wezterm.log_info("=== Shell Detection Debug ===")
