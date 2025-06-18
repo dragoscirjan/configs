@@ -77,10 +77,15 @@ tasks:
           PACKAGES:
             - "winget:Neovim.Neovim;choco:neovim;scoop:main/neovim"
         platforms: [windows]
+      - cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./neovim-config/Build-LuaTiktoken.ps1
+        platforms: [windows]
       - task: neovim:config
     deps:
       - task: l:llvm
       - task: l:lua
+      - tasl: l:node
+      - task: l:rust
     summary: |
       Inspired from
        - https://www.lazyvim.org
