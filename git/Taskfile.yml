@@ -116,3 +116,26 @@ tasks:
           PACKAGES:
             ["winget:JesseDuffield.lazygit;choco:lazygit;scoop:extras/lazygit"]
         platforms: [windows]
+
+  # https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+  ssh-key:
+    desc: Generate SSH key
+    cmds:
+      - cmd: |
+          if [ ! -f "$HOME/.ssh/id_ed25519" ]; then
+            echo "Generating SSH key..."
+            ssh-keygen -t ed25519 -C "dragos.cirjan@gmail.com" -f "$HOME/.ssh/id_ed25519"
+          else
+            echo "SSH key already exists."
+          fi
+        platforms: [darwin, linux]
+      - cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "
+            if (-Not (Test-Path \"$HOME/.ssh/id_ed25519\")) {
+              Write-Host 'Generating SSH key...'
+              ssh-keygen -t ed25519 -C 'dragos.cirjan@gmail.com' -f \"$HOME/.ssh/id_ed25519\"
+            } else {
+              Write-Host 'SSH key already exists.'
+            }
+          "
+        platforms: [windows]

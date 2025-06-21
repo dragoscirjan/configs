@@ -1,24 +1,128 @@
 version: "3"
 
 includes:
-  common:
-    taskfile: ../common/Taskfile.yml
+  c:
+    taskfile: ../common
+    dir: ../common
+  l:
+    taskfile: ../language
+    dir: ../language
 
 tasks:
   default:
-    silent: true
+    desc: Install minimal set of used languages
     cmds:
-      - task --list
+      - task: curl
+      - task: zip
+
+  autojump:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES:
+            - autojump # https://github.com/wting/autojump
+        platforms: [darwin]
+      - task: c:linux
+        vars:
+          PACKAGES:
+            - apk:autojump;apt:autojump
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES:
+            - winget:junegunn.fzf;choco:fzf;scoop:fzf
+        platforms: [windows]
+      - cmd: | # https://github.com/tkellogg/Jump-Location
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Install-Module Jump.Location -Scope CurrentUser"
+        platforms: [windows]
+      - cmd: | # https://github.com/vors/ZLocation
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Install-Module ZLocation -Scope CurrentUser"
+        platforms: [windows]
 
   curl:
     desc: Install zip tools
     cmds:
-      - task: common:brew
+      - task: c:darwin
         vars:
-          PACKAGE: curl
+          PACKAGES: [curl]
+      - task: c:linux
+        vars:
+          PACKAGES: ["apk:curl;apt:curl"]
+
+  fzf:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES:
+            - fzf # https://junegunn.github.io/fzf/
+        platforms: [darwin]
+      - task: c:linux
+        vars:
+          PACKAGES: [apk:fzf;apt:fzf]
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES:
+            - winget:junegunn.fzf;choco:fzf;scoop:fzf
+        platforms: [windows]
+
   zip:
     desc: Install zip tools
     cmds:
-      - task: common:brew
+      - task: c:darwin
         vars:
-          PACKAGE: zip unzip
+          PACKAGES:
+            - zip
+            - unzip
+        platforms: [darwin]
+      - task: c:linux
+        vars:
+          PACKAGES:
+            - apk:zip;apt:zip
+            - apk:unzip;apt:unzip
+        platforms: [linux]
+
+  # https://yazi-rs.github.io/
+  # TODO: untested
+  yazi:
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES:
+            [
+              yazi,
+              ffmpeg,
+              sevenzip,
+              jq,
+              poppler,
+              fd,
+              ripgrep,
+              zoxide,
+              resvg,
+              imagemagick,
+              font-symbols-only-nerd-font,
+            ]
+        platforms: [darwin]
+      - cmd: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          rustup update
+          cargo install --locked --git https://github.com/sxyazi/yazi.git yazi-fm yazi-cli
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES:
+            - winget:sxyazi.yazi;choco:yazi;scoop:yazi
+            - winget:Gyan.FFmpeg;choco:ffmpeg;scoop:ffmpeg
+            - winget:7zip.7zip;choco:7zip;scoop:7zip
+            - winget:jqlang.jq;choco:jq;scoop:jq
+            - choco:poppler;scoop:poppler
+            - winget:sharkdp.fd;choco:fd;scoop:fd
+            - winget:BurntSushi.ripgrep.MSVC;choco:ripgrep;scoop:ripgrep
+            - winget:ajeetdsouza.zoxide;choco:zoxide;scoop:zoxide
+            - scoop:resvg
+            - winget:ImageMagick.ImageMagick;choco:imagemagick;scoop:imagemagick
+            - winget:MikeFarah.yq;choco:yq;scoop:main/yq
+    deps:
+      - task: l:rust
+      - task: fzf
+    desc: Install Yazi

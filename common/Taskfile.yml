@@ -27,13 +27,18 @@ tasks:
             echo {{.ITEM}} already installed
           fi
         platforms: [darwin]
-    desc: Install a Package under Darwin, using Homebrew
+    desc: Install Packages under Darwin, using Homebrew
     internal: true
 
   linux:
     cmds:
-      - echo "not supported yet. need to write it"
-
+      - for:
+          var: PACKAGES
+        cmd: |
+          bash ./install.sh --package "{{.ITEM}}" {{if .CLI_FORCE}}--force{{end}}
+        platforms: [linux]
+    desc: Install Packages under Linux
+    internal: true
   windows:
     cmds:
       - for:
@@ -41,5 +46,5 @@ tasks:
         cmd: |
           powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install.ps1 -Package "{{.ITEM}}" {{if .CLI_FORCE}}-Force{{end}}
         platforms: [windows]
-    desc: Install a Package under Windows
+    desc: Install Packages under Windows
     internal: true

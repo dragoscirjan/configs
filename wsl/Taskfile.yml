@@ -1,5 +1,4 @@
-
-version: '3'
+version: "3"
 
 tasks:
   default:
@@ -35,13 +34,13 @@ tasks:
     cmds:
       - task: generic
         vars:
-          LINUX_LABEL: "Ubuntu"
+          LINUX_LABEL: "Ubuntu-24.04"
         platforms: [windows]
 
   ubuntu:attach:
     desc: Attach to Ubuntu (WSL)
     cmds:
-      - cmd: wsl -d Ubuntu
+      - cmd: wsl -d Ubuntu-24.04
         platforms: [windows]
 
   # fedora:

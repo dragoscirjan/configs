@@ -7,6 +7,9 @@ includes:
   l:
     taskfile: ../language
     dir: ../language
+  u:
+    taskfile: ../utils
+    dir: ../utils
 
 tasks:
   default:
@@ -32,7 +35,8 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["winget:JetBrains.CLion;choco:clion-ide;scoop:extras/clion"]
+          PACKAGES:
+            ["winget:JetBrains.CLion;choco:clion-ide;scoop:extras/clion"]
         platforms: [windows]
 
   coursor:
@@ -46,7 +50,8 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["winget:Coursor.Coursor;choco:coursor;scoop:extras/coursor"]
+          PACKAGES:
+            ["winget:Coursor.Coursor;choco:coursor;scoop:extras/coursor"]
         platforms: [windows]
 
   goland:
@@ -64,6 +69,7 @@ tasks:
         platforms: [windows]
 
   neovim:
+    aliases: [nvim]
     desc: Install Neovim
     cmds:
       - task: c:darwin
@@ -84,8 +90,9 @@ tasks:
     deps:
       - task: l:llvm
       - task: l:lua
-      - tasl: l:node
+      - task: l:node
       - task: l:rust
+      - task: u:fzf
     summary: |
       Inspired from
        - https://www.lazyvim.org
@@ -122,7 +129,10 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["winget:Microsoft.VisualStudioCode;choco:vscode;scoop:extras/vscode"]
+          PACKAGES:
+            [
+              "winget:Microsoft.VisualStudioCode;choco:vscode;scoop:extras/vscode",
+            ]
         platforms: [windows]
 
   vscode:insiders:
@@ -136,7 +146,10 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["winget:Microsoft.VisualStudioCode.Insiders;choco:vscode-insiders;scoop:extras/vscode-insiders"]
+          PACKAGES:
+            [
+              "winget:Microsoft.VisualStudioCode.Insiders;choco:vscode-insiders;scoop:extras/vscode-insiders",
+            ]
         platforms: [windows]
 
   vscodium:
@@ -150,7 +163,8 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["winget:VSCodium.VSCodium;choco:vscodium;scoop:extras/vscodium"]
+          PACKAGES:
+            ["winget:VSCodium.VSCodium;choco:vscodium;scoop:extras/vscodium"]
         platforms: [windows]
 
   vscodium:insiders:
@@ -164,7 +178,10 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["winget:VSCodium.VSCodium.Insiders;choco:vscodium-insiders;scoop:extras/vscodium-insiders"]
+          PACKAGES:
+            [
+              "winget:VSCodium.VSCodium.Insiders;choco:vscodium-insiders;scoop:extras/vscodium-insiders",
+            ]
         platforms: [windows]
 
   zed:
@@ -193,7 +210,9 @@ tasks:
       - task: c:windows
         vars:
           PACKAGES:
-            ["winget:JetBrains.PyCharm.Professional;choco:pycharm-professional;scoop:extras/pycharm-professional"]
+            [
+              "winget:JetBrains.PyCharm.Professional;choco:pycharm-professional;scoop:extras/pycharm-professional",
+            ]
         platforms: [windows]
 
   sublime:
@@ -207,7 +226,10 @@ tasks:
         platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["winget:SublimeHQ.SublimeText.4;choco:sublimetext4;scoop:extras/sublime-text"]
+          PACKAGES:
+            [
+              "winget:SublimeHQ.SublimeText.4;choco:sublimetext4;scoop:extras/sublime-text",
+            ]
         platforms: [windows]
 
   trae:

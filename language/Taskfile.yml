@@ -120,7 +120,8 @@ tasks:
       #   platforms: [linux]
       - task: c:windows
         vars:
-          PACKAGES: ["winget:ojdkbuild.openjdk.11.jdk;choco:openjdk;scoop:main/openjdk"]
+          PACKAGES:
+            ["winget:ojdkbuild.openjdk.11.jdk;choco:openjdk;scoop:main/openjdk"]
         platforms: [windows]
     desc: Install Java (OpenJDK)
 
@@ -180,9 +181,13 @@ tasks:
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
         platforms: [darwin, linux]
       - cmd: |
-          [ -f $HOME/.nvmrc ] && cp $HOME/.nvmrc $HOME/.nvmrc.bak.$(date +%s)
-          echo "lts/*" > $HOME/.nvmrc
-          cd $HOME && nvm install && nvm use --default
+          bash -c "
+            [ -f \"$HOME/.nvmrc\" ] && cp \"$HOME/.nvmrc\" \"$HOME/.nvmrc.bak.$(date +%s)\"
+            echo 'lts/*' > \"$HOME/.nvmrc\"
+            export NVM_DIR=\"$HOME/.nvm\"
+            [ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+            cd \"$HOME\" && nvm install && nvm use --default
+          "
         platforms: [darwin, linux]
       - task: c:windows
         vars:
@@ -192,7 +197,7 @@ tasks:
           [ -f $HOME/.nvmrc ] && cp $HOME/.nvmrc $HOME/.nvmrc.bak.$(date +%s)
           echo "lts" > $HOME/.nvmrc
           nvm install $(Get-Content $HOME/.nvmrc) && nvm use $(Get-Content $HOME/.nvmrc)
-        platforms: [darwin, linux]
+        platforms: [windows]
     desc: Install Node.js
 
   # https://www.php.net/manual/en/install.php
