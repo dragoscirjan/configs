@@ -296,10 +296,19 @@ end
 if os == "windows" then
   -- Scan for installed WSL distributions and add them to the menu
   local success, wsl_list = wezterm.run_child_process({ "wsl", "-l", "-q" })
-  if success then
+  if success and wsl_list then
     for line in string.gmatch(wsl_list, "[^\r\n]+") do
-      local distro = line:gsub("%s+$", "") -- trim trailing whitespace
-      if distro ~= "" then
+      -- Remove BOM, null bytes, and other control characters
+      local distro = line:gsub("[\0-\31\127-\255]", "")
+      -- Trim whitespace
+      distro = distro:gsub("^%s*", ""):gsub("%s*$", "")
+      -- Remove default distribution marker (asterisk)
+      distro = distro:gsub("%*", "")
+      -- Trim again after removing asterisk
+      distro = distro:gsub("^%s*", ""):gsub("%s*$", "")
+
+      -- Only add if we have a non-empty string
+      if distro and distro ~= "" and distro:match("%S") then
         table.insert(config.launch_menu, {
           label = "WSL: " .. distro,
           args = { "wsl", "-d", distro },

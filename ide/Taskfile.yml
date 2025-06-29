@@ -93,6 +93,7 @@ tasks:
       - task: l:node
       - task: l:rust
       - task: u:fzf
+      - task: u:zip
     summary: |
       Inspired from
        - https://www.lazyvim.org
