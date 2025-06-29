@@ -91,6 +91,7 @@ tasks:
       - task: l:llvm
       - task: l:lua
       - task: l:node
+      - task: l:go
       - task: l:rust
       - task: u:fzf
       - task: u:zip
