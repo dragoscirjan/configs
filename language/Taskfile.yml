@@ -83,8 +83,9 @@ tasks:
         vars:
           PACKAGES: ["go"]
         platforms: [darwin]
-      # - cmd: sudo apt install -y git
-      #   platforms: [linux]
+      - cmd: |
+          bash ./install-go.sh
+        platforms: [linux]
       - cmd: |
           powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install-go.ps1
         platforms: [windows]
