@@ -1,35 +1,48 @@
 #!/usr/bin/env bash
-# Installs Go on Linux following https://go.dev/doc/install
-# Downloads the specified Go tarball and installs it system-wide
+# Install Go on Linux following https://go.dev/doc/install
 
 set -euo pipefail
 
-GO_VERSION="${1:-1.22.4}" # Update to latest if needed
-ARCH="$(uname -m)"
-case "$ARCH" in
-x86_64) GO_ARCH="amd64" ;;
-aarch64) GO_ARCH="arm64" ;;
-armv6l | armv7l) GO_ARCH="armv6l" ;;
+go_version="${1:-1.22.4}" # Update to latest if needed
+arch="$(uname -m)"
+case "$arch" in
+x86_64) go_arch="amd64" ;;
+aarch64) go_arch="arm64" ;;
+armv6l | armv7l) go_arch="armv6l" ;;
 *)
-  echo "Unsupported architecture: $ARCH"
+  printf "Unsupported architecture: %s\n" "$arch"
   exit 1
   ;;
 esac
 
-GO_TARBALL="go${GO_VERSION}.linux-${GO_ARCH}.tar.gz"
-GO_URL="https://go.dev/dl/${GO_TARBALL}"
-TMP_DIR="$(mktemp -d)"
-GO_INSTALL_DIR="/usr/local"
+go_tarball="go${go_version}.linux-${go_arch}.tar.gz"
+go_url="https://go.dev/dl/${go_tarball}"
+tmp_dir="$(mktemp -d)"
+go_install_dir="/usr/local"
 
-echo "Downloading Go $GO_VERSION..."
-curl -fsSL "$GO_URL" -o "$TMP_DIR/$GO_TARBALL"
+trap 'rm -rf "$tmp_dir"' EXIT
 
-echo "Removing any previous Go installation in $GO_INSTALL_DIR/go..."
-sudo rm -rf "$GO_INSTALL_DIR/go"
+printf "Downloading Go %s...\n" "$go_version"
+curl -fsSL "$go_url" -o "$tmp_dir/$go_tarball"
 
-echo "Extracting Go tarball to $GO_INSTALL_DIR..."
-sudo tar -C "$GO_INSTALL_DIR" -xzf "$TMP_DIR/$GO_TARBALL"
+printf "Removing any previous Go installation in %s/go...\n" "$go_install_dir"
+sudo rm -rf "$go_install_dir/go"
 
-rm -rf "$TMP_DIR"
+printf "Extracting Go tarball to %s...\n" "$go_install_dir"
+sudo tar -C "$go_install_dir" -xzf "$tmp_dir/$go_tarball"
 
-echo "Go $GO_VERSION installed. Add $GO_INSTALL_DIR/go/bin to your PATH and run 'go version' to verify."
+# Add Go to PATH in .bashrc if not already present
+[ -f "$HOME/.bashrc" ] && {
+  if ! grep -qF "$go_install_dir/go/bin" "$HOME/.bashrc"; then
+    printf "Adding Go to PATH in %s/.bashrc\n" "$HOME"
+    echo "export PATH=\$PATH:$go_install_dir/go/bin" >>"$HOME/.bashrc"
+  fi
+}
+
+# Add Go to PATH in .zshrc if not already present
+[ -f "$HOME/.zshrc" ] && {
+  if ! grep -qF "$go_install_dir/go/bin" "$HOME/.zshrc"; then
+    printf "Adding Go to PATH in %s/.zshrc\n" "$HOME"
+    echo "export PATH=\$PATH:$go_install_dir/go/bin" >>"$HOME/.zshrc"
+  fi
+}
