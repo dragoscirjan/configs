@@ -1,8 +1,0 @@
-#! /bin/bash
-
-gpf() {
-  git add "$1"
-  git commit --amend "$2"
-  git psh --force-with-lease "$3"
-}
-

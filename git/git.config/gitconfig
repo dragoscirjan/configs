@@ -26,6 +26,12 @@
   # Shorder name for checkout
   co = "!sh -c 'git checkout "$@"' -"
 
+  # Shorder name for commit
+  c = "!sh -c 'git commit "$@"' -"
+
+  # Amend and push to the same commit
+  amn = "!sh -c '. \"$(dirname \"$(readlink \"$HOME/.gitconfig\")\")/aliases/amend_and_push.sh\"; amend_and_push \"$@\"' -"
+
   # Branch Cleanup
   bcp = "!sh -c 'git branch | grep -v main | while read b; do git branch -d $b || git branch -D $b; done'"
 
