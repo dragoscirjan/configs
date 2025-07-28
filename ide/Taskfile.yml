@@ -114,7 +114,7 @@ tasks:
           ln -sf "$(pwd)/neovim-config" "$HOME/.config/nvim"
         platforms: [darwin, linux]
       - cmd: |
-        pwsh.exe -Command "\$src = Join-Path (Get-Location) 'neovim-config'; \$dst = Join-Path \$env:LOCALAPPDATA 'nvim'; New-Item -ItemType SymbolicLink -Path \$dst -Target \$src -Force"
+          pwsh.exe -Command "\$src = Join-Path (Get-Location) 'neovim-config'; \$dst = Join-Path \$env:LOCALAPPDATA 'nvim'; New-Item -ItemType SymbolicLink -Path \$dst -Target \$src -Force"
         platforms: [windows]
     desc: Install Neovim config
     deps:
