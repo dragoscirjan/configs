@@ -108,26 +108,26 @@ tasks:
        - https://www.youtube.com/watch?v=evCmP4hH7ZU
 
   neovim:config:
-    desc: Install Neovim config
     cmds:
       - cmd: |
-          bash ./neovim-config.sh
+          mkdir -p ~/.config
+          ln -sf "$(pwd)/neovim-config" "$HOME/.config/nvim"
         platforms: [darwin, linux]
       - cmd: |
-          pwsh.exe -File ./neovim-config.ps1
+        pwsh.exe -Command "\$src = Join-Path (Get-Location) 'neovim-config'; \$dst = Join-Path \$env:LOCALAPPDATA 'nvim'; New-Item -ItemType SymbolicLink -Path \$dst -Target \$src -Force"
         platforms: [windows]
+    desc: Install Neovim config
+    deps:
+      - neovim:clean
 
   neovim:clean:
     desc: Nevim Clean
     cmds:
       - cmd: |
-          rm -rf ~/.local/share/nvim
-          rm -rf ~/.local/state/nvim
-          rm -rm ~/.cache/nvim
+          rm -rf ~/.local/share/nvim* ~/.local/state/nvim* ~/.cache/nvim* ~/.config/nvim*
         platforms: [darwin, linux]
       - cmd: |
-          # required
-          pwsh -Command "Remove-Item -Recurse -Force $env:LOCALAPPDATA\nvim-data"
+          pwsh.exe -Command "Remove-Item -Recurse -Force $env:LOCALAPPDATA\nvim*"
         platforms: [windows]
 
   neovim:fix-git:
