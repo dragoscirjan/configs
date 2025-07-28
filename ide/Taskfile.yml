@@ -127,7 +127,7 @@ tasks:
           rm -rf ~/.local/share/nvim* ~/.local/state/nvim* ~/.cache/nvim* ~/.config/nvim*
         platforms: [darwin, linux]
       - cmd: |
-          pwsh.exe -Command "Remove-Item -Recurse -Force $env:LOCALAPPDATA\nvim*"
+          pwsh.exe -Command "Remove-Item -Recurse -Force \$env:LOCALAPPDATA\nvim*"
         platforms: [windows]
 
   neovim:fix-git:
