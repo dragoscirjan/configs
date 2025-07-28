@@ -4,15 +4,22 @@ includes:
   c:
     taskfile: ../common
     dir: ../common
+    internal: true
   l:
     taskfile: ../language
     dir: ../language
+    internal: true
   u:
     taskfile: ../utils
     dir: ../utils
+    internal: true
 
 tasks:
   default:
+    cmds:
+      - task -l
+
+  minimal:
     desc: Install minimal list of IDEs based on the operating system
     cmds:
       - task: clion
