@@ -110,6 +110,19 @@ tasks:
           pwsh.exe -File ./neovim-config.ps1
         platforms: [windows]
 
+  neovim:clean:
+    desc: Nevim Clean
+    cmds:
+      - cmd: |
+          rm -rf ~/.local/share/nvim
+          rm -rf ~/.local/state/nvim
+          rm -rm ~/.cache/nvim
+        platforms: [darwin, linux]
+      - cmd: |
+          # required
+          pwsh -Command "Remove-Item -Recurse -Force $env:LOCALAPPDATA\nvim-data"
+        platforms: [windows]
+
   neovim:fix-git:
     desc: Fix Git "dubious ownership" errors for Neovim plugins
     cmds:
