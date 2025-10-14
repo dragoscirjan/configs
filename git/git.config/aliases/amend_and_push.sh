@@ -25,6 +25,6 @@ amend_and_push() {
   echo "---" >&2
 
   git add "${add_args[@]}"
-  git c --amend "${c_args[@]}"
-  git psh --force-with-lease "${psh_args[@]}"
+  git c --amend "${c_args[@]}" &&
+    git psh --force-with-lease "${psh_args[@]}"
 }

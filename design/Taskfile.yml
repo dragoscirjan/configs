@@ -1,0 +1,100 @@
+version: "3"
+
+includes:
+  c:
+    taskfile: ../common
+    dir: ../common
+  l:
+    taskfile: ../language
+    dir: ../language
+
+tasks:
+  default:
+    desc: Install minimal set of used languages
+    cmds:
+      - task: figma
+      - task: gimp
+      - task: inkscape
+      - task: gh
+
+  figma:
+    desc: Install Figma
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["cask/figma"]
+        platforms: [darwin]
+      - cmd: |
+          wget https://github.com/Figma-Linux/figma-linux/releases/download/v0.9.3/Figma-linux_x86_64.AppImage -O figma.AppImage
+          chmod +x figma.AppImage
+          sudo mv figma.AppImage /usr/local/bin/figma
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["winget:Figma.Figma;choco:figma;scoop:extras/firma"]
+        platforms: [windows]
+
+  gimp:
+    desc: Install GIMP
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["cask/gimp"]
+        platforms: [darwin]
+      - cmd: sudo apt install -y gimp
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["winget:Gimp.Gimp;choco:gimp;scoop:extras/gimp"]
+        platforms: [windows]
+
+  inkscape:
+    desc: Install Inkscape
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["cask/inkscape"]
+        platforms: [darwin]
+      - cmd: sudo apt install -y inkscape
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES:
+            ["winget:Inkscape.Inkscape;inkscape:gimp;scoop:extras/inkscape"]
+        platforms: [windows]
+
+  krita:
+    desc: Install Krita
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["cask/krita"]
+        platforms: [darwin]
+      - cmd: sudo snap install krita
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["winget:KDE.Krita;inkscape:krita;scoop:lunacy/krita"]
+        platforms: [windows]
+
+  lunacy:
+    desc: Install Lunacy
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["cask/lunacy"]
+        platforms: [darwin]
+      - cmd: sudo snap install lunacy
+        platforms: [linux]
+      - task: c:windows
+        vars:
+          PACKAGES:
+            ["winget:Icons8.Lunacy;inkscape:lunacy;scoop:lunacy/inkscape"]
+        platforms: [windows]
+
+  sketch:
+    desc: Install Inkscape
+    cmds:
+      - task: c:darwin
+        vars:
+          PACKAGES: ["cask/sketch"]
