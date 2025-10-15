@@ -35,6 +35,12 @@
   # Branch Cleanup
   bcp = "!sh -c 'git branch | grep -v main | while read b; do git branch -d $b || git branch -D $b; done'"
 
+  # Merge the traditional way
+  m = "!sh -c 'git config pull.rebase false && git merge "${@:-main}"'"
+
+  # Merge using rebase
+  mr = "!sh -c 'git config pull.rebase true && git merge "${@:-main}"'"
+
 # Core configuration settings for Git behavior
 [core]
 	# Use a specific SSH key for Git operations

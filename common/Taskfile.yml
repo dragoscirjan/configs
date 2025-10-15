@@ -9,42 +9,43 @@ tasks:
   default:
     silent: true
     cmds:
-      - task --list
+    - task --list
 
   darwin:
     cmds:
-      - for:
-          var: PACKAGES
-        cmd: |
-          package='{{.ITEM}}'
-          read repo package_name <<< ${package/\// }
-          args=""
-          [ -z "$package_name" ] && package_name=$repo
-          [ -z "$package_name" ] && args="--$repo"
-          if {{if .CLI_FORCE}}[ 1 -eq 1 ]{{else}}! brew list $args $package &>/dev/null{{end}}; then
-            brew install $args{{if .CLI_FORCE}} --force{{end}} $package_name
-          else
-            echo {{.ITEM}} already installed
-          fi
-        platforms: [darwin]
+    - for:
+        var: PACKAGES
+      cmd: |
+        package='{{.ITEM}}'
+        read repo package_name <<< ${package/\// }
+        args=""
+        [ -z "$package_name" ] && package_name=$repo
+        [ -z "$package_name" ] && args="--$repo"
+        if {{if .CLI_FORCE}}[ 1 -eq 1 ]{{else}}! brew list $args $package &>/dev/null{{end}}; then
+          brew install $args{{if .CLI_FORCE}} --force{{end}} $package_name
+        else
+          echo {{.ITEM}} already installed
+        fi
+      platforms: [ darwin ]
     desc: Install Packages under Darwin, using Homebrew
     internal: true
 
   linux:
     cmds:
-      - for:
-          var: PACKAGES
-        cmd: |
-          bash ./install.sh --package "{{.ITEM}}" {{if .CLI_FORCE}}--force{{end}}
-        platforms: [linux]
+    - for:
+        var: PACKAGES
+      cmd: |
+        bash ./install.sh --package "{{.ITEM}}" {{if .CLI_FORCE}}--force{{end}}
+      platforms: [ linux ]
     desc: Install Packages under Linux
     internal: true
+
   windows:
     cmds:
-      - for:
-          var: PACKAGES
-        cmd: |
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install.ps1 -Package "{{.ITEM}}" {{if .CLI_FORCE}}-Force{{end}}
-        platforms: [windows]
+    - for:
+        var: PACKAGES
+      cmd: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install.ps1 -Package "{{.ITEM}}" {{if .CLI_FORCE}}-Force{{end}}
+      platforms: [ windows ]
     desc: Install Packages under Windows
     internal: true

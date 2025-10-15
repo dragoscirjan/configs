@@ -8,169 +8,206 @@ includes:
 tasks:
   default:
     cmds:
-      - task: deno
-      - task: go
-      - task: node
-      - task: java
-      - task: python
-      # TODO: Uncomment when task
-      # - task: tr:make
-      # - task: tr:cmake
-      # - task: tr:xmake
+    - task: deno
+    - task: go
+    - task: node
+    - task: java
+    - task: python
+    # TODO: Uncomment when task
+    # - task: tr:make
+    # - task: tr:cmake
+    # - task: tr:xmake
     desc: Install minimal set of used languages
 
   # https://bun.sh/docs/installation
   #
   bun:
     cmds:
-      - cmd: curl -fsSL https://bun.sh/install | bash
-        platforms: [darwin, linux]
-      - cmd: |
-          powershell -c "irm bun.sh/install.ps1|iex"
-        platforms: [windows]
+    - cmd: curl -fsSL https://bun.sh/install | bash
+      platforms: [ darwin, linux ]
+    - cmd: |
+        powershell -c "irm bun.sh/install.ps1|iex"
+      platforms: [ windows ]
     desc: Install Bun
 
   # https://llvm.org/docs/GettingStarted.html
   cpp:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["llvm"]
-        platforms: [darwin]
-      - cmd: |
-          echo "Must write installer script for C++"
-        platforms: [linux]
-      - cmd: |
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'winget install `
-            --id Microsoft.VisualStudio.2022.BuildTools `
-            --exact `
-            --override "--wait --passive `
-              --add Microsoft.VisualStudio.Component.VC.CoreIde `
-              --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
-              --add Microsoft.VisualStudio.Component.VC.CMake.Project `
-              --add Microsoft.VisualStudio.Component.Windows11SDK.22621 `
-              --add Microsoft.VisualStudio.Component.VC.ATL `
-              --add Microsoft.VisualStudio.Component.VC.MFC" `
-            --force'
-        platforms: [windows]
+    - task: llvm
+    - cmd: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'winget install `
+          --id Microsoft.VisualStudio.2022.BuildTools `
+          --exact `
+          --override "--wait --passive `
+            --add Microsoft.VisualStudio.Component.VC.CoreIde `
+            --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
+            --add Microsoft.VisualStudio.Component.VC.CMake.Project `
+            --add Microsoft.VisualStudio.Component.Windows11SDK.22621 `
+            --add Microsoft.VisualStudio.Component.VC.ATL `
+            --add Microsoft.VisualStudio.Component.VC.MFC" `
+          --force'
+      platforms: [ windows ]
     desc: Install C++ (C/C++ Compiler)
 
   # https://docs.deno.com/runtime/getting_started/installation/
   #
   deno:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["deno"]
-        platforms: [darwin]
-      # - cmd: curl -fsSL https://deno.land/install.sh | sh
-      #   platforms: [darwin]
-      - cmd: curl -fsSL https://deno.land/install.sh | sh
-        platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["winget:DenoLand.Deno;choco:deno;scoop:deno"]
-        platforms: [windows]
-      # - cmd: irm https://deno.land/install.ps1 | iex
-      #   platforms: [windows]
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "deno" ]
+      platforms: [ darwin ]
+    # - cmd: curl -fsSL https://deno.land/install.sh | sh
+    #   platforms: [darwin]
+    - cmd: curl -fsSL https://deno.land/install.sh | sh
+      platforms: [ linux ]
+    - task: c:windows
+      vars:
+        PACKAGES: [ "winget:DenoLand.Deno;choco:deno;scoop:deno" ]
+      platforms: [ windows ]
+    # - cmd: irm https://deno.land/install.ps1 | iex
+    #   platforms: [windows]
     desc: Install Deno
 
   # https://go.dev/doc/install
   #
   go:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["go"]
-        platforms: [darwin]
-      - cmd: |
-          bash ./install-go.sh
-        platforms: [linux]
-      - cmd: |
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install-go.ps1
-        platforms: [windows]
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "go" ]
+      platforms: [ darwin ]
+    - cmd: |
+        bash ./install-go.sh
+      platforms: [ linux ]
+    - cmd: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install-go.ps1
+      platforms: [ windows ]
     desc: Install Go
 
   # https://groovy-lang.org/install.html
   #
   groovy:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["groovy"]
-        platforms: [darwin]
-      # - cmd: sudo apt install -y git  # TODO: Write installer
-      #   platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["winget:Apache.Groovy.4;choco:groovy;scoop:main/groovy"]
-        platforms: [windows]
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "groovy" ]
+      platforms: [ darwin ]
+    # - cmd: sudo apt install -y git  # TODO: Write installer
+    #   platforms: [linux]
+    - task: c:windows
+      vars:
+        PACKAGES: [ "winget:Apache.Groovy.4;choco:groovy;scoop:main/groovy" ]
+      platforms: [ windows ]
     desc: Install Groovy
     deps:
-      - task: java
+    - task: java
 
   # https://openjdk.org/install/
   #
   java:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["openjdk"]
-        platforms: [darwin]
-      # - cmd: sudo apt install -y git
-      #   platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES:
-            ["winget:ojdkbuild.openjdk.11.jdk;choco:openjdk;scoop:main/openjdk"]
-        platforms: [windows]
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "openjdk" ]
+      platforms: [ darwin ]
+    # - cmd: sudo apt install -y git
+    #   platforms: [linux]
+    - task: c:windows
+      vars:
+        PACKAGES: [ "winget:ojdkbuild.openjdk.11.jdk;choco:openjdk;scoop:main/openjdk" ]
+      platforms: [ windows ]
     desc: Install Java (OpenJDK)
 
   # https://clangd.llvm.org/installation
   #
+  # TODO: Use https://github.com/ZhongRuoyu/setup-llvm to update installation
   llvm:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["cmake", "llvm"]
-        platforms: [darwin]
-      # - cmd: sudo apt install -y git
-      #   platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["winget:LLVM.LLVM;choco:llvm;scoop:llvm"]
-        platforms: [windows]
-      - task: llvm:attach
-        platforms: [windows]
+    - task: python
+    # llvm and cmake
+    #
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "cmake", "llvm" ]
+      platforms: [ darwin ]
+    # - cmd: sudo apt install -y git
+    #   platforms: [linux]
+    - task: c:windows
+      vars:
+        PACKAGES: [ "winget:Kitware.CMake;choco:cmake;scoop:cmake", "winget:LLVM.LLVM;choco:llvm;scoop:llvm" ]
+      platforms: [ windows ]
+    - task: llvm:attach
+      platforms: [ windows ]
+    # https://xmake.io/guide/quick-start.html
+    #
+    - cmd: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+      platforms: [ darwin, linux ]
+    - cmd: |
+        powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+      platforms: [ windows ]
+    # https://docs.conan.io/2/installation.html
+    #
+    - cmd: uv pip install --system conan
+      platforms: [ darwin, linux, windows ]
+    # # https://bazel.build/install
+    # #
+    # - task: c:darwin
+    #   vars:
+    #     PACKAGES: [ "bazel" ]
+    #   platforms: [ darwin ]
+    # - task: c:linux
+    #   vars:
+    #     PACKAGES: [ "bazel-bootstrap", "bazel-bootstrap-data", "bazel-bootstrap-cc", "bazel-platforms", "bazel-bootstrap-java" ]
+    #   platforms: [ linux ]
+    # - task: c:windows
+    #   vars:
+    #     # PACKAGES: [ "winget:Bazel.Bazel;choco:bazel;scoop:bazel" ]
+    #     PACKAGES: [ "choco:bazel;scoop:bazel" ]
+    #   platforms: [ windows ]
+    # https://vcpkg.io/en/
+    #
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "vcpkg" ]
+      platforms: [ darwin ]
+    - cmd: |
+        bash ./install-vcpkg.sh
+      platforms: [ linux ]
+    - cmd: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install-vcpkg.ps1
+
+      platforms: [ windows ]
     desc: Install LLVM (C/C++ Compiler)
 
   llvm:attach:
     cmds:
-      - cmd: |
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../common/add-to-path.ps1 -Item "C:\\Program Files\\LLVM\\bin"
-        platforms: [windows]
+    - cmd: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../common/add-to-path.ps1 -Item "C:\\Program Files\\LLVM\\bin"
+      platforms: [ windows ]
     desc: Add LLVM to PATH
 
   # https://www.lua.org/download.html
   #
   lua:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["lua"]
-        platforms: [darwin]
-      # - cmd: sudo apt install -y git
-      #   platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES:
-            - "winget:DEVCOM.Lua;choco:lua;scoop:main/lua"
-        platforms: [windows]
-      - cmd: |
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install-luarocks.ps1
-        platforms: [windows]
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "lua" ]
+      platforms: [ darwin ]
+    # - cmd: sudo apt install -y git
+    #   platforms: [linux]
+    - task: c:windows
+      vars:
+        PACKAGES:
+        - "winget:DEVCOM.Lua;choco:lua;scoop:main/lua"
+      platforms: [ windows ]
+    - cmd: |
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install-luarocks.ps1
+      platforms: [ windows ]
     deps:
-      - task: java
+    - task: java
     desc: Install Lua
 
   # https://github.com/nvm-sh/nvm/blob/master/README.md#install--update-script
@@ -178,138 +215,145 @@ tasks:
   #
   node:
     cmds:
-      - cmd: |
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-        platforms: [darwin, linux]
-      - cmd: |
-          bash -c "
-            [ -f \"$HOME/.nvmrc\" ] && cp \"$HOME/.nvmrc\" \"$HOME/.nvmrc.bak.$(date +%s)\"
-            echo 'lts/*' > \"$HOME/.nvmrc\"
-            export NVM_DIR=\"$HOME/.nvm\"
-            [ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
-            cd \"$HOME\" && nvm install && nvm use --default
-          "
-        platforms: [darwin, linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["winget:CoreyButler.NVMforWindows;choco:nvm;scoop:nvm"]
-        platforms: [windows]
-      - cmd: |
-          [ -f $HOME/.nvmrc ] && cp $HOME/.nvmrc $HOME/.nvmrc.bak.$(date +%s)
-          echo "lts" > $HOME/.nvmrc
-          nvm install $(Get-Content $HOME/.nvmrc) && nvm use $(Get-Content $HOME/.nvmrc)
-        platforms: [windows]
+    - cmd: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+      platforms: [ darwin, linux ]
+    - cmd: |
+        bash -c "
+          [ -f \"$HOME/.nvmrc\" ] && cp \"$HOME/.nvmrc\" \"$HOME/.nvmrc.bak.$(date +%s)\"
+          echo 'lts/*' > \"$HOME/.nvmrc\"
+          export NVM_DIR=\"$HOME/.nvm\"
+          [ -s \"$NVM_DIR/nvm.sh\" ] && \. \"$NVM_DIR/nvm.sh\"
+          cd \"$HOME\" && nvm install && nvm use --default
+        "
+      platforms: [ darwin, linux ]
+    - task: c:windows
+      vars:
+        PACKAGES: [ "winget:CoreyButler.NVMforWindows;choco:nvm;scoop:nvm" ]
+      platforms: [ windows ]
+    - cmd: |
+        [ -f $HOME/.nvmrc ] && cp $HOME/.nvmrc $HOME/.nvmrc.bak.$(date +%s)
+        echo "lts" > $HOME/.nvmrc
+        nvm install $(Get-Content $HOME/.nvmrc) && nvm use $(Get-Content $HOME/.nvmrc)
+      platforms: [ windows ]
     desc: Install Node.js
 
   # https://www.php.net/manual/en/install.php
   #
   php:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["php"]
-        platforms: [darwin]
-      # - task: c:linux # TODO: Write Installer
-      #   vars:
-      #     PACKAGES: ["php"]
-      #   platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["winget:PHP.Php;choco:php;scoop:php"]
-        platforms: [windows]
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "php" ]
+      platforms: [ darwin ]
+    # - task: c:linux # TODO: Write Installer
+    #   vars:
+    #     PACKAGES: ["php"]
+    #   platforms: [linux]
+    - task: c:windows
+      vars:
+        PACKAGES: [ "winget:PHP.Php;choco:php;scoop:php" ]
+      platforms: [ windows ]
     desc: Install PHP
 
   # https://www.python.org/downloads/
   #
   python:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["python"]
-        platforms: [darwin]
-      # - task: c:linux # TODO: Write Installer
-      #   vars:
-      #     PACKAGES: ["python3"] # On most distros, use 'python3' (not 'python')
-      #   platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["winget:Python.Python.3.11;choco:python;scoop:python"]
-        platforms: [windows]
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "python" ]
+      platforms: [ darwin ]
+    # - task: c:linux # TODO: Write Installer
+    #   vars:
+    #     PACKAGES: ["python3"] # On most distros, use 'python3' (not 'python')
+    #   platforms: [linux]
+    - task: c:windows
+      vars:
+        PACKAGES: [ "winget:Python.Python.3.11;choco:python;scoop:python" ]
+      platforms: [ windows ]
+    # https://docs.astral.sh/uv/getting-started/installation/
+    - cmd: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+      platforms: [ darwin, linux ]
+    - cmd: |
+        powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+      platforms: [ windows ]
     desc: Install Python
 
   # https://www.ruby-lang.org/en/documentation/installation/
   #
   ruby:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["ruby"]
-        platforms: [darwin]
-      # - task: c:linux # TODO: Write Installer
-      #   vars:
-      #     PACKAGES: ["php"]
-      #   platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["winget:RubyTeam.Ruby.3.1;choco:ruby;scoop:ruby"]
-        platforms: [windows]
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "ruby" ]
+      platforms: [ darwin ]
+    # - task: c:linux # TODO: Write Installer
+    #   vars:
+    #     PACKAGES: ["php"]
+    #   platforms: [linux]
+    - task: c:windows
+      vars:
+        PACKAGES: [ "winget:RubyTeam.Ruby.3.1;choco:ruby;scoop:ruby" ]
+      platforms: [ windows ]
     desc: Install Ruby
 
   # https://www.rust-lang.org/tools/install
   #
   rust:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["rustup-init"]
-        platforms: [darwin]
-      - cmd: |
-          rustup-init -y
-        platforms: [darwin]
-      - cmd: |
-          curl https://sh.rustup.rs -sSf | sh -s -- -y
-        platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["winget:Rustlang.Rustup;choco:rust;scoop:rustup"]
-        platforms: [windows]
-      # - cmd: |
-      #     powershell.exe -Command "if (Get-Command rustup-init.exe) { rustup-init.exe -y }"
-      #   platforms: [windows]
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "rustup-init" ]
+      platforms: [ darwin ]
+    - cmd: |
+        rustup-init -y
+      platforms: [ darwin ]
+    - cmd: |
+        curl https://sh.rustup.rs -sSf | sh -s -- -y
+      platforms: [ linux ]
+    - task: c:windows
+      vars:
+        PACKAGES: [ "winget:Rustlang.Rustup;choco:rust;scoop:rustup" ]
+      platforms: [ windows ]
+    # - cmd: |
+    #     powershell.exe -Command "if (Get-Command rustup-init.exe) { rustup-init.exe -y }"
+    #   platforms: [windows]
     desc: Install Rust
 
   # https://www.scala-lang.org/download/
   #
   swift:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["swift"]
-        platforms: [darwin]
-      # - task: c:linux # TODO: Write Installer
-      #   vars:
-      #     PACKAGES: ["php"]
-      #   platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["winget:Swift.Toolchain"]
-        platforms: [windows]
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "swift" ]
+      platforms: [ darwin ]
+    # - task: c:linux # TODO: Write Installer
+    #   vars:
+    #     PACKAGES: ["php"]
+    #   platforms: [linux]
+    - task: c:windows
+      vars:
+        PACKAGES: [ "winget:Swift.Toolchain" ]
+      platforms: [ windows ]
     desc: Install Swift
 
   # https://ziglang.org/download/
   #
   zig:
     cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["zig"]
-        platforms: [darwin]
-      # - task: c:linux # TODO: Write Installer
-      #   vars:
-      #     PACKAGES: ["php"]
-      #   platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["winget:Ziglang.Zig;choco:zig;scoop:bundle/zig"]
-        platforms: [windows]
+    - task: c:darwin
+      vars:
+        PACKAGES: [ "zig" ]
+      platforms: [ darwin ]
+    # - task: c:linux # TODO: Write Installer
+    #   vars:
+    #     PACKAGES: ["php"]
+    #   platforms: [linux]
+    - task: c:windows
+      vars:
+        PACKAGES: [ "winget:Ziglang.Zig;choco:zig;scoop:bundle/zig" ]
+      platforms: [ windows ]
     desc: Install Zig
