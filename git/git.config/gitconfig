@@ -9,7 +9,7 @@
 [alias]
   # Pull from origin using the current branch name
   # Usage: git pll
-  pll = "!sh -c 'git pull origin \"$(git rev-parse --abbrev-ref HEAD)\"'"
+  pll = "!sh -c 'git config pull.rebase \"${PULL_REBASE:-true}\" && git pull origin \"$(git rev-parse --abbrev-ref HEAD)\"'"
 
   # Push to origin using the current branch name
   # Usage: git psh

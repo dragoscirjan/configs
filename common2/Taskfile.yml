@@ -1,0 +1,118 @@
+version: "3"
+
+# vars:
+#   SHELL:
+#     sh: bash
+#     windows: powershell.exe -NoProfile -ExecutionPolicy Bypass -Command
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task --list
+
+  cache-version:
+    cmds:
+      - cmd: |
+          source ./logging.sh
+          source ./version-cache.sh
+          log_debug "Caching version for package: {{.PACKAGE}}"
+          update_cached_version "{{.PACKAGE}}" "{{.VERSION | default ""}}"
+        platforms: [darwin, linux]
+    desc: Cache the installed version of a package
+    internal: true
+
+  list-cached-versions:
+    cmds:
+      - |
+        source ./logging.sh
+        source ./version-cache.sh
+        log_info "Listing all cached package versions:"
+        list_cached_versions
+    desc: List all cached package versions
+
+  clear-version-cache:
+    cmds:
+      - |
+        source ./logging.sh
+        source ./version-cache.sh
+        log_info "Clearing version cache..."
+        clear_version_cache
+    desc: Clear all cached package versions
+
+  darwin-one:
+    cmds:
+      - cmd: |
+          source ./logging.sh
+          log_info "Installing package {{.PACKAGE}}${VERSION:+ version ${VERSION}}"
+          brew-install.sh --package "{{.PACKAGE}}" --version '{{.VERSION | default ""}}' {{if .CLI_FORCE}}--force{{end}}
+      - task: cache-version
+        vars:
+          PACKAGE: "{{.PACKAGE}}"
+          VERSION: '{{.VERSION | default ""}}'
+    desc: Install one Package under Darwin, using Homebrew
+    env:
+      PACKAGE: "{{.PACKAGE}}"
+      VERSION: '{{.VERSION | default ""}}'
+    internal: true
+    platforms: [darwin]
+    summary: >
+      Install one Package under Darwin, using Homebrew
+
+      task darwin-one PACKAGE="pkg1" [VERSION="1.2.3"] [--force]
+
+      task darwin-one PACKAGE="llvm" VERSION="18" # will install llvm@18
+      task darwin-one PACKAGE="llvm" VERSION="20" # will remove llvm@18 and install llvm@20
+
+      where pkg1 is a Homebrew package name
+
+  darwin:
+    cmds:
+      - cmd: |
+          source ./logging.sh
+          failed_packages=()
+          total_packages=({{.PACKAGES}})
+          log_info "Installing ${#total_packages[@]} packages: {{.PACKAGES}}"
+
+          for package in {{.PACKAGES}}; do
+            log_info "Processing package: $package"
+            if ! task darwin-one PACKAGE="$package" {{if .CLI_FORCE}}--force{{end}}; then
+              failed_packages+=("$package")
+              log_warn "Failed to install: $package"
+            fi
+          done
+
+          if [[ ${#failed_packages[@]} -gt 0 ]]; then
+            log_error "Failed to install packages: ${failed_packages[*]}" 1
+          else
+            log_success "All packages installed successfully"
+          fi
+    desc: Install Packages under Darwin, using Homebrew with version management
+    internal: true
+    platforms: [darwin]
+    summary: >
+      Install Packages under Darwin, using Homebrew; no update capacity
+
+      task darwin PACKAGES="pkg1 pkg2 pkg3" [--force]
+
+      where pkg1, pkg2, pkg3 are Homebrew package names
+
+  linux:
+    cmds:
+      - for:
+          var: PACKAGES
+        cmd: |
+          bash ./install.sh --package "{{.ITEM}}" {{if .CLI_FORCE}}--force{{end}}
+        platforms: [linux]
+    desc: Install Packages under Linux
+    internal: true
+
+  windows:
+    cmds:
+      - for:
+          var: PACKAGES
+        cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./install.ps1 -Package "{{.ITEM}}" {{if .CLI_FORCE}}-Force{{end}}
+        platforms: [windows]
+    desc: Install Packages under Windows
+    internal: true
