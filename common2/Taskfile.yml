@@ -11,6 +11,33 @@ tasks:
     cmds:
       - task --list
 
+  backup:
+    cmds:
+      - cmd: |
+          bfile="{{.FILE}}"
+          if [ -f "$bfile" ]; then
+            backup_file="$bfile.bak.$(date +%Y%m%d_%H%M%S)"
+            cp "$bfile" "$backup_file"
+
+            # Rotate: keep only last N backups
+            max_backups=5
+            backup_count=$(ls -1 "$bfile.bak."* 2>/dev/null | wc -l)
+
+            if [ "$backup_count" -gt "$max_backups" ]; then
+              ls -t "$bfile.bak."* | tail -n +$((max_backups + 1)) | while read old_backup; do
+                rm -f "$old_backup"
+              done
+            fi
+
+            # ls -t "$bfile.bak."*
+          else
+            echo ">> '$bfile' does not exist. Skipping backup..."
+          fi
+        platforms: [darwin, linux]
+      - cmd: |
+          echo 'Not implemented for Windows'
+        platforms: [windows]
+
   cache-version:
     cmds:
       - cmd: |
@@ -42,10 +69,7 @@ tasks:
 
   darwin-one:
     cmds:
-      - cmd: |
-          source ./logging.sh
-          log_info "Installing package {{.PACKAGE}}${VERSION:+ version ${VERSION}}"
-          brew-install.sh --package "{{.PACKAGE}}" --version '{{.VERSION | default ""}}' {{if .CLI_FORCE}}--force{{end}}
+      - cmd: ./brew-install.swift --package "{{.PACKAGE}}" --version '{{.VERSION | default ""}}' {{if .CLI_FORCE}}--force{{end}}
       - task: cache-version
         vars:
           PACKAGE: "{{.PACKAGE}}"
