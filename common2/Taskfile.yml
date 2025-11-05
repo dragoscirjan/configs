@@ -69,7 +69,10 @@ tasks:
 
   darwin-one:
     cmds:
-      - cmd: ./brew-install.swift --package "{{.PACKAGE}}" --version '{{.VERSION | default ""}}' {{if .CLI_FORCE}}--force{{end}}
+      - cmd: |
+          ./brew-install.swift --package \
+            "{{.PACKAGE}}" {{if .VERSION}}--version \
+            '{{.VERSION}}'{{end}} {{if .CLI_FORCE}}--force{{end}}
       - task: cache-version
         vars:
           PACKAGE: "{{.PACKAGE}}"
@@ -140,3 +143,81 @@ tasks:
         platforms: [windows]
     desc: Install Packages under Windows
     internal: true
+
+  update:shrc:files:
+    cmds:
+      - for: [$HOME/.zshrc, $HOME/.bashrc, $HOME/.bash_profile]
+        task: backup
+        vars:
+          FILE: "{{.ITEM}}"
+      - for: [$HOME/.zshrc, $HOME/.bashrc, $HOME/.bash_profile]
+        cmd: |
+          set -euo pipefail
+
+          source ./logging.sh
+
+          target_file="{{.ITEM}}"
+          line_content='{{.LINE}}'
+
+          # Check if file exists
+          if [[ ! -f "${target_file}" ]]; then
+            log_info "'${target_file}' does not exist; skipping..."
+          else
+            # Check if line already exists in file
+            if grep -qF "${line_content}" "${target_file}"; then
+              log_info "'${target_file}' already contains: ${line_content}"
+            else
+              # Append line to file
+              echo "" >> "${target_file}"
+              echo "${line_content}" >> "${target_file}"
+              log_info "Added to '${target_file}': ${line_content }"
+            fi
+          fi
+
+  update:config:link:
+    cmds:
+      - cmd: |
+          set -euo pipefail
+
+          source ./logging.sh
+
+          source_path="{{.SOURCE}}"
+          dest_path="{{.DESTINATION}}"
+          timestamp=$(date +%s)
+
+          # Check if source exists
+          if [[ ! -e "${source_path}" ]]; then
+            log_error "Source path '${source_path}' does not exist." 1
+          fi
+
+          # Ensure parent directory of destination exists
+          parent_dir=$(dirname "${dest_path}")
+          if [[ -n "${parent_dir}" ]] && [[ ! -d "${parent_dir}" ]]; then
+            log_info "Creating parent directory: ${parent_dir}"
+            mkdir -p "${parent_dir}"
+          elif [[ -n "${parent_dir}" ]] && [[ -e "${parent_dir}" ]] && [[ ! -d "${parent_dir}" ]]; then
+            log_error "Parent path '${parent_dir}' exists but is not a directory." 1
+          fi
+
+          # Backup destination if it exists
+          if [[ -e "${dest_path}" ]]; then
+            backup="${dest_path}.bak.${timestamp}"
+            log_info "Backing up existing ${dest_path} to ${backup}"
+            mv "${dest_path}" "${backup}"
+          fi
+
+          # Create symlink
+          if [[ -d "${source_path}" ]]; then
+            item_type="directory"
+          else
+            item_type="file"
+          fi
+
+          log_info "Linking ${source_path} to ${dest_path} as ${item_type} symbolic link"
+          ln -sf "${source_path}" "${dest_path}"
+        platforms: [darwin, linux]
+    desc: Create symbolic link from SOURCE to DESTINATION
+    summary: >
+      Create symbolic link from SOURCE to DESTINATION with automatic backup
+
+      task update:config:link SOURCE="/path/to/source" DESTINATION="/path/to/dest"

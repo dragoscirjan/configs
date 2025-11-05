@@ -1,15 +1,12 @@
 version: "3"
 
 includes:
-  common:
-    taskfile: ./git
-    dir: ./git
   design:
-    taskfile: ./git
-    dir: ./git
+    taskfile: ./design
+    dir: ./design
   fonts:
-    taskfile: ./git
-    dir: ./git
+    taskfile: ./fonts
+    dir: ./fonts
   git:
     taskfile: ./git
     dir: ./git
@@ -20,11 +17,11 @@ includes:
     taskfile: ./language
     dir: ./language
   shell:
-    taskfile: ./git
-    dir: ./git
+    taskfile: ./shell
+    dir: ./shell
   terminal:
-    taskfile: ./git
-    dir: ./git
+    taskfile: ./terminal
+    dir: ./terminal
 
 tasks:
   generic:

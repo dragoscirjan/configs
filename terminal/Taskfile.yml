@@ -4,12 +4,15 @@ includes:
   c:
     taskfile: ../common
     dir: ../common
+  c2:
+    taskfile: ../common2
+    dir: ../common2
   l:
     taskfile: ../language
     dir: ../language
 
 tasks:
-  default:
+  generic:
     desc: default action - lists the tasks (you're looking at it)
     silent: true
     cmds:
@@ -22,23 +25,24 @@ tasks:
   #
   alacritty:
     cmds:
-      - task: c:darwin
+      - task: c2:darwin-one
         vars:
-          PACKAGES: ["alacritty"]
+          PACKAGE: alacritty
         platforms: [darwin]
       # TODO: https://alacritty.org/ => check installation steps
       - task: c:windows
         vars:
-          PACKAGE:
-            ["winget:Alacritty.Alacritty;choco:alacritty;scoop:extras/alacritty"]
+          PACKAGE: ["winget:Alacritty.Alacritty;choco:alacritty;scoop:extras/alacritty"]
         platforms: [windows]
       - task: alacritty:config
     desc: Install Alacritty Termianl (Windows)
 
   alacritty:config:
     cmds:
-      - cmd: |
-          bash ../common/link-config.sh "$(pwd)/alacritty.config.toml" "__HOME__/.config/alacritty/alacritty.toml"
+      - task: c2:update:config:link
+        vars:
+          SOURCE: "{{.ROOT_DIR}}/terminal/alacritty.config.toml"
+          DESTINATION: "{{.HOME}}/.config/alacritty/alacritty.toml"
         platforms: [darwin, linux]
       - cmd: |
           powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../common/link-config.ps1 -Source alacritty.config.toml -Destination __HOME__/AppData/Roaming/alacritty/alacritty.toml
@@ -50,22 +54,24 @@ tasks:
   ghostty:
     desc: Install Ghostty Terminal (Darwin,Linux)
     cmds:
-      - task: c:darwin
+      - task: c2:darwin-one
         vars:
-          PACKAGES: [cask/ghostty]
+          PACKAGE: cask:ghostty
         platforms: [darwin]
       # TODO: https://ghostty.org/docs/install/binary#linux-(official) => check installation steps
       - task: ghostty:config
 
   ghostty:config:
     cmds:
-      - cmd: |
-          config="$HOME/Library/Application Support/com.mitchellh.ghostty/config"
-          bash ../common/link-config.sh "$(pwd)/ghostty.config" "$config"
+      - task: c2:update:config:link
+        vars:
+          SOURCE: "{{.ROOT_DIR}}/terminal/ghostty.config"
+          DESTINATION: "{{.HOME}}/Library/Application Support/com.mitchellh.ghostty/config"
         platforms: [darwin]
-      - cmd: |
-          config="$HOME/.config/ghostty/config"
-          bash ../common/link-config.sh "$(pwd)/ghostty.config" "$config"
+      - task: c2:update:config:link
+        vars:
+          SOURCE: "{{.ROOT_DIR}}/terminal/ghostty.config"
+          DESTINATION: "{{.HOME}}/.config/ghostty/config"
         platforms: [linux]
     desc: Configure Ghostty
 
@@ -74,9 +80,13 @@ tasks:
   iterm:
     desc: Install iTerm Terminal (Darwin)
     cmds:
-      - task: c:darwin
+      - task: c2:darwin-one
         vars:
-          PACKAGES: [cask/iterm2, cask/itermai]
+          PACKAGE: cask:iterm2
+        platforms: [darwin]
+      - task: c2:darwin-one
+        vars:
+          PACKAGE: cask:itermai
         platforms: [darwin]
       - task: iterm:config
 
@@ -90,7 +100,7 @@ tasks:
   # https://github.com/microsoft/terminal
   #
   terminal:
-    desc: Install Terminal (Darwin,Linux,Windows)
+    desc: Install Terminal (Windows)
     cmds:
       - cmd: |
           echo "Microsoft Terminal is not supported on Darwin and Linux"
@@ -105,9 +115,9 @@ tasks:
   warp:
     desc: Install Warp Terminal (Darwin,Linux,Windows)
     cmds:
-      - task: c:darwin
+      - task: c2:darwin-one
         vars:
-          PACKAGES: [cask/warp]
+          PACKAGE: cask:warp
         platforms: [darwin]
       # TODO: https://www.warp.dev/linux-terminal => check installation steps
       - task: c:windows
@@ -128,9 +138,9 @@ tasks:
   wezterm:
     desc: Install Wezterm Terminal (Windows)
     cmds:
-      - task: c:darwin
+      - task: c2:darwin-one
         vars:
-          PACKAGES: [wezterm]
+          PACKAGE: wezterm
         platforms: [darwin]
       - task: c:windows
         vars:
@@ -140,8 +150,10 @@ tasks:
 
   wezterm:config:
     cmds:
-      - cmd: |
-          bash ../common/link-config.sh "$(pwd)/wezterm.config.lua" "__HOME__/.wezterm.lua"
+      - task: c2:update:config:link
+        vars:
+          SOURCE: "{{.ROOT_DIR}}/terminal/wezterm.config.lua"
+          DESTINATION: "{{.HOME}}/.wezterm.lua"
         platforms: [darwin, linux]
       - cmd: |
           powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../common/link-config.ps1 -Source wezterm.config.lua -Destination __HOME__/.wezterm.lua

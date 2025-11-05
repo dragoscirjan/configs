@@ -6,7 +6,7 @@ includes:
     dir: ../common
   c2:
     taskfile: ../common2
-    dir: ../common
+    dir: ../common2
   u:
     taskfile: ../utils
     dir: ../utils
@@ -18,13 +18,15 @@ tasks:
       - task: bash
       - task: pwsh
       - task: zsh
+      - task: util:chezmoi
+      - task: util:ohmyposh
 
   bash:
     cmds:
       - task: c2:darwin-one
         vars:
           PACKAGE: bash
-        platforms: [dawrin]
+        platforms: [darwin]
       - cmd: echo "bash is already installed"
         platforms: [linux]
       - task: c:windows
@@ -33,13 +35,11 @@ tasks:
         platforms: [windows]
     desc: Install Bash
 
-  # bash:ohmybash: # https://github.com/ohmybash/oh-my-bash
-
   fish: # https://fishshell.com/
     cmds:
-      - task: c:darwin
+      - task: c2:darwin-one
         vars:
-          PACKAGES: ["cask/gitkraken"]
+          PACKAGE: fish
         platforms: [darwin]
       - task: c:linux
         vars:
@@ -49,13 +49,11 @@ tasks:
         platforms: [windows]
     desc: Install Fish Shell
 
-  # fish:ohmyfish: # https://github.com/oh-my-fish/oh-my-fish
-
   nushell: # https://www.nushell.sh/
     cmds:
-      - task: c:darwin
+      - task: c2:darwin-one
         vars:
-          PACKAGES: ["nushell"]
+          PACKAGE: nushell
         platforms: [darwin]
       - cmd: |
           if command -v apk; then
@@ -89,9 +87,9 @@ tasks:
 
   pwsh:
     cmds:
-      - task: c:darwin
+      - task: c2:darwin-one
         vars:
-          PACKAGES: ["cask/powershell"]
+          PACKAGE: cask:powershell
         platforms: [darwin]
       - cmd: bash ./pwsh-install.sh
         platforms: [linux]
@@ -101,38 +99,11 @@ tasks:
         platforms: [windows]
     desc: Install Powershell
 
-  ohmyposh:
-    cmds:
-      - task: c:darwin
-        vars:
-          PACKAGES: ["oh-my-posh"]
-        platforms: [darwin]
-      - cmd: |
-          mkdir -p ~/.local/bin
-          curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
-          # brew install jandedobbeleer/oh-my-posh/oh-my-posh
-        platforms: [linux]
-      - task: c:windows
-        vars:
-          PACKAGES: ["winget:JanDeDobbeleer.OhMyPosh;choco:oh-my-posh"]
-        platforms: [windows]
-      - cmd: |
-          echo "Configure"
-        platforms: [darwin, linux]
-      - cmd: |
-          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./ohmyposh-config.ps1
-        platforms: [windows]
-    desc: Install OhMyPosh
-    deps:
-      - task: u:zip
-
-  # starship: # https://starship.rs/
-
   zsh:
     cmds:
-      - task: c:darwin
+      - task: c2:darwin-one
         vars:
-          PACKAGES: [zsh]
+          PACKAGE: zsh
         platforms: [darwin]
       - task: c:linux
         vars:
@@ -142,4 +113,41 @@ tasks:
         platforms: [windows]
     desc: Install Zsh
 
-  # zsh:ohmyzsh: # https://ohmyz.sh/
+  util:chezmoi: # https://www.chezmoi.io/
+    cmds:
+      - task: c2:darwin-one
+        vars:
+          PACKAGE: chezmoi
+        platforms: [darwin]
+    desc: Install chezmoi dotfile manager
+
+  util:ohmyposh: # https://ohmyposh.dev/
+    cmds:
+      - task: c2:darwin-one
+        vars:
+          PACKAGE: oh-my-posh
+        platforms: [darwin]
+      - cmd: |
+          mkdir -p ~/.local/bin
+          curl -s https://ohmyposh.dev/install.sh | bash -s -- -d ~/.local/bin
+        platforms: [linux]
+      - cmd: |
+          SCRIPT_DIR="{{.ROOT_DIR}}"
+          cd ../common2
+          task update:shrc:files LINE='eval "$(oh-my-posh init "$(oh-my-posh get shell)" --config "'"$SCRIPT_DIR"'/ohmyposh.config.toml")"'
+        platforms: [darwin, linux]
+      - task: c:windows
+        vars:
+          PACKAGES: ["winget:JanDeDobbeleer.OhMyPosh;choco:oh-my-posh"]
+        platforms: [windows]
+      - cmd: |
+          powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./ohmyposh-config.ps1
+        platforms: [windows]
+    desc: Install OhMyPosh
+    # deps:
+    #   - task: u:zip
+
+  # util:ohmybash: # https://github.com/ohmybash/oh-my-bash
+  # util:ohmyfish: # https://github.com/oh-my-fish/oh-my-fish
+  # util:starship: # https://starship.rs/
+  # util:ohmyzsh: # https://ohmyz.sh/
