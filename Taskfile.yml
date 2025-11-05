@@ -1,22 +1,43 @@
 version: "3"
 
 includes:
+  common:
+    taskfile: ./git
+    dir: ./git
+  design:
+    taskfile: ./git
+    dir: ./git
+  fonts:
+    taskfile: ./git
+    dir: ./git
   git:
     taskfile: ./git
     dir: ./git
   ide:
     taskfile: ./ide
     dir: ./ide
-  lang:
+  language:
     taskfile: ./language
     dir: ./language
+  shell:
+    taskfile: ./git
+    dir: ./git
+  terminal:
+    taskfile: ./git
+    dir: ./git
 
 tasks:
-  default:
-    desc: default action - lists the tasks (you're looking at it)
-    silent: true
+  generic:
     cmds:
-      - task --list
+      # - task: common:generic
+      # - task: design:generic
+      # - task: fonts:generic
+      - task: git:generic
+      # - task: ide:generic
+      # - task: language:generic
+      - task: shell:generic
+      - task: terminal:generic
+      # - task: utils:generic
 
   update:all:
     desc: Upgrade All Installed Packages

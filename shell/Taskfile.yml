@@ -4,19 +4,24 @@ includes:
   c:
     taskfile: ../common
     dir: ../common
+  c2:
+    taskfile: ../common2
+    dir: ../common
   u:
     taskfile: ../utils
     dir: ../utils
 
 tasks:
-  default:
+  generic:
     desc: Install minimal set of used languages
     cmds:
       - task: bash
       - task: pwsh
       - task: zsh
+
   bash:
     cmds:
+      - task: c2:macos
       - cmd: echo "bash is already installed"
         platforms: [darwin, linux]
       - task: c:windows

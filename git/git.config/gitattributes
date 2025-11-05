@@ -11,7 +11,7 @@
 # This ensures consistency across platforms for these files
 *.js text eol=lf
 *.ts text eol=lf
-*.json text eol=lf
+#*.json text eol=lf
 *.go text eol=lf
 *.sh text eol=lf
 *.py text eol=lf
@@ -25,7 +25,7 @@
 *.xml text eol=lf
 
 # Markdown and documentation
-*.md text eol=lf
+#*.md text eol=lf
 *.txt text eol=lf
 *.rst text eol=lf
 

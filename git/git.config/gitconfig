@@ -21,7 +21,8 @@
 
   # Graphical visualization of commit history
   # Usage: git graph
-  graph = "!sh -c 'git log --oneline --graph --decorate --all'"
+  #graph = "!sh -c 'git log --oneline --graph --decorate --all'"
+  graph = "!sh -c 'git log --graph --decorate --all --pretty=format:\"%C(yellow)%h%Creset %Cgreen(%an)%Creset %C(auto)%d%Creset %s\"'"
 
   # Shorder name for checkout
   co = "!sh -c 'git checkout "$@"' -"
