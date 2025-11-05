@@ -21,9 +21,12 @@ tasks:
 
   bash:
     cmds:
-      - task: c2:macos
+      - task: c2:darwin-one
+        vars:
+          PACKAGE: bash
+        platforms: [dawrin]
       - cmd: echo "bash is already installed"
-        platforms: [darwin, linux]
+        platforms: [linux]
       - task: c:windows
         vars:
           PACKAGES: ["winget:Git.Git;choco:git;scoop:git"]
