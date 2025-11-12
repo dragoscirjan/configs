@@ -1,0 +1,173 @@
+version: "3"
+
+includes:
+  c2:
+    taskfile: ../common2
+    dir: ../common2
+  u:
+    taskfile: ../utils
+    dir: ../utils
+
+tasks:
+  # =============================================================================
+  # MACOS PATTERNS (Homebrew Only)
+  # =============================================================================
+
+  # PATTERN 1: Single Package on macOS
+  # Install single package where the name is known
+  brew-app-single:
+    cmds:
+      - task: c2:darwin-one
+        vars:
+          PACKAGE: wget
+        platforms: [darwin]
+    desc: Install Single Package App on macOS
+
+  # PATTERN 2: Single Package on macOS - With Candidates
+  # Provide multiple candidate names if unsure of exact name
+  brew-app-with-candidates:
+    cmds:
+      - task: c2:darwin-one
+        vars:
+          PACKAGE: [llvm, llvm@18, llvm@20]
+        platforms: [darwin]
+    desc: Install package with candidates on macOS
+
+  # =============================================================================
+  # LINUX PATTERNS (Multiple Package Managers)
+  # =============================================================================
+
+  # PATTERN 3: Single Package on Linux - Same Name
+  # Assume package name is identical across all Linux package managers
+  # Common2 detects distro and uses appropriate PM (apt/dnf/pacman/etc)
+  linux-app-single:
+    cmds:
+      - task: c2:linux-one
+        vars:
+          PACKAGE: curl
+        platforms: [linux]
+    desc: Install package with same name on all Linux distros
+
+  # PATTERN 4: Single Package on Linux - Multiple Name Candidates
+  # Package name is NOT identical across distros
+  # Provide array of possible names, common2 tries each until one works
+  linux-app-with-candidates:
+    cmds:
+      - task: c2:linux-one
+        vars:
+          PACKAGE: [build-essential, base-devel, @development-tools]
+        platforms: [linux]
+    desc: Install package trying multiple candidate names
+
+  # PATTERN 5: Linux Package - Partial Name with Priorities
+  # Provide partial name and let common2 find closest match
+  # PACKAGE.priorities schema:
+  #   - prefer: <value>     # Prefer specific characteristics
+  #       Values: official-repo, community-repo, lts, latest-stable, backports, testing
+  #   - min-version: <semver>  # Minimum version required (e.g., "3.9", "2.0.0")
+  #   - max-version: <semver>  # Maximum version allowed
+  #   - avoid-suffix: [<suffixes>]  # Exclude packages with these suffixes
+  #       Examples: ["-dev", "-dbg", "-doc", "-beta", "-rc"]
+  #   - avoid-prefix: [<prefixes>]  # Exclude packages with these prefixes
+  #   - require-suffix: [<suffixes>]  # Only consider packages with these suffixes
+  #   - use-repology: <bool>  # Query repology.org if local search fails
+  linux-app-partial:
+    cmds:
+      - task: c2:linux-one
+        vars:
+          PACKAGE:
+            partial: python3
+            priorities:
+              - prefer: official-repo
+              - min-version: "3.9"
+              - avoid-suffix: ["-dev", "-dbg"]
+            use-repology: true
+        platforms: [linux]
+    desc: Install package with partial name matching
+
+  # =============================================================================
+  # WINDOWS PATTERNS (Multiple Package Managers)
+  # =============================================================================
+
+  # PATTERN 8: Single Package on Windows - Same Name
+  # Package name is same across winget/choco/scoop
+  windows-app-single:
+    cmds:
+      - task: c2:windows-one
+        vars:
+          PACKAGE: git
+        platforms: [windows]
+    desc: Install single package on Windows (same name)
+
+  # PATTERN 9: Single Package on Windows - Try Candidates
+  # Provide multiple candidate names, common2 tries each until one works
+  # Useful when you're not sure of exact package name
+  windows-app-with-candidates:
+    cmds:
+      - task: c2:windows-one
+        vars:
+          PACKAGE: [python, python3, Python.Python.3.12, Python.Python.3.11]
+        platforms: [windows]
+    desc: Install package trying multiple candidate names on Windows
+
+  # PATTERN 10: Windows Package - Explicit PM Override
+  # Only use if you want to force specific PM or exact package ID
+  # Otherwise let common2 auto-detect and search
+  windows-app-explicit:
+    cmds:
+      - task: c2:windows-one
+        vars:
+          PACKAGE: Python.Python.3.11
+          PM: winget  # Force winget, don't try choco/scoop
+        platforms: [windows]
+    desc: Install with explicit package manager on Windows
+
+  # =============================================================================
+  # CROSS-PLATFORM PATTERNS
+  # =============================================================================
+
+  # PATTERN 14: Cross-Platform - Same Name Everywhere
+  # Package name is identical on macOS, Linux, and Windows
+  cross-platform-simple:
+    cmds:
+      - task: c2:install-cross
+        vars:
+          PACKAGE: git
+    desc: Install package cross-platform (same name)
+
+  # PATTERN 15: Cross-Platform - With Candidates Per OS
+  # Package name differs by OS, provide candidates for each
+  cross-platform-with-candidates:
+    cmds:
+      - task: c2:darwin-one
+        vars:
+          PACKAGE: python3
+        platforms: [darwin]
+      - task: c2:linux-one
+        vars:
+          PACKAGE: [python3, python3.11, python3.12]
+        platforms: [linux]
+      - task: c2:windows-one
+        vars:
+          PACKAGE: [python, python3, Python.Python.3.12, Python.Python.3.11]
+        platforms: [windows]
+    desc: Install with candidate names per OS
+
+  # =============================================================================
+  # ADVANCED PATTERNS
+  # =============================================================================
+
+  # PATTERN 16: Install by Custom Script
+  # For apps not in any package manager
+  # Provide path to install script file
+  install-by-script:
+    cmds:
+      - task: c2:install-by-script
+        vars:
+          SCRIPT_PATH: ./scripts/install-myapp-linux.sh
+        platforms: [linux]
+      - task: c2:install-by-script
+        vars:
+          SCRIPT_PATH: ./scripts/install-myapp-windows.ps1
+        platforms: [windows]
+    desc: Install application using custom script file
