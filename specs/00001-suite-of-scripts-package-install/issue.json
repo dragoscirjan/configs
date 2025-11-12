@@ -1,0 +1,13 @@
+{
+  "author": "Dragos Cirjan <dragos.cirjan@gmail.com>",
+  "id": 1,
+  "title": "Suite of scripts package install",
+  "description": "Suite of scripts package install - Cross-platform package manager abstraction with package name resolution",
+  "labels": [
+    "low-level-design",
+    "task"
+  ],
+  "created_at": "2025-11-12T20:57:16.346Z",
+  "updated_at": "2025-11-12T20:57:16.346Z",
+  "comments": []
+}
